@@ -36,44 +36,40 @@ class App extends Component {
 
   populateSceneDrivingSim() {
 
-    this.camera.position.set( 60, 50, 60 );
+    this.camera.position.set( 180, 100, 180 );
     this.camera.lookAt( this.scene.position );
 
+    this.scene.setGravity(new THREE.Vector3( 0, -50, 0 ));
+
+
+    const STANCE_L = 16;
+    const STANCE_W = 12;
+
+    const MAX_VEL = 200;
+    const TORQUE = 2000;
+
+    const CAR_WEIGHT = 5000;
+    const WHEEL_WEIGHT = 150;
+    const FRICTION = 3;
     
     let car = {};
-    let light, ground_material, ground, car_material, wheel_material, wheel_geometry;
-
-    light = new THREE.DirectionalLight( 0xFFFFFF );
-    light.position.set( 20, 40, -15 );
-    light.target.position.copy( this.scene.position );
-    light.castShadow = true;
-    light.shadowCameraLeft = -60;
-    light.shadowCameraTop = -60;
-    light.shadowCameraRight = 60;
-    light.shadowCameraBottom = 60;
-    light.shadowCameraNear = 20;
-    light.shadowCameraFar = 200;
-    light.shadowBias = -.0001
-    light.shadowMapWidth = light.shadowMapHeight = 2048;
-    light.shadowDarkness = .7;
-    this.scene.add( light );
-    // Loader
+    let ground_material, ground, car_material, wheel_material, wheel_geometry;
     
     // Materials
     ground_material = Physijs.createMaterial(
       new THREE.MeshNormalMaterial(),
-      5, // high friction
+      FRICTION, // high friction
       .4 // low restitution
     );
     
     // Ground
     ground = new Physijs.BoxMesh(
-      new THREE.BoxGeometry(100, 1, 100),
+      new THREE.BoxGeometry(2000, 1, 2000),
       ground_material,
       0 // mass
     );
-    ground.receiveShadow = true;
     this.scene.add( ground );
+
     
     
     // Car
@@ -85,31 +81,30 @@ class App extends Component {
     
     wheel_material = Physijs.createMaterial(
       new THREE.MeshNormalMaterial(),
-      10, // high friction
+      FRICTION, // high friction
       .5 // medium restitution
     );
     wheel_geometry = new THREE.CylinderGeometry( 2, 2, 1, 8 );
     
     car.body = new Physijs.BoxMesh(
-      new THREE.BoxGeometry( 12, 4, 7 ),
+      new THREE.BoxGeometry( STANCE_L + 5, 4, STANCE_W - 3 ),
       car_material,
-      10000
+      CAR_WEIGHT
     );
     car.body.position.y = 8;
-    car.body.receiveShadow = car.body.castShadow = true;
     this.scene.add( car.body );
     
     car.wheel_fl = new Physijs.CylinderMesh(
       wheel_geometry,
       wheel_material,
-      50
+      WHEEL_WEIGHT
     );
     car.wheel_fl.rotation.x = Math.PI / 2;
-    car.wheel_fl.position.set( -3.5, 6.5, 5 );
-    car.wheel_fl.receiveShadow = car.wheel_fl.castShadow = true;
+    car.wheel_fl.position.set( -STANCE_L/2, 6.5, STANCE_W/2 );
+    
     this.scene.add( car.wheel_fl );
     car.wheel_fl_constraint = new Physijs.DOFConstraint(
-      car.wheel_fl, car.body, new THREE.Vector3( -3.5, 6.5, 5 )
+      car.wheel_fl, car.body, new THREE.Vector3( -STANCE_L/2, 6.5, STANCE_W/2 )
     );
     this.scene.addConstraint( car.wheel_fl_constraint );
     car.wheel_fl_constraint.setAngularLowerLimit({ x: 0, y: 0, z: 1 });
@@ -118,14 +113,14 @@ class App extends Component {
     car.wheel_fr = new Physijs.CylinderMesh(
       wheel_geometry,
       wheel_material,
-      500
+      WHEEL_WEIGHT
     );
     car.wheel_fr.rotation.x = Math.PI / 2;
-    car.wheel_fr.position.set( -3.5, 6.5, -5 );
-    car.wheel_fr.receiveShadow = car.wheel_fr.castShadow = true;
+    car.wheel_fr.position.set( -STANCE_L/2, 6.5, -STANCE_W/2 );
+    
     this.scene.add( car.wheel_fr );
     car.wheel_fr_constraint = new Physijs.DOFConstraint(
-      car.wheel_fr, car.body, new THREE.Vector3( -3.5, 6.5, -5 )
+      car.wheel_fr, car.body, new THREE.Vector3( -STANCE_L/2, 6.5, -STANCE_W/2 )
     );
     this.scene.addConstraint( car.wheel_fr_constraint );
     car.wheel_fr_constraint.setAngularLowerLimit({ x: 0, y: 0, z: 1 });
@@ -134,14 +129,14 @@ class App extends Component {
     car.wheel_bl = new Physijs.CylinderMesh(
       wheel_geometry,
       wheel_material,
-      500
+      WHEEL_WEIGHT
     );
     car.wheel_bl.rotation.x = Math.PI / 2;
-    car.wheel_bl.position.set( 3.5, 6.5, 5 );
-    car.wheel_bl.receiveShadow = car.wheel_bl.castShadow = true;
+    car.wheel_bl.position.set( STANCE_L/2, 6.5, STANCE_W/2 );
+    
     this.scene.add( car.wheel_bl );
     car.wheel_bl_constraint = new Physijs.DOFConstraint(
-      car.wheel_bl, car.body, new THREE.Vector3( 3.5, 6.5, 5 )
+      car.wheel_bl, car.body, new THREE.Vector3( STANCE_L/2, 6.5, STANCE_W/2 )
     );
     this.scene.addConstraint( car.wheel_bl_constraint );
     car.wheel_bl_constraint.setAngularLowerLimit({ x: 0, y: 0, z: 0 });
@@ -150,14 +145,14 @@ class App extends Component {
     car.wheel_br = new Physijs.CylinderMesh(
       wheel_geometry,
       wheel_material,
-      500
+      WHEEL_WEIGHT
     );
     car.wheel_br.rotation.x = Math.PI / 2;
-    car.wheel_br.position.set( 3.5, 6.5, -5 );
-    car.wheel_br.receiveShadow = car.wheel_br.castShadow = true;
+    car.wheel_br.position.set( STANCE_L/2, 6.5, -STANCE_W/2 );
+    
     this.scene.add( car.wheel_br );
     car.wheel_br_constraint = new Physijs.DOFConstraint(
-      car.wheel_br, car.body, new THREE.Vector3( 3.5, 6.5, -5 )
+      car.wheel_br, car.body, new THREE.Vector3( STANCE_L/2, 6.5, -STANCE_W/2 )
     );
     this.scene.addConstraint( car.wheel_br_constraint );
     car.wheel_br_constraint.setAngularLowerLimit({ x: 0, y: 0, z: 0 });
@@ -187,18 +182,18 @@ class App extends Component {
           
           case 38:
             // Up
-            car.wheel_bl_constraint.configureAngularMotor( 2, 1, 0, 5, 2000 );
-            car.wheel_br_constraint.configureAngularMotor( 2, 1, 0, 5, 2000 );
+            car.wheel_bl_constraint.configureAngularMotor( 2, 1, 0, MAX_VEL, TORQUE );
+            car.wheel_br_constraint.configureAngularMotor( 2, 1, 0, MAX_VEL, TORQUE );
             car.wheel_bl_constraint.enableAngularMotor( 2 );
             car.wheel_br_constraint.enableAngularMotor( 2 );
             break;
           
           case 40:
             // Down
-            car.wheel_bl_constraint.configureAngularMotor( 2, 1, 0, -5, 2000 );
-            car.wheel_br_constraint.configureAngularMotor( 2, 1, 0, -5, 2000 );
+            car.wheel_bl_constraint.configureAngularMotor( 2, 1, 0, -MAX_VEL, TORQUE );
+            car.wheel_br_constraint.configureAngularMotor( 2, 1, 0, -MAX_VEL, TORQUE );
             car.wheel_bl_constraint.enableAngularMotor( 2 );
-            //car.wheel_br_constraint.enableAngularMotor( 2 );
+            car.wheel_br_constraint.enableAngularMotor( 2 );
             break;
         }
       }
