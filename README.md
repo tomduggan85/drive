@@ -1,6 +1,9 @@
-### react+threejs+physijs
+### react+threejs+physijs experiment
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Driveable car using 3D asset
+track / arena
+AI / collisions
+
 
 ## Available Scripts
 
