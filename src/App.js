@@ -32,7 +32,7 @@ class App extends Component {
     this.camera.lookAt( this.scene.position );
     this.scene.setGravity(new THREE.Vector3( 0, -50, 0 ));
 
-    this.scene.add( new THREE.AmbientLight( 0x404040, 5 ));
+    this.scene.add( new THREE.AmbientLight( 0x404040, 50 ));
     
     const pointLight = new THREE.PointLight( 0x404040, 20 );
     pointLight.position.set(20, 20, 0);
@@ -50,6 +50,16 @@ class App extends Component {
         right: 39,
         forward: 38,
         reverse: 40,
+      }
+    })
+
+    const car2 = new Vehicle({
+      scene: this.scene,
+      keys: {
+        left: 65,
+        right: 68,
+        forward: 87,
+        reverse: 83,
       }
     })
 

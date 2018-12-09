@@ -2,8 +2,8 @@
 /* global THREE Physijs */
 
 const DEFAULT_TUNING = {
-  wheelBase: 16,
-  trackWidth: 12,
+  wheelBase: 19,
+  trackWidth: 11.5,
   maxVel: 200,
   torque: 2000,
   chassisMass: 5000,
@@ -21,8 +21,12 @@ class Vehicle {
     );
     //chassisMaterial.visible = false;
 
+    const width = this.tuning.trackWidth - 5;
+    const height = 4;
+    const length = tuning.wheelBase + 5;
+
     const $chassis = new Physijs.BoxMesh(
-      new THREE.BoxGeometry( this.tuning.trackWidth - 5, 4, tuning.wheelBase + 5 ),
+      new THREE.BoxGeometry( length, height, width ),
       chassisMaterial,
       tuning.chassisMass
     );
@@ -31,11 +35,11 @@ class Vehicle {
 
     this.gltfLoader.load(
       'gltf/car/scene.gltf',
-      ( carAsset ) => {
-        $chassis.geometry.visible = false;
-        carAsset.scene.scale.set(8, 8, 8)
-        carAsset.scene.position.set(0, -3, 0);
-        $chassis.add( carAsset.scene );
+      ( { scene: carAsset } ) => {
+        carAsset.scale.set(7.5, 7.5, 7.5)
+        carAsset.position.set(-2.9, -3.5, -1.2);
+        carAsset.rotation.y = Math.PI / 2;
+        $chassis.add( carAsset );
       },
       undefined,
       ( error ) => {
@@ -48,9 +52,9 @@ class Vehicle {
 
   createWheel( isFront, isLeft ) {
 
-    const x = this.tuning.trackWidth / 2 * (isLeft ? -1 : 1);
+    const z = this.tuning.trackWidth / 2 * (isLeft ? -1 : 1);
     const y = 6.5;
-    const z = this.tuning.wheelBase / 2 * (isFront ? 1 : -1);
+    const x = this.tuning.wheelBase / 2 * (isFront ? 1 : -1);
 
     if ( !this.wheelMaterial ) {
       this.wheelMaterial = Physijs.createMaterial(
@@ -59,11 +63,11 @@ class Vehicle {
     }
     
     if ( !this.wheelGeometry ) {
-      this.wheelGeometry  = new THREE.CylinderGeometry( 2, 2, 1, 8 );
+      this.wheelGeometry  = new THREE.CylinderGeometry( 1.9, 1.9, 1, 25 );
     }
 
     const $wheel = new Physijs.CylinderMesh( this.wheelGeometry, this.wheelMaterial, this.tuning.wheelMass );
-    $wheel.rotation.z = Math.PI / 2;
+    $wheel.rotation.x = Math.PI / 2;
     $wheel.position.set( x, y, z );
     
     this.scene.add( $wheel );
@@ -71,7 +75,7 @@ class Vehicle {
       $wheel, this.$chassis, new THREE.Vector3( x, y, z )
     );
     this.scene.addConstraint( constraint );
-    constraint.setAngularLowerLimit({ x: 1, y: 0, z: 0 });
+    constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
     constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
     
     return { $wheel, constraint }
@@ -155,29 +159,29 @@ class Vehicle {
   onForward() {
     const { maxVel, torque } = this.tuning;
     Object.values(this.wheels.R).forEach(({ constraint }) => {
-      constraint.configureAngularMotor( 0, 1, 0, maxVel, torque );
-      constraint.enableAngularMotor( 0 );
+      constraint.configureAngularMotor( 2, 1, 0, -maxVel, torque );
+      constraint.enableAngularMotor( 2 );
     });
   }
 
   onReverse() {
     const { maxVel, torque } = this.tuning;
     Object.values(this.wheels.R).forEach(({ constraint }) => {
-      constraint.configureAngularMotor( 0, 1, 0, -maxVel, torque );
-      constraint.enableAngularMotor( 0 );
+      constraint.configureAngularMotor( 2, 1, 0, maxVel, torque );
+      constraint.enableAngularMotor( 2 );
     });
   }
 
   offGas() {
     Object.values(this.wheels.R).forEach(({ constraint }) => {
-      constraint.disableAngularMotor( 0 );
+      constraint.disableAngularMotor( 2 );
     });
   }
 
   onLeft() {
     const { steerAngle } = this.tuning;
     Object.values(this.wheels.F).forEach(({ constraint }) => {
-      constraint.setAngularLowerLimit({ x: 1, y: steerAngle, z: 0 });
+      constraint.setAngularLowerLimit({ x: 0, y: steerAngle, z: 1 });
       constraint.setAngularUpperLimit({ x: 0, y: steerAngle, z: 0 });
     });
   }
@@ -185,14 +189,14 @@ class Vehicle {
   onRight() {
     const { steerAngle } = this.tuning;
     Object.values(this.wheels.F).forEach(({ constraint }) => {
-      constraint.setAngularLowerLimit({ x: 1, y: -steerAngle, z: 0 });
+      constraint.setAngularLowerLimit({ x: 0, y: -steerAngle, z: 1 });
       constraint.setAngularUpperLimit({ x: 0, y: -steerAngle, z: 0 });
     });
   }
 
   offSteer() {
     Object.values(this.wheels.F).forEach(({ constraint }) => {
-      constraint.setAngularLowerLimit({ x: 1, y: 0, z: 0 });
+      constraint.setAngularLowerLimit({ x: 0, y: 0, z: 1 });
       constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 });
     });
   }

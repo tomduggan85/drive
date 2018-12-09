@@ -23,7 +23,8 @@ class Arena {
       material,
       0
     );
-    
+
+
     scene.add( $ground );
   }
 }
