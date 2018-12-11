@@ -28,7 +28,7 @@ class App extends Component {
 
   populateScene() {
 
-    this.camera.position.set( 80, 50, 80 );
+    this.camera.position.set( 180, 100, 180 );
     this.camera.lookAt( this.scene.position );
     this.scene.setGravity(new THREE.Vector3( 0, -50, 0 ));
 

@@ -19,7 +19,7 @@ class Arena {
     );
     
     const $ground = new Physijs.BoxMesh(
-      new THREE.BoxGeometry(2000, 1, 2000),
+      new THREE.BoxGeometry(2000, 5, 2000),
       material,
       0
     );

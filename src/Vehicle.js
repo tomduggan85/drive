@@ -5,7 +5,7 @@ const DEFAULT_TUNING = {
   wheelBase: 19,
   trackWidth: 11.5,
   maxVel: 200,
-  torque: 2000,
+  torque: 3000,
   chassisMass: 5000,
   wheelMass: 150,
   tireFriction: 3,
@@ -17,7 +17,7 @@ class Vehicle {
   createChassis() {
     const { scene, tuning } = this;
     const chassisMaterial = Physijs.createMaterial(
-      new THREE.MeshNormalMaterial(), 0.8, 0.2
+      new THREE.MeshNormalMaterial(), 0.8, 0.8
     );
     //chassisMaterial.visible = false;
 
