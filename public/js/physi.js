@@ -710,11 +710,11 @@ window.Physijs = (function() {
 		}
 	};
 
-	Physijs.Scene.prototype.addConstraint = function ( constraint, show_marker ) {
+	Physijs.Scene.prototype.addConstraint = function ( constraint, options = {} ) {
 		this._constraints[ constraint.id ] = constraint;
-		this.execute( 'addConstraint', constraint.getDefinition() );
+		this.execute( 'addConstraint', { ...constraint.getDefinition(), disableCollision: !!options.disableCollision } );
 
-		if ( show_marker ) {
+		if ( options.show_marker ) {
 			var marker;
 
 			switch ( constraint.type ) {

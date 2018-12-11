@@ -7,6 +7,7 @@ const DEFAULT_TUNING = {
   maxVel: 200,
   torque: 3000,
   chassisMass: 5000,
+  chassisSize: { length: 32, width: 12, height: 4 },
   wheelMass: 150,
   tireFriction: 3,
   steerAngle: Math.PI / 8,
@@ -21,9 +22,7 @@ class Vehicle {
     );
     //chassisMaterial.visible = false;
 
-    const width = this.tuning.trackWidth - 5;
-    const height = 4;
-    const length = tuning.wheelBase + 5;
+    const { length, width, height } = tuning.chassisSize;
 
     const $chassis = new Physijs.BoxMesh(
       new THREE.BoxGeometry( length, height, width ),
@@ -31,13 +30,14 @@ class Vehicle {
       tuning.chassisMass
     );
     $chassis.position.y = 8;
+    $chassis.position.x = -1;
     scene.add( $chassis );
 
     this.gltfLoader.load(
       'gltf/car/scene.gltf',
       ( { scene: carAsset } ) => {
         carAsset.scale.set(7.5, 7.5, 7.5)
-        carAsset.position.set(-2.9, -3.5, -1.2);
+        carAsset.position.set(-1.9, -3.5, -1.2);
         carAsset.rotation.y = Math.PI / 2;
         $chassis.add( carAsset );
       },
@@ -74,7 +74,7 @@ class Vehicle {
     const constraint = new Physijs.DOFConstraint(
       $wheel, this.$chassis, new THREE.Vector3( x, y, z )
     );
-    this.scene.addConstraint( constraint );
+    this.scene.addConstraint( constraint, { disableCollision: true } );
     constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
     constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
     

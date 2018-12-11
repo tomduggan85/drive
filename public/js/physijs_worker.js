@@ -893,7 +893,7 @@ public_functions.addConstraint = function ( details ) {
 
 	};
 
-	world.addConstraint( constraint );
+	world.addConstraint( constraint, details.disableCollision );
 
 	constraint.enableFeedback();
 	_constraints[ details.id ] = constraint;

@@ -62,11 +62,6 @@ class App extends Component {
         reverse: 83,
       }
     })
-
-    //const car2 = new Vehicle({
-    //  scene: this.scene,
-    //});
-
   }
 
   stepScene = () => {
