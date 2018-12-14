@@ -1,5 +1,5 @@
 import React from 'react';
-import './DriveMatchPage.css';
+import './DriveRemoteControlPage.css';
 import { getSocket } from './shared/DriveMatchSocket';
 
 const playerId = 0;
@@ -68,35 +68,42 @@ class DriveRemoteControlPage extends React.Component {
   render() {
     return (
       <div className="drive-remote-control-page">
-        remote control page
-        <div
-          onMouseDown={this.onLeft}
-          onMouseUp={this.offSteer}
-          onMouseOut={this.mouseOutSteer}
-        >
-          Left
+        remote control page (player 1)
+        <div className='steering'>
+          <div className='control'
+            onMouseDown={this.onLeft}
+            onTouchStart={this.onLeft}
+            onMouseUp={this.offSteer}
+            onMouseOut={this.mouseOutSteer}
+          >
+            Left
+          </div>
+          <div className='control'
+            onMouseDown={this.onRight}
+            onTouchStart={this.onRight}
+            onMouseUp={this.offSteer}
+            onMouseOut={this.mouseOutSteer}
+          >
+            Right
+          </div>
         </div>
-        <div
-          onMouseDown={this.onRight}
-          onMouseUp={this.offSteer}
-          onMouseOut={this.mouseOutSteer}
-        >
-          Right
-        </div>
-
-        <div
-          onMouseDown={this.onForward}
-          onMouseUp={this.offGas}
-          onMouseOut={this.mouseOutGas}
-        >
-          Forward
-        </div>
-        <div
-          onMouseDown={this.onReverse}
-          onMouseUp={this.offGas}
-          onMouseOut={this.mouseOutGas}
-        >
-          Reverse
+        <div className='gas-controls'>
+          <div className='control'
+            onMouseDown={this.onForward}
+            onTouchStart={this.onForward}
+            onMouseUp={this.offGas}
+            onMouseOut={this.mouseOutGas}
+          >
+            Forward
+          </div>
+          <div className='control'
+            onMouseDown={this.onReverse}
+            onTouchStart={this.onReverse}
+            onMouseUp={this.offGas}
+            onMouseOut={this.mouseOutGas}
+          >
+            Reverse
+          </div>
         </div>
       </div>
     );

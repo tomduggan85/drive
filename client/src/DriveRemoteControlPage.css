@@ -1,0 +1,25 @@
+
+.drive-remote-control-page .control {
+  color: blue;
+  cursor: pointer;
+  border: 1px solid #000;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  user-select: none;
+  text-align: center;
+  margin: 10px;
+}
+
+.drive-remote-control-page .steering {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  display: flex;
+}
+
+.drive-remote-control-page .gas-controls {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+}
