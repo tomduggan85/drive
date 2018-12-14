@@ -51,7 +51,7 @@ class Vehicle {
     scene.add( $chassis );
 
     this.gltfLoader.load(
-      'assets/3d/stationwagon/scene.gltf',
+      '/assets/3d/stationwagon/scene.gltf',
       ( { scene: carAsset } ) => {
         carAsset.scale.set(7.5, 7.5, 7.5)
         carAsset.position.set(-1.9, -3.5, -1.2);

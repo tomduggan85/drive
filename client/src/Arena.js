@@ -16,7 +16,7 @@ class Arena {
       restitution,
     } = props;
 
-    const groundTextureMap = new THREE.TextureLoader().load('assets/images/dirt3_pixelize10.jpg');
+    const groundTextureMap = new THREE.TextureLoader().load('/assets/images/dirt3_pixelize10.jpg');
     groundTextureMap.wrapS = THREE.RepeatWrapping;
     groundTextureMap.wrapT = THREE.RepeatWrapping;
     groundTextureMap.repeat.set( 10, 10 );
@@ -41,7 +41,7 @@ class Arena {
   }
 
   createWall( scene ) {
-    const wallTextureMap = new THREE.TextureLoader().load('assets/images/concrete1.jpg');
+    const wallTextureMap = new THREE.TextureLoader().load('/assets/images/concrete1.jpg');
     wallTextureMap.wrapS = THREE.RepeatWrapping;
     wallTextureMap.wrapT = THREE.RepeatWrapping;
     wallTextureMap.repeat.set( 1, 1 );
