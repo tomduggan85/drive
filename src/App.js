@@ -14,7 +14,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <CameraRenderer driveScene={this.driveScene} />
+        <CameraRenderer driveScene={this.driveScene} followCarIndex={0} />
+        <CameraRenderer driveScene={this.driveScene} followCarIndex={1} />
       </div>
     );
   }

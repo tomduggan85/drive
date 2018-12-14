@@ -33,7 +33,15 @@ class CameraRenderer extends React.Component {
 
     window.addEventListener( 'resize', this.onResize );
 
-    this.step();
+    if ( this.props.followCarIndex !== undefined ) {
+      this.follow( this.props.driveScene.cars[this.props.followCarIndex].$chassis );
+    }
+
+    this.$scene.addEventListener('update', this.step);
+  }
+
+  follow( $sceneObject ) {
+    this.$followObject = $sceneObject;
   }
 
   componentWillUnmount() {
@@ -48,8 +56,36 @@ class CameraRenderer extends React.Component {
     this.$renderer.setSize( width, height );
   }
 
+  stepFollow() {
+
+    const { position } = this.$followObject;
+    const rotation = this.$followObject.rotation.y;
+    let targetRotation = -rotation;
+
+    if ( Math.abs( this.$followObject.rotation.x)  > Math.PI/2 ) {
+      //Gimbal lock / euler angles
+      targetRotation = Math.PI + rotation;
+    }
+    
+    const DIST = -45;
+    const HEIGHT = 15;
+    
+    this.$camera.position.set(
+      position.x + Math.cos(targetRotation) * DIST,
+      position.y + HEIGHT, 
+      position.z + Math.sin(targetRotation) * DIST
+    );
+
+    this.$camera.lookAt(position )
+  }
+
   step = () => {
-    requestAnimationFrame( this.step );
+    //requestAnimationFrame( this.step );
+
+    if ( this.$followObject ) {
+      this.stepFollow();
+    }
+
     this.$renderer.render(
       this.$scene,
       this.$camera

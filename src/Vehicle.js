@@ -20,7 +20,7 @@ class Vehicle {
     const chassisMaterial = Physijs.createMaterial(
       new THREE.MeshNormalMaterial(), 0.8, 0.8
     );
-    //chassisMaterial.visible = false;
+    chassisMaterial.visible = false;
 
     const { length, width, height } = tuning.chassisSize;
 
