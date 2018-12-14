@@ -7,7 +7,11 @@ const DEFAULT_TUNING = {
   maxVel: 200,
   torque: 3000,
   chassisMass: 5000,
-  chassisSize: { length: 32, width: 12, height: 4 },
+  chassisShapes: [
+    { offset: { x: -1, y: 8, z: 0 }, size: { x: 32, y: 4, z: 12} },
+    { offset: { x: -5, y: 4, z: 0 }, size: { x: 18, y: 2, z: 10} },
+    { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
+  ],
   wheelMass: 150,
   tireFriction: 3,
   steerAngle: Math.PI / 8,
@@ -22,15 +26,28 @@ class Vehicle {
     );
     chassisMaterial.visible = false;
 
-    const { length, width, height } = tuning.chassisSize;
+    const volumes = tuning.chassisShapes.map( shape => shape.size.x * shape.size.y * shape.size.z )
+    const totalVolume = volumes.reduce( ( accumulator, volume ) => accumulator + volume )
 
+    //First shape is always the main chassis, additional shapes are added to it.
     const $chassis = new Physijs.BoxMesh(
-      new THREE.BoxGeometry( length, height, width ),
+      new THREE.BoxGeometry( tuning.chassisShapes[0].size.x, tuning.chassisShapes[0].size.y, tuning.chassisShapes[0].size.z ),
       chassisMaterial,
-      tuning.chassisMass
+      tuning.chassisMass * volumes[0] / totalVolume
     );
-    $chassis.position.y = 8;
-    $chassis.position.x = -1;
+    $chassis.position.set( tuning.chassisShapes[0].offset.x, tuning.chassisShapes[0].offset.y, tuning.chassisShapes[0].offset.z )
+    
+    for ( let i = 1; i < tuning.chassisShapes.length; i++ ) {
+      const $shape = new Physijs.BoxMesh(
+        new THREE.BoxGeometry( tuning.chassisShapes[i].size.x, tuning.chassisShapes[i].size.y, tuning.chassisShapes[i].size.z ),
+        chassisMaterial,
+        tuning.chassisMass * volumes[i] / totalVolume
+      );
+      $shape.position.set( tuning.chassisShapes[i].offset.x, tuning.chassisShapes[i].offset.y, tuning.chassisShapes[i].offset.z )
+
+      $chassis.add($shape);
+    }
+
     scene.add( $chassis );
 
     this.gltfLoader.load(
