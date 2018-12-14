@@ -2,17 +2,23 @@ import React from 'react';
 import './DriveMatchPage.css';
 import DriveScene from './DriveScene';
 import CameraRenderer from './CameraRenderer';
-
-const WEBSOCKET_PORT = 8080
+import { getSocket } from './shared/DriveMatchSocket';
 
 class DriveMatchPage extends React.Component {
 
   constructor( props ) {
     super( props );
-    this.driveScene = new DriveScene();
-
+    
     const { matchId } = props.match.params;
-    this.socket = new WebSocket(`ws://${ window.location.hostname }:${ WEBSOCKET_PORT }/match/${ matchId }`);
+    this.socket = getSocket( matchId );
+
+    this.driveScene = new DriveScene({
+      socket: this.socket
+    });
+  }
+
+  componentWillUnmount() {
+    this.socket.close();
   }
 
   render() {

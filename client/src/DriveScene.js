@@ -5,10 +5,12 @@ import Arena from './Arena';
 
 class DriveScene {
   
-  constructor() {
+  constructor( props ) {
 
     Physijs.scripts.worker = '/js/physijs_worker.js';
     Physijs.scripts.ammo = '/js/ammo.js';
+
+    this.socket = props.socket;
 
     this.$scene = new Physijs.Scene();
     this.$scene.setGravity(new THREE.Vector3( 0, -50, 0 ));
@@ -21,7 +23,6 @@ class DriveScene {
     const arena = new Arena({
       scene: this.$scene,
     })
-
 
     this.cars = [
       new Vehicle({
@@ -47,6 +48,12 @@ class DriveScene {
         }
       })
     ];
+
+
+    this.socket.addEventListener('message', function( message ) {
+      const payload = JSON.parse(message.data);
+      this.cars[ payload.playerId ][payload.action](); //TODO whitelist fns
+    }.bind( this ));
 
     this.step();
   }

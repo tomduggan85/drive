@@ -1,8 +1,12 @@
 {
-  "name": "drive server",
+  "name": "drive_server",
   "version": "0.1.0",
   "description": "drive server",
   "private": true,
   "scripts": {
+    "start": "node src/MatchServer.js"
   },
+  "dependencies": {
+    "ws": "^6.1.2"
+  }
 }

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import DriveMatchPage from './DriveMatchPage';
 import SplashPage from './SplashPage';
+import DriveRemoteControlPage from './DriveRemoteControlPage';
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,11 +13,12 @@ import {
 class App extends Component {
 
   render() {
-    //next: <Route path='/match/:matchId/remote' component={DriveRemoteControlPage}/>
+    //next: 
 
     return (
       <Router>
         <Switch>
+          <Route path='/match/:matchId/remote' component={DriveRemoteControlPage}/>
           <Route path='/match/:matchId' component={DriveMatchPage}/>
           <Route component={SplashPage} />
         </Switch>
