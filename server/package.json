@@ -1,0 +1,8 @@
+{
+  "name": "drive server",
+  "version": "0.1.0",
+  "description": "drive server",
+  "private": true,
+  "scripts": {
+  },
+}
