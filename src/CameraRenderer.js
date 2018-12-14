@@ -62,11 +62,15 @@ class CameraRenderer extends React.Component {
     const rotation = this.$followObject.rotation.y;
     let targetRotation = -rotation;
 
+    const angularVelocity = this.$followObject.getAngularVelocity().y;
+
     if ( Math.abs( this.$followObject.rotation.x)  > Math.PI/2 ) {
       //Gimbal lock / euler angles
       targetRotation = Math.PI + rotation;
     }
-    
+
+    //targetRotation += angularVelocity * 0.15;
+
     const DIST = -45;
     const HEIGHT = 15;
     
