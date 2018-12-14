@@ -102,11 +102,12 @@ class Vehicle {
     }
 
     
-    /*
-    this.$chassis.position.y = 8;
+    
+    this.$chassis.rotation.set(props.rotation.x, props.rotation.y, props.rotation.z);
+    this.$chassis.position.set(props.position.x, props.position.y, props.position.z);
     this.$chassis.__dirtyPosition = true;
     this.$chassis.__dirtyRotation = true;
-    */
+    
 
     document.addEventListener( 'keydown', this.onKeyDown );
     document.addEventListener( 'keyup', this.onKeyUp );
