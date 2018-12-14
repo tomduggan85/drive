@@ -1,0 +1,11 @@
+.drive-match-page {
+  width: 90vw;
+  height: 80vh;
+  margin: 50px auto;
+  display: flex;
+}
+
+.camera-renderer {
+  width: 50%;
+  border: 1px solid #fff;
+}

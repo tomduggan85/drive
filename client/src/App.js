@@ -1,22 +1,26 @@
 
 import React, { Component } from 'react';
 import './App.css';
-import DriveScene from './DriveScene';
-import CameraRenderer from './CameraRenderer';
+import DriveMatchPage from './DriveMatchPage';
+import SplashPage from './SplashPage';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom'
 
 class App extends Component {
 
-  constructor( props ) {
-    super( props );
-    this.driveScene = new DriveScene();
-  }
-
   render() {
+    //next: <Route path='/match/:matchId/remote' component={DriveRemoteControlPage}/>
+
     return (
-      <div className="App">
-        <CameraRenderer driveScene={this.driveScene} followCarIndex={0} />
-        <CameraRenderer driveScene={this.driveScene} followCarIndex={1} />
-      </div>
+      <Router>
+        <Switch>
+          <Route path='/match/:matchId' component={DriveMatchPage}/>
+          <Route component={SplashPage} />
+        </Switch>
+      </Router>
     );
   }
 }
