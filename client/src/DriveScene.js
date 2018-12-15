@@ -14,9 +14,9 @@ class DriveScene {
 
     this.$scene = new Physijs.Scene();
     this.$scene.setGravity(new THREE.Vector3( 0, -50, 0 ));
-    this.$scene.add( new THREE.AmbientLight( 0x404040, 50 ));
+    this.$scene.add( new THREE.AmbientLight( 0x404040, 15 ));
     
-    const pointLight = new THREE.PointLight( 0x404040, 20 );
+    const pointLight = new THREE.PointLight( 0x404040, 10 );
     pointLight.position.set(20, 20, 0);
     this.$scene.add( pointLight );
 
@@ -27,24 +27,26 @@ class DriveScene {
     this.cars = [
       new Vehicle({
         scene: this.$scene,
+        vehicleType: 'stationwagon',
         position: {x: 40, y: 8, z: 0},
         rotation: {x: 0, y: 0, z: 0},
-        keys: {
-          left: 37,
-          right: 39,
-          forward: 38,
-          reverse: 40,
-        }
-      }),
-      new Vehicle({
-        scene: this.$scene,
-        position: {x: -40, y: 8, z: 0},
-        rotation: {x: 0, y: Math.PI, z: 0},
         keys: {
           left: 65,
           right: 68,
           forward: 87,
           reverse: 83,
+        }
+      }),
+      new Vehicle({
+        scene: this.$scene,
+        vehicleType: 'lada',
+        position: {x: -40, y: 8, z: 0},
+        rotation: {x: 0, y: Math.PI, z: 0},
+        keys: {
+          left: 37,
+          right: 39,
+          forward: 38,
+          reverse: 40,
         }
       })
     ];

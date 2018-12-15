@@ -1,30 +1,47 @@
 
 /* global THREE Physijs */
 
-const DEFAULT_TUNING = {
-  wheelBase: 19,
-  trackWidth: 11.5,
-  maxVel: 200,
-  torque: 3000,
-  chassisMass: 5000,
-  chassisShapes: [
-    { offset: { x: -1, y: 8, z: 0 }, size: { x: 32, y: 4, z: 12} },
-    { offset: { x: -5, y: 4, z: 0 }, size: { x: 18, y: 2, z: 10} },
-    { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
-  ],
-  wheelMass: 150,
-  tireFriction: 3,
-  steerAngle: Math.PI / 8,
-}
+const TUNING = {
+  stationwagon: {
+    wheelBase: 19,
+    trackWidth: 11.5,
+    maxVel: 200,
+    torque: 3000,
+    chassisMass: 5000,
+    chassisShapes: [
+      { offset: { x: -1, y: 8, z: 0 }, size: { x: 32, y: 4, z: 12} },
+      { offset: { x: -5, y: 4, z: 0 }, size: { x: 18, y: 2, z: 10} },
+      { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
+    ],
+    wheelMass: 150,
+    tireFriction: 3,
+    steerAngle: Math.PI / 8,
+  },
+  lada: {
+    wheelBase: 16,
+    trackWidth: 9.5,
+    maxVel: 200,
+    torque: 3000,
+    chassisMass: 4000,
+    chassisShapes: [
+      { offset: { x: -1, y: 8, z: 0 }, size: { x: 20, y: 4, z: 12} },
+      { offset: { x: -5, y: 4, z: 0 }, size: { x: 18, y: 2, z: 10} },
+      { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
+    ],
+    wheelMass: 150,
+    tireFriction: 3,
+    steerAngle: Math.PI / 8,
+  }
+};
 
 class Vehicle {
 
   createChassis() {
     const { scene, tuning } = this;
     const chassisMaterial = Physijs.createMaterial(
-      new THREE.MeshNormalMaterial(), 0.8, 0.8
+      new THREE.MeshNormalMaterial(), 0.8, 0.4 //restitution
     );
-    chassisMaterial.visible = false;
+    chassisMaterial.visible = this.vehicleType === 'lada';
 
     const volumes = tuning.chassisShapes.map( shape => shape.size.x * shape.size.y * shape.size.z )
     const totalVolume = volumes.reduce( ( accumulator, volume ) => accumulator + volume )
@@ -50,19 +67,35 @@ class Vehicle {
 
     scene.add( $chassis );
 
-    this.gltfLoader.load(
-      '/assets/3d/stationwagon/scene.gltf',
-      ( { scene: carAsset } ) => {
-        carAsset.scale.set(7.5, 7.5, 7.5)
-        carAsset.position.set(-1.9, -3.5, -1.2);
-        carAsset.rotation.y = Math.PI / 2;
-        $chassis.add( carAsset );
-      },
-      undefined,
-      ( error ) => {
-        console.error( error );
-      }
-    )
+    //TODO replace this branch with TUNING entries
+    if ( this.vehicleType === 'stationwagon' ) {
+      this.loader.load(
+        '/assets/3d/stationwagon/scene.gltf',
+        ( { scene: carAsset } ) => {
+          carAsset.scale.set(7.5, 7.5, 7.5)
+          carAsset.position.set(-1.9, -3.5, -1.2);
+          carAsset.rotation.y = Math.PI / 2;
+          $chassis.add( carAsset );
+        },
+        undefined,
+        ( error ) => {
+          console.error( error );
+        }
+      );
+    } else {
+      this.loader.load(
+        '/assets/3d/lada/scene.gltf',
+        ( { scene: carAsset } ) => {
+          carAsset.scale.set(0.063, 0.063, 0.063);
+          carAsset.position.set(-0.3, -3.8, 0);
+          $chassis.add( carAsset );
+        },
+        undefined,
+        ( error ) => {
+          console.error( error );
+        }
+      )
+    }
 
     this.$chassis = $chassis;
   }
@@ -77,10 +110,11 @@ class Vehicle {
       this.wheelMaterial = Physijs.createMaterial(
         new THREE.MeshNormalMaterial(), this.tuning.tireFriction, 0.5
       );
+      this.wheelMaterial.visible = false;
     }
     
     if ( !this.wheelGeometry ) {
-      this.wheelGeometry  = new THREE.CylinderGeometry( 1.9, 1.9, 1, 25 );
+      this.wheelGeometry  = new THREE.CylinderGeometry( 1.9, 1.9, 1.3, 25 );
     }
 
     const $wheel = new Physijs.CylinderMesh( this.wheelGeometry, this.wheelMaterial, this.tuning.wheelMass );
@@ -94,17 +128,30 @@ class Vehicle {
     this.scene.addConstraint( constraint, { disableCollision: true } );
     constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
     constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
+
+    this.loader.load(
+      '/assets/3d/wheel/scene.gltf',
+      ( { scene: wheelAsset } ) => {
+        wheelAsset.scale.set(4.5, 5.5, 4.5);
+        $wheel.add( wheelAsset );
+      },
+      undefined,
+      ( error ) => {
+        console.error( error );
+      }
+    )
     
     return { $wheel, constraint }
   }
   
   constructor( props ) {
-    this.gltfLoader = new THREE.GLTFLoader();
+    this.vehicleType = props.vehicleType;
 
     this.scene = props.scene;
-    this.tuning = { ...props.tuning, ...DEFAULT_TUNING };
+    this.tuning = TUNING[ props.vehicleType ];
     this.keys = props.keys;
 
+    this.loader = new THREE.GLTFLoader();
     this.createChassis();
 
     this.wheels = {
