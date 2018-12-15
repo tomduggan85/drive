@@ -2,6 +2,38 @@
 /* global THREE Physijs */
 
 const TUNING = {
+  woodywagon: {
+    wheelBase: 19.5,
+    trackWidth: 10.5,
+    maxVel: 200,
+    torque: 3000,
+    chassisMass: 5000,
+    chassisShapes: [
+      { offset: { x: -1, y: 8, z: 0 }, size: { x: 34, y: 3, z: 11.5} },
+      { offset: { x: 0, y: 2, z: 0 }, size: { x: 33, y: 1.5, z: 11.5} },
+      { offset: { x: -6, y: 4, z: 0 }, size: { x: 20, y: 2, z: 10} },
+      { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
+    ],
+    wheelMass: 150,
+    tireFriction: 3,
+    steerAngle: Math.PI / 8,
+    chassisAsset: {
+      uri: '/assets/3d/woody_wagon_chassis/scene.gltf',
+      scale: 4.75,
+      position: {x: 12.2, y: -3.4, z: -6.4},
+      rotation: {x: 0, y: Math.PI / 2, z: 0},
+    },
+    wheelAsset: {
+      uri: '/assets/3d/woody_wagon_wheel/scene.gltf',
+      scale: 4.1,
+      position: {x: 0, y: 0, z: 0},
+      rotation: {x: 0, y: 0, z: Math.PI / 2},
+    },
+    wheelDiameter: 2.0,
+    wheelWidth: 1.3,
+    rideHeight: 6.9,
+  },
+
   stationwagon: {
     wheelBase: 19,
     trackWidth: 11.5,
@@ -31,8 +63,9 @@ const TUNING = {
     },
     wheelDiameter: 2.0,
     wheelWidth: 1.3,
-    rideHeight: 6.7,
+    rideHeight: 6.6,
   },
+
   lada: {
     wheelBase: 18,
     trackWidth: 11,
@@ -148,30 +181,18 @@ class Vehicle {
     constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
     constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
 
-    this.loadWheelAsset( $wheel );
+    this.loadWheelAsset( $wheel, isFront, isLeft );
     
     return { $wheel, constraint }
   }
 
-  loadWheelAsset( $wheel ) {
-/*this.loader.load(
-      '/assets/3d/wheel/scene.gltf',
-      ( { scene: wheelAsset } ) => {
-        wheelAsset.scale.set(4.5, 5.5, 4.5);
-        $wheel.add( wheelAsset );
-      },
-      undefined,
-      ( error ) => {
-        console.error( error );
-      }
-    )
-*/
+  loadWheelAsset( $wheel, isFront, isLeft ) {
     const { wheelAsset: { uri, scale, position, rotation } } = this.tuning;
 
     this.loader.load(
       uri,
       ( { scene: asset } ) => {
-        asset.scale.set(scale, scale, scale)
+        asset.scale.set(isLeft ? -scale : scale, scale, scale)
         asset.position.set( position.x, position.y, position.z );
         asset.rotation.set( rotation.x, rotation.y, rotation.z )
         $wheel.add( asset );

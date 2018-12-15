@@ -27,7 +27,7 @@ class DriveScene {
     this.cars = [
       new Vehicle({
         scene: this.$scene,
-        vehicleType: 'stationwagon',
+        vehicleType: 'woodywagon',
         position: {x: 40, y: 8, z: 0},
         rotation: {x: 0, y: 0, z: 0},
         keys: {
@@ -39,7 +39,7 @@ class DriveScene {
       }),
       new Vehicle({
         scene: this.$scene,
-        vehicleType: 'lada',
+        vehicleType: 'stationwagon',
         position: {x: -40, y: 8, z: 0},
         rotation: {x: 0, y: Math.PI, z: 0},
         keys: {
