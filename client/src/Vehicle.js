@@ -9,30 +9,45 @@ const TUNING = {
     torque: 3000,
     chassisMass: 5000,
     chassisShapes: [
-      { offset: { x: -1, y: 8, z: 0 }, size: { x: 32, y: 4, z: 12} },
+      { offset: { x: -1, y: 9, z: 0 }, size: { x: 32, y: 4, z: 12} },
       { offset: { x: -5, y: 4, z: 0 }, size: { x: 18, y: 2, z: 10} },
       { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
     ],
     wheelMass: 150,
     tireFriction: 3,
     steerAngle: Math.PI / 8,
+    chassisAsset: {
+      uri: '/assets/3d/wagon_chassis/scene.gltf',
+      scale: 7.5,
+      position: {x: -1.9, y: -4.5, z: -1.2},
+      rotation: {x: 0, y: Math.PI / 2, z: 0},
+    }
   },
   lada: {
-    wheelBase: 16,
-    trackWidth: 9.5,
+    wheelBase: 18,
+    trackWidth: 11,
     maxVel: 200,
     torque: 3000,
     chassisMass: 5000,
     chassisShapes: [
-      { offset: { x: -1, y: 8, z: 0 }, size: { x: 27, y: 4, z: 11} },
-      { offset: { x: -1, y: 3, z: 0 }, size: { x: 15, y: 3, z: 10} },
-      { offset: { x: -1, y: 5, z: 0 }, size: { x: 12, y: 1.5, z: 8.5} },
+      { offset: { x: -1, y: 8, z: 0 }, size: { x: 29, y: 3, z: 12} },
+      { offset: { x: -0.5, y: 2, z: 0 }, size: { x: 29, y: 2, z: 12} },
+      { offset: { x: -1, y: 4, z: 0 }, size: { x: 15, y: 3, z: 10} },
+      { offset: { x: -1, y: 6, z: 0 }, size: { x: 12, y: 1.5, z: 8.5} },
     ],
     wheelMass: 150,
     tireFriction: 3,
     steerAngle: Math.PI / 8,
+    chassisAsset: {
+      uri: '/assets/3d/lada_chassis/scene.gltf',
+      scale: 0.069,
+      position: {x: -0.3, y: -3.8, z: 0},
+      rotation: {x: 0, y: 0, z: 0},
+    }
   }
 };
+
+const SHOW_DEBUG_COLLISION_VOLUMES = false;
 
 class Vehicle {
 
@@ -41,67 +56,48 @@ class Vehicle {
     const chassisMaterial = Physijs.createMaterial(
       new THREE.MeshNormalMaterial(), 0.8, 0.4 //restitution
     );
-    chassisMaterial.visible = false;
-
-    /*
-      Volume calculation for dividing share of mass
-      Turns out to be unrealistic because a car's center of gravity is low - the upper part is mostly empty space.
-    */
-    const volumes = tuning.chassisShapes.map( shape => shape.size.x * shape.size.y * shape.size.z )
-    const totalVolume = volumes.reduce( ( accumulator, volume ) => accumulator + volume )
+    chassisMaterial.visible = SHOW_DEBUG_COLLISION_VOLUMES;
 
     //First shape is always the main chassis, additional shapes are added to it.
-    const $chassis = new Physijs.BoxMesh(
+    this.$chassis = new Physijs.BoxMesh(
       new THREE.BoxGeometry( tuning.chassisShapes[0].size.x, tuning.chassisShapes[0].size.y, tuning.chassisShapes[0].size.z ),
       chassisMaterial,
-      tuning.chassisMass//tuning.chassisMass * volumes[0] / totalVolume
+      tuning.chassisMass
     );
-    $chassis.position.set( tuning.chassisShapes[0].offset.x, tuning.chassisShapes[0].offset.y, tuning.chassisShapes[0].offset.z )
+    this.$chassis.position.set( tuning.chassisShapes[0].offset.x, tuning.chassisShapes[0].offset.y, tuning.chassisShapes[0].offset.z )
     
     for ( let i = 1; i < tuning.chassisShapes.length; i++ ) {
       const $shape = new Physijs.BoxMesh(
         new THREE.BoxGeometry( tuning.chassisShapes[i].size.x, tuning.chassisShapes[i].size.y, tuning.chassisShapes[i].size.z ),
         chassisMaterial,
-        50//tuning.chassisMass * volumes[i] / totalVolume
+        50 //additional shapes are given an arbitrarily small mass
       );
       $shape.position.set( tuning.chassisShapes[i].offset.x, tuning.chassisShapes[i].offset.y, tuning.chassisShapes[i].offset.z )
 
-      $chassis.add($shape);
+      this.$chassis.add($shape);
     }
 
-    scene.add( $chassis );
+    scene.add( this.$chassis );
+    this.loadChassisAsset();
+  }
 
-    //TODO replace this branch with TUNING entries
-    if ( this.vehicleType === 'stationwagon' ) {
-      this.loader.load(
-        '/assets/3d/wagon_chassis/scene.gltf',
-        ( { scene: carAsset } ) => {
-          carAsset.scale.set(7.5, 7.5, 7.5)
-          carAsset.position.set(-1.9, -3.5, -1.2);
-          carAsset.rotation.y = Math.PI / 2;
-          $chassis.add( carAsset );
-        },
-        undefined,
-        ( error ) => {
-          console.error( error );
-        }
-      );
-    } else {
-      this.loader.load(
-        '/assets/3d/lada_chassis/scene.gltf',
-        ( { scene: carAsset } ) => {
-          carAsset.scale.set(0.069, 0.069, 0.069);
-          carAsset.position.set(-0.3, -3.8, 0);
-          $chassis.add( carAsset );
-        },
-        undefined,
-        ( error ) => {
-          console.error( error );
-        }
-      )
-    }
+  loadChassisAsset() {
+    const { chassisAsset: { uri, scale, position, rotation } } = this.tuning;
+    const $chassis = this.$chassis;
 
-    this.$chassis = $chassis;
+    this.loader.load(
+      uri,
+      ( { scene: asset } ) => {
+        asset.scale.set(scale, scale, scale)
+        asset.position.set( position.x, position.y, position.z );
+        asset.rotation.set( rotation.x, rotation.y, rotation.z )
+        $chassis.add( asset );
+      },
+      undefined,
+      ( error ) => {
+        console.error( error );
+      }
+    );
   }
 
   createWheel( isFront, isLeft ) {
@@ -114,7 +110,7 @@ class Vehicle {
       this.wheelMaterial = Physijs.createMaterial(
         new THREE.MeshNormalMaterial(), this.tuning.tireFriction, 0.5
       );
-      this.wheelMaterial.visible = false;
+      this.wheelMaterial.visible = SHOW_DEBUG_COLLISION_VOLUMES;
     }
     
     if ( !this.wheelGeometry ) {

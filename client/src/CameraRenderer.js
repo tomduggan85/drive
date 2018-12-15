@@ -28,8 +28,12 @@ class CameraRenderer extends React.Component {
     this.$renderer.setSize(width, height);
     this.$el.appendChild(this.$renderer.domElement);
 
-    this.$camera.position.set( 180, 100, 180 );
-    this.$camera.lookAt( this.$scene.position );
+    //Default view
+    //this.$camera.position.set( 180, 100, 180 );
+    //this.$camera.lookAt( this.$scene.position );
+
+    this.$camera.position.set( -20, 20, 50 );
+    this.$camera.lookAt( -40, 5, 0 );
 
     window.addEventListener( 'resize', this.onResize );
 
@@ -84,8 +88,6 @@ class CameraRenderer extends React.Component {
   }
 
   step = () => {
-    //requestAnimationFrame( this.step );
-
     if ( this.$followObject ) {
       this.stepFollow();
     }
