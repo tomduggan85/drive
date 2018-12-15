@@ -2662,7 +2662,7 @@ THREE.GLTFLoader = ( function () {
 		var extensions = this.extensions;
 
 		var meshDef = json.meshes[ meshIndex ];
-		var primitives = meshDef.primitives;
+		var primitives = meshDef.primitives || [];
 
 		var pending = [];
 

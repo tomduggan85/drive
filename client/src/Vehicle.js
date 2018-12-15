@@ -74,7 +74,7 @@ class Vehicle {
     //TODO replace this branch with TUNING entries
     if ( this.vehicleType === 'stationwagon' ) {
       this.loader.load(
-        '/assets/3d/stationwagon/scene.gltf',
+        '/assets/3d/wagon_chassis/scene.gltf',
         ( { scene: carAsset } ) => {
           carAsset.scale.set(7.5, 7.5, 7.5)
           carAsset.position.set(-1.9, -3.5, -1.2);
@@ -88,9 +88,9 @@ class Vehicle {
       );
     } else {
       this.loader.load(
-        '/assets/3d/lada/scene.gltf',
+        '/assets/3d/lada_chassis/scene.gltf',
         ( { scene: carAsset } ) => {
-          carAsset.scale.set(0.063, 0.063, 0.063);
+          carAsset.scale.set(0.069, 0.069, 0.069);
           carAsset.position.set(-0.3, -3.8, 0);
           $chassis.add( carAsset );
         },
