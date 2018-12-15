@@ -274,14 +274,27 @@
             }
         },
         {
-            "name" : "auto_2",
-            "pbrMetallicRoughness" : {
-                "baseColorTexture" : {
-                    "index" : 2,
-                    "texCoord" : 0
+            "alphaMode": "BLEND",
+            "doubleSided": true,
+            "emissiveFactor": [
+                0,
+                0,
+                0
+            ],
+            "name": "auto_2",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                  1,
+                  1,
+                  1,
+                  0.58974847559999999
+                ],
+                "baseColorTexture": {
+                  "index": 2,
+                  "texCoord": 0
                 },
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.9302135109901428
+                "metallicFactor": 0,
+                "roughnessFactor": 0.93021349659999997
             }
         },
         {
