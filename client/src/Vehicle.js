@@ -9,7 +9,8 @@ const TUNING = {
     torque: 3000,
     chassisMass: 5000,
     chassisShapes: [
-      { offset: { x: -1, y: 9, z: 0 }, size: { x: 32, y: 4, z: 12} },
+      { offset: { x: -1, y: 8, z: 0 }, size: { x: 33, y: 3, z: 12} },
+      { offset: { x: 0, y: 2, z: 0 }, size: { x: 31, y: 2, z: 11} },
       { offset: { x: -5, y: 4, z: 0 }, size: { x: 18, y: 2, z: 10} },
       { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
     ],
@@ -19,9 +20,18 @@ const TUNING = {
     chassisAsset: {
       uri: '/assets/3d/wagon_chassis/scene.gltf',
       scale: 7.5,
-      position: {x: -1.9, y: -4.5, z: -1.2},
+      position: {x: -1.9, y: -3.5, z: -1.2},
       rotation: {x: 0, y: Math.PI / 2, z: 0},
-    }
+    },
+    wheelAsset: {
+      uri: '/assets/3d/wagon_wheel/scene.gltf',
+      scale: 4.74,
+      position: {x: 0, y: 0, z: 0},
+      rotation: {x: 0, y: 0, z: 0},
+    },
+    wheelDiameter: 2.0,
+    wheelWidth: 1.3,
+    rideHeight: 6.7,
   },
   lada: {
     wheelBase: 18,
@@ -43,7 +53,16 @@ const TUNING = {
       scale: 0.069,
       position: {x: -0.3, y: -3.8, z: 0},
       rotation: {x: 0, y: 0, z: 0},
-    }
+    },
+    wheelAsset: {
+      uri: '/assets/3d/lada_wheel/scene.gltf',
+      scale: 0.061,
+      position: {x: 0.05, y: 0.05, z: -0.05},
+      rotation: {x: Math.PI / 2, y: 0, z: 0},
+    },
+    wheelDiameter: 2.0,
+    wheelWidth: 1.3,
+    rideHeight: 6.7,
   }
 };
 
@@ -103,7 +122,7 @@ class Vehicle {
   createWheel( isFront, isLeft ) {
 
     const z = this.tuning.trackWidth / 2 * (isLeft ? -1 : 1);
-    const y = 6.5;
+    const y = this.tuning.rideHeight;
     const x = this.tuning.wheelBase / 2 * (isFront ? 1 : -1);
 
     if ( !this.wheelMaterial ) {
@@ -114,7 +133,7 @@ class Vehicle {
     }
     
     if ( !this.wheelGeometry ) {
-      this.wheelGeometry  = new THREE.CylinderGeometry( 1.9, 1.9, 1.3, 25 );
+      this.wheelGeometry  = new THREE.CylinderGeometry( this.tuning.wheelDiameter, this.tuning.wheelDiameter, this.tuning.wheelWidth, 50 );
     }
 
     const $wheel = new Physijs.CylinderMesh( this.wheelGeometry, this.wheelMaterial, this.tuning.wheelMass );
@@ -129,7 +148,13 @@ class Vehicle {
     constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
     constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
 
-    this.loader.load(
+    this.loadWheelAsset( $wheel );
+    
+    return { $wheel, constraint }
+  }
+
+  loadWheelAsset( $wheel ) {
+/*this.loader.load(
       '/assets/3d/wheel/scene.gltf',
       ( { scene: wheelAsset } ) => {
         wheelAsset.scale.set(4.5, 5.5, 4.5);
@@ -140,8 +165,22 @@ class Vehicle {
         console.error( error );
       }
     )
-    
-    return { $wheel, constraint }
+*/
+    const { wheelAsset: { uri, scale, position, rotation } } = this.tuning;
+
+    this.loader.load(
+      uri,
+      ( { scene: asset } ) => {
+        asset.scale.set(scale, scale, scale)
+        asset.position.set( position.x, position.y, position.z );
+        asset.rotation.set( rotation.x, rotation.y, rotation.z )
+        $wheel.add( asset );
+      },
+      undefined,
+      ( error ) => {
+        console.error( error );
+      }
+    );
   }
   
   constructor( props ) {

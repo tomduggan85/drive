@@ -32,8 +32,8 @@ class CameraRenderer extends React.Component {
     //this.$camera.position.set( 180, 100, 180 );
     //this.$camera.lookAt( this.$scene.position );
 
-    this.$camera.position.set( -20, 20, 50 );
-    this.$camera.lookAt( -40, 5, 0 );
+    this.$camera.position.set( 20, 20, 50 );
+    this.$camera.lookAt( 40, 5, 0 );
 
     window.addEventListener( 'resize', this.onResize );
 
