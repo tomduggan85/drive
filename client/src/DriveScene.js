@@ -53,8 +53,17 @@ class DriveScene {
 
 
     this.socket.addEventListener('message', function( message ) {
-      const payload = JSON.parse(message.data);
-      this.cars[ payload.playerId ][payload.action](); //TODO whitelist fns
+      const { playerId, action } = JSON.parse(message.data);
+      const VALID_ACTIONS = [
+        'onLeft', 
+        'onRight', 
+        'offSteer', 
+        'onForward', 
+        'onReverse',
+        'offGas',
+      ];
+      if ( VALID_ACTIONS.includes( action ))
+      this.cars[ playerId ][ action ]();
     }.bind( this ));
 
     this.step();
