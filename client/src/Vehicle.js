@@ -96,7 +96,41 @@ const TUNING = {
     wheelDiameter: 2.0,
     wheelWidth: 1.3,
     rideHeight: 6.7,
-  }
+  },
+
+  '50s': {
+    wheelBase: 19.5,
+    trackWidth: 9.8,
+    maxVel: 200,
+    torque: 3000,
+    chassisMass: 5000,
+    chassisShapes: [
+      { offset: { x: -1, y: 8, z: 0 }, size: { x: 33.5, y: 3, z: 12} },
+      { offset: { x: 0, y: 2, z: 0 }, size: { x: 32, y: 2, z: 12} },
+      { offset: { x: -1, y: 4, z: 0 }, size: { x: 15, y: 3, z: 10} },
+      { offset: { x: -1, y: 6, z: 0 }, size: { x: 12, y: 1.5, z: 8.5} },
+    ],
+    wheelMass: 150,
+    tireFriction: 3,
+    steerAngle: Math.PI / 8,
+    chassisAsset: {
+      uri: '/assets/3d/50s_chassis/scene.gltf',
+      scale: 0.048,
+      position: {x: 1.5, y: -2, z: 0},
+      rotation: {x: 0, y: Math.PI / 2, z: 0},
+    },
+    wheelAsset: {
+      uri: '/assets/3d/lada_wheel/scene.gltf',
+      scale: 0.064,
+      position: {x: 0.05, y: 0.05, z: -0.05},
+      rotation: {x: Math.PI / 2, y: 0, z: 0},
+    },
+    wheelDiameter: 2.1,
+    wheelWidth: 1.3,
+    rideHeight: 7,
+  },
+
+
 };
 
 const SHOW_DEBUG_COLLISION_VOLUMES = false;

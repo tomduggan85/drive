@@ -7,8 +7,8 @@ class DriveScene {
   
   constructor( props ) {
 
-    Physijs.scripts.worker = '/js/physijs_worker.js';
-    Physijs.scripts.ammo = '/js/ammo.js';
+    Physijs.scripts.worker = '/external_js/physijs_worker.js';
+    Physijs.scripts.ammo = '/external_js/ammo.js';
 
     this.socket = props.socket;
 
@@ -27,7 +27,7 @@ class DriveScene {
     this.cars = [
       new Vehicle({
         scene: this.$scene,
-        vehicleType: 'woodywagon',
+        vehicleType: 'stationwagon',
         position: {x: 40, y: 8, z: 0},
         rotation: {x: 0, y: 0, z: 0},
         keys: {
@@ -39,7 +39,7 @@ class DriveScene {
       }),
       new Vehicle({
         scene: this.$scene,
-        vehicleType: 'stationwagon',
+        vehicleType: '50s',
         position: {x: -40, y: 8, z: 0},
         rotation: {x: 0, y: Math.PI, z: 0},
         keys: {
