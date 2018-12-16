@@ -29,11 +29,12 @@ class CameraRenderer extends React.Component {
     this.$el.appendChild(this.$renderer.domElement);
 
     //Default view
-    //this.$camera.position.set( 180, 100, 180 );
-    //this.$camera.lookAt( this.$scene.position );
+    this.$camera.position.set( 180, 100, 180 );
+    this.$camera.lookAt( this.$scene.position );
 
-    this.$camera.position.set( 20, 20, 50 );
-    this.$camera.lookAt( 40, 5, 0 );
+    //Zoom view
+    //this.$camera.position.set( 20, 20, 50 );
+    //this.$camera.lookAt( 40, 5, 0 );
 
     window.addEventListener( 'resize', this.onResize );
 
