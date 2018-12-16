@@ -28,6 +28,7 @@ const TUNING = {
       scale: 4.1,
       position: {x: 0, y: 0, z: 0},
       rotation: {x: 0, y: 0, z: Math.PI / 2},
+      flip: 'z',
     },
     wheelDiameter: 2.0,
     wheelWidth: 1.3,
@@ -60,6 +61,7 @@ const TUNING = {
       scale: 4.74,
       position: {x: 0, y: 0, z: 0},
       rotation: {x: 0, y: 0, z: 0},
+      flip: 'z',
     },
     wheelDiameter: 2.0,
     wheelWidth: 1.3,
@@ -92,6 +94,7 @@ const TUNING = {
       scale: 0.061,
       position: {x: 0.05, y: 0.05, z: -0.05},
       rotation: {x: Math.PI / 2, y: 0, z: 0},
+      flip: 'x',
     },
     wheelDiameter: 2.0,
     wheelWidth: 1.3,
@@ -124,13 +127,45 @@ const TUNING = {
       scale: 0.064,
       position: {x: 0.05, y: 0.05, z: -0.05},
       rotation: {x: Math.PI / 2, y: 0, z: 0},
+      flip: 'z',
     },
     wheelDiameter: 2.1,
     wheelWidth: 1.3,
     rideHeight: 7,
   },
 
-
+  'pontiac': {
+    wheelBase: 19.0,
+    trackWidth: 10.5,
+    maxVel: 200,
+    torque: 3000,
+    chassisMass: 5000,
+    chassisShapes: [
+      { offset: { x: -1, y: 8, z: 0 }, size: { x: 33.5, y: 3, z: 11.5} },
+      { offset: { x: 0, y: 2, z: 0 }, size: { x: 30.8, y: 2, z: 11.5} },
+      { offset: { x: -3, y: 3.8, z: 0 }, size: { x: 13, y: 3, z: 10} },
+      { offset: { x: -3, y: 5.5, z: 0 }, size: { x: 11, y: 1.5, z: 8.5} },
+    ],
+    wheelMass: 150,
+    tireFriction: 3,
+    steerAngle: Math.PI / 8,
+    chassisAsset: {
+      uri: '/assets/3d/pontiac_chassis/scene.gltf',
+      scale: 0.147,
+      position: {x: 1, y: -2.9, z: 0.45},
+      rotation: {x: 0, y: 0, z: 0},
+    },
+    wheelAsset: {
+      uri: '/assets/3d/pontiac_wheel/scene.gltf',
+      scale: 0.145,
+      position: {x: 0, y: 0, z: 0},
+      rotation: {x: Math.PI / 2, y: 0, z: 0},
+      flip: 'z',
+    },
+    wheelDiameter: 2.2,
+    wheelWidth: 1.3,
+    rideHeight: 7,
+  }
 };
 
 const SHOW_DEBUG_COLLISION_VOLUMES = false;
@@ -221,12 +256,15 @@ class Vehicle {
   }
 
   loadWheelAsset( $wheel, isFront, isLeft ) {
-    const { wheelAsset: { uri, scale, position, rotation } } = this.tuning;
+    const { wheelAsset: { uri, scale, position, rotation, flip } } = this.tuning;
 
     this.loader.load(
       uri,
       ( { scene: asset } ) => {
-        asset.scale.set(isLeft ? -scale : scale, scale, scale)
+        asset.scale.set(scale, scale, scale);
+        if ( !isLeft ) {
+          asset.scale[ flip ] *= -1;
+        }
         asset.position.set( position.x, position.y, position.z );
         asset.rotation.set( rotation.x, rotation.y, rotation.z )
         $wheel.add( asset );
