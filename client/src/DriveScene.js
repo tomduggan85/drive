@@ -1,6 +1,6 @@
 /* global THREE Physijs */
 
-import Vehicle from './Vehicle';
+import { Vehicle } from './Vehicle';
 import Arena from './Arena';
 
 class DriveScene {
@@ -22,12 +22,13 @@ class DriveScene {
 
     const arena = new Arena({
       scene: this.$scene,
-    })
+    });
 
+    //Todo create as many vehicles as props.vehicles passes in, instead of just two.
     this.cars = [
       new Vehicle({
         scene: this.$scene,
-        vehicleType: 'lada',
+        vehicleType: props.vehicles[0],
         position: {x: 40, y: 8, z: 0},
         rotation: {x: 0, y: 0, z: 0},
         keys: {
@@ -39,7 +40,7 @@ class DriveScene {
       }),
       new Vehicle({
         scene: this.$scene,
-        vehicleType: 'pontiac',
+        vehicleType: props.vehicles[1],
         position: {x: -40, y: 8, z: 0},
         rotation: {x: 0, y: Math.PI, z: 0},
         keys: {
