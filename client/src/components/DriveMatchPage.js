@@ -1,7 +1,7 @@
 import React from 'react';
 import './DriveMatchPage.css';
 import DriveScene from '../3d/DriveScene';
-import CameraRenderer from './CameraRenderer';
+import FollowCameraRenderer from './FollowCameraRenderer';
 import { getSocket } from '../shared/DriveMatchSocket';
 import { VEHICLE_TYPES } from '../shared/Vehicles';
 
@@ -30,8 +30,8 @@ class DriveMatchPage extends React.Component {
   render() {
     return (
       <div className="drive-match-page">
-        <CameraRenderer driveScene={this.driveScene} followCarIndex={0} />
-        <CameraRenderer driveScene={this.driveScene} followCarIndex={1} />
+        <FollowCameraRenderer driveScene={this.driveScene} vehicleIndex={0} />
+        <FollowCameraRenderer driveScene={this.driveScene} vehicleIndex={1} />
       </div>
     );
   }

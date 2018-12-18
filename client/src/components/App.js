@@ -13,8 +13,6 @@ import {
 class App extends Component {
 
   render() {
-    //next: 
-
     return (
       <Router>
         <Switch>

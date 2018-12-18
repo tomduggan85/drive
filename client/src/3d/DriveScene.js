@@ -24,8 +24,8 @@ class DriveScene {
       scene: this.$scene,
     });
 
-    //Todo create as many vehicles as props.vehicles passes in, instead of just two.
-    this.cars = [
+    //TODO create as many vehicles as props.vehicles passes in, instead of just two.
+    this.vehicles = [
       new Vehicle({
         scene: this.$scene,
         vehicleType: props.vehicles[0],
