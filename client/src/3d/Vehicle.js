@@ -5,41 +5,92 @@ import { VEHICLE_DEFS } from '../shared/Vehicles'
 
 const SHOW_DEBUG_COLLISION_VOLUMES = false;
 
+const CHASSIS_FRICTION = 0.8;
+const CHASSIS_RESTITUTION = 0.4;
+
 export class Vehicle {
+
+  constructor( props ) {
+    this.vehicleType = props.vehicleType;
+    this.$scene = props.$scene;
+    this.vehicleDef = VEHICLE_DEFS[ props.vehicleType ];
+    this.keys = props.keys;
+    this.loader = new THREE.GLTFLoader();
+
+    this.createChassis();
+
+    /*
+      TODO: Change shape of this.wheels to allow for front-wheel-drive cars (where two of the
+      wheels both steer and drive, and two wheels have no powered function)
+    */
+    this.wheels = {
+      'F': {
+        'L': this.createWheel(true, true),
+        'R': this.createWheel(true, false),
+      },
+      'R': {
+        'L': this.createWheel(false, true),
+        'R': this.createWheel(false, false),
+      }
+    }
+
+    /*
+      TODO: Move all scene objects ($chassis and wheels) by one single transformation matrix
+      and mark all as dirty, to properly set starting position with no object jumps / glitches.
+    */
+    this.$chassis.rotation.set(props.rotation.x, props.rotation.y, props.rotation.z);
+    this.$chassis.position.set(props.position.x, props.position.y, props.position.z);
+    this.$chassis.__dirtyPosition = true;
+    this.$chassis.__dirtyRotation = true;
+    
+    document.addEventListener( 'keydown', this.onKeyDown );
+    document.addEventListener( 'keyup', this.onKeyUp );
+  }
 
   createChassis() {
     const { $scene, vehicleDef } = this;
+    
     const chassisMaterial = Physijs.createMaterial(
-      new THREE.MeshNormalMaterial(), 0.8, 0.4 //restitution
+      new THREE.MeshNormalMaterial(), CHASSIS_FRICTION, CHASSIS_RESTITUTION
     );
     chassisMaterial.visible = SHOW_DEBUG_COLLISION_VOLUMES;
 
-    //First shape is always the main chassis, additional shapes are added to it.
+    /*
+      The first shape in the chassisShapes is assumed to be the "main" shape, and gets all of the chassis mass.
+      Each additional shape is given an arbitrary small mass, as they are usually the higher shapes
+      and I want to keep the center of gravity low, for stability and realism.
+    */
+
+    const { size, offset } = vehicleDef.chassisShapes[0];
     this.$chassis = new Physijs.BoxMesh(
-      new THREE.BoxGeometry( vehicleDef.chassisShapes[0].size.x, vehicleDef.chassisShapes[0].size.y, vehicleDef.chassisShapes[0].size.z ),
+      new THREE.BoxGeometry( size.x, size.y, size.z ),
       chassisMaterial,
       vehicleDef.chassisMass
     );
-    this.$chassis.position.set( vehicleDef.chassisShapes[0].offset.x, vehicleDef.chassisShapes[0].offset.y, vehicleDef.chassisShapes[0].offset.z )
+    this.$chassis.position.set( offset.x, offset.y, offset.z )
     
     for ( let i = 1; i < vehicleDef.chassisShapes.length; i++ ) {
+      const someSmallMass = 50;
+      const { size, offset } = vehicleDef.chassisShapes[i];
+
       const $shape = new Physijs.BoxMesh(
-        new THREE.BoxGeometry( vehicleDef.chassisShapes[i].size.x, vehicleDef.chassisShapes[i].size.y, vehicleDef.chassisShapes[i].size.z ),
+        new THREE.BoxGeometry( size.x, size.y, size.z ),
         chassisMaterial,
-        50 //additional shapes are given an arbitrarily small mass
+        someSmallMass
       );
-      $shape.position.set( vehicleDef.chassisShapes[i].offset.x, vehicleDef.chassisShapes[i].offset.y, vehicleDef.chassisShapes[i].offset.z )
+      $shape.position.set( offset.x, offset.y, offset.z )
 
       this.$chassis.add($shape);
     }
 
+    //Main chassis must be added to the scene *after* additional objects have been added to it, for PhysiJS to create the compound collision shape.
     $scene.add( this.$chassis );
     this.loadChassisAsset();
   }
 
   loadChassisAsset() {
     const { chassisAsset: { uri, scale, position, rotation } } = this.vehicleDef;
-    const $chassis = this.$chassis;
+    const { $chassis } = this;
 
     this.loader.load(
       uri,
@@ -49,19 +100,14 @@ export class Vehicle {
         asset.rotation.set( rotation.x, rotation.y, rotation.z )
         $chassis.add( asset );
       },
-      undefined,
+      undefined, //onProgress
       ( error ) => {
-        console.error( error );
+        console.error( error, `Error loading chassis asset: ${ uri }` );
       }
     );
   }
 
-  createWheel( isFront, isLeft ) {
-
-    const z = this.vehicleDef.trackWidth / 2 * (isLeft ? -1 : 1);
-    const y = this.vehicleDef.rideHeight;
-    const x = this.vehicleDef.wheelBase / 2 * (isFront ? 1 : -1);
-
+  createWheelMaterialAndGeometry() {
     if ( !this.wheelMaterial ) {
       this.wheelMaterial = Physijs.createMaterial(
         new THREE.MeshNormalMaterial(), this.vehicleDef.tireFriction, 0.5
@@ -72,12 +118,22 @@ export class Vehicle {
     if ( !this.wheelGeometry ) {
       this.wheelGeometry  = new THREE.CylinderGeometry( this.vehicleDef.wheelDiameter, this.vehicleDef.wheelDiameter, this.vehicleDef.wheelWidth, 50 );
     }
+  }
+
+  createWheel( isFront, isLeft ) {
+
+    const x = this.vehicleDef.wheelBase / 2 * (isFront ? 1 : -1);
+    const y = this.vehicleDef.rideHeight;
+    const z = this.vehicleDef.trackWidth / 2 * (isLeft ? -1 : 1);
+
+    this.createWheelMaterialAndGeometry();
 
     const $wheel = new Physijs.CylinderMesh( this.wheelGeometry, this.wheelMaterial, this.vehicleDef.wheelMass );
     $wheel.rotation.x = Math.PI / 2;
     $wheel.position.set( x, y, z );
     
     this.$scene.add( $wheel );
+
     const constraint = new Physijs.DOFConstraint(
       $wheel, this.$chassis, new THREE.Vector3( x, y, z )
     );
@@ -97,6 +153,12 @@ export class Vehicle {
       uri,
       ( { scene: asset } ) => {
         asset.scale.set(scale, scale, scale);
+
+        /*
+          Different wheel assets need to be mirrored on different axes in order to face the correct direction
+          so vehicleDef.wheelAsset.flip is 'x', 'y' or 'z'
+        */
+
         if ( !isLeft ) {
           asset.scale[ flip ] *= -1;
         }
@@ -104,44 +166,11 @@ export class Vehicle {
         asset.rotation.set( rotation.x, rotation.y, rotation.z )
         $wheel.add( asset );
       },
-      undefined,
+      undefined, //onProgress
       ( error ) => {
-        console.error( error );
+        console.error( error, `Error wheel chassis asset: ${ uri }` );
       }
     );
-  }
-  
-  constructor( props ) {
-    this.vehicleType = props.vehicleType;
-
-    this.$scene = props.$scene;
-    this.vehicleDef = VEHICLE_DEFS[ props.vehicleType ];
-    this.keys = props.keys;
-
-    this.loader = new THREE.GLTFLoader();
-    this.createChassis();
-
-    this.wheels = {
-      'F': {
-        'L': this.createWheel(true, true),
-        'R': this.createWheel(true, false),
-      },
-      'R': {
-        'L': this.createWheel(false, true),
-        'R': this.createWheel(false, false),
-      }
-    }
-
-    
-    
-    this.$chassis.rotation.set(props.rotation.x, props.rotation.y, props.rotation.z);
-    this.$chassis.position.set(props.position.x, props.position.y, props.position.z);
-    this.$chassis.__dirtyPosition = true;
-    this.$chassis.__dirtyRotation = true;
-    
-
-    document.addEventListener( 'keydown', this.onKeyDown );
-    document.addEventListener( 'keyup', this.onKeyUp );
   }
 
   onKeyDown = (e) => {
