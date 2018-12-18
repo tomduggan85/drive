@@ -8,7 +8,7 @@ const SHOW_DEBUG_COLLISION_VOLUMES = false;
 export class Vehicle {
 
   createChassis() {
-    const { scene, vehicleDef } = this;
+    const { $scene, vehicleDef } = this;
     const chassisMaterial = Physijs.createMaterial(
       new THREE.MeshNormalMaterial(), 0.8, 0.4 //restitution
     );
@@ -33,7 +33,7 @@ export class Vehicle {
       this.$chassis.add($shape);
     }
 
-    scene.add( this.$chassis );
+    $scene.add( this.$chassis );
     this.loadChassisAsset();
   }
 
@@ -77,11 +77,11 @@ export class Vehicle {
     $wheel.rotation.x = Math.PI / 2;
     $wheel.position.set( x, y, z );
     
-    this.scene.add( $wheel );
+    this.$scene.add( $wheel );
     const constraint = new Physijs.DOFConstraint(
       $wheel, this.$chassis, new THREE.Vector3( x, y, z )
     );
-    this.scene.addConstraint( constraint, { disableCollision: true } );
+    this.$scene.addConstraint( constraint, { disableCollision: true } );
     constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
     constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
 
@@ -114,7 +114,7 @@ export class Vehicle {
   constructor( props ) {
     this.vehicleType = props.vehicleType;
 
-    this.scene = props.scene;
+    this.$scene = props.$scene;
     this.vehicleDef = VEHICLE_DEFS[ props.vehicleType ];
     this.keys = props.keys;
 

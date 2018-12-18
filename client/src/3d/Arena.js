@@ -1,21 +1,24 @@
 /* global THREE Physijs */
 
-const DEFAULT_FRICTION = 3;
-const DEFAULT_RESTITUTION = 0.4;
+const GROUND_FRICTION = 3;
+const GROUND_RESTITUTION = 0.4;
 
 const ARENA_RADIUS = 200;
 const WALL_SEGMENTS = 16;
 const WALL_HEIGHT = 20;
+const WALL_THICKNESS = 5;
+const WALL_FRICTION = 1;
+const WALL_RESTITUTION = 0.9;
 
 class Arena {
 
   constructor(props) {
-    const {
-      scene,
-      friction,
-      restitution,
-    } = props;
+    this.$scene = props.$scene;
+    this.createGround();
+    this.createWall();
+  }
 
+  createGround() {
     const groundTextureMap = new THREE.TextureLoader().load('/assets/images/dirt3_pixelize10.jpg');
     groundTextureMap.wrapS = THREE.RepeatWrapping;
     groundTextureMap.wrapT = THREE.RepeatWrapping;
@@ -25,33 +28,29 @@ class Arena {
       new THREE.MeshBasicMaterial({
         map: groundTextureMap
       }),
-      friction || DEFAULT_FRICTION,
-      restitution || DEFAULT_RESTITUTION,
+      GROUND_FRICTION,
+      GROUND_RESTITUTION,
     );
-    
+
+    const size = 2 * ARENA_RADIUS + 5; //5 units of "padding"
     const $ground = new Physijs.BoxMesh(
-      new THREE.BoxGeometry(2 * ARENA_RADIUS + 5, 5, 2 * ARENA_RADIUS + 5),
+      new THREE.BoxGeometry(size, 5, size),
       material,
-      0
+      0 //Zero mass means immovable object
     );
 
-    scene.add( $ground );
-
-    this.createWall( scene );
+    this.$scene.add( $ground );
   }
 
-  createWall( scene ) {
+  createWall() {
     const wallTextureMap = new THREE.TextureLoader().load('/assets/images/concrete1.jpg');
-    wallTextureMap.wrapS = THREE.RepeatWrapping;
-    wallTextureMap.wrapT = THREE.RepeatWrapping;
-    wallTextureMap.repeat.set( 1, 1 );
 
     const material = Physijs.createMaterial(
       new THREE.MeshBasicMaterial({
         map: wallTextureMap,
       }),
-      1, //friction
-      0.9 //restitution
+      WALL_FRICTION,
+      WALL_RESTITUTION
     );
 
     for ( let i = 0; i < WALL_SEGMENTS; i++ ) {
@@ -59,14 +58,14 @@ class Arena {
       const angle = 2 * Math.PI * i / WALL_SEGMENTS;
 
       const $wall = new Physijs.BoxMesh(
-        new THREE.BoxGeometry(5, WALL_HEIGHT, wallSegmentLength),
+        new THREE.BoxGeometry(WALL_THICKNESS, WALL_HEIGHT, wallSegmentLength),
         material,
-        0
+        0 //Zero mass means immovable object
       );
 
       $wall.position.set( ARENA_RADIUS * Math.cos( angle ), WALL_HEIGHT / 2, ARENA_RADIUS * Math.sin( angle ) );
       $wall.rotation.y = -angle;
-      scene.add($wall);
+      this.$scene.add($wall);
     }
   }
 }
