@@ -2,7 +2,7 @@ import React from 'react';
 import './DriveRemoteControlPage.css';
 import { getSocket } from '../shared/DriveMatchSocket';
 
-const playerId = 0;
+const playerId = 0; //TODO build player selection logic into this component.
 
 class DriveRemoteControlPage extends React.Component {
 
@@ -20,7 +20,6 @@ class DriveRemoteControlPage extends React.Component {
   //For now, these all assume that a socket connection has already been established.
 
   sendAction( action ) {
-    console.error(`sending ${action}`)
     this.socket.send(JSON.stringify({
       playerId,
       action
@@ -40,8 +39,7 @@ class DriveRemoteControlPage extends React.Component {
   }
 
   mouseOutSteer = (e) => {
-    if ( e.nativeEvent.which === 1 ) {
-      //mouse was down
+    if ( e.nativeEvent.which === 1 ) { //mouse was down when cursor exited the element
       this.sendAction( 'offSteer' );
     }
   }
@@ -59,8 +57,7 @@ class DriveRemoteControlPage extends React.Component {
   }
 
   mouseOutGas = (e) => {
-    if ( e.nativeEvent.which === 1 ) {
-      //mouse was down
+    if ( e.nativeEvent.which === 1 ) { //mouse was down when cursor exited the element
       this.sendAction( 'offGas' );
     }
   }
@@ -74,6 +71,7 @@ class DriveRemoteControlPage extends React.Component {
             onMouseDown={this.onLeft}
             onTouchStart={this.onLeft}
             onMouseUp={this.offSteer}
+            onTouchEnd={this.offSteer}
             onMouseOut={this.mouseOutSteer}
           >
             Left
@@ -82,6 +80,7 @@ class DriveRemoteControlPage extends React.Component {
             onMouseDown={this.onRight}
             onTouchStart={this.onRight}
             onMouseUp={this.offSteer}
+            onTouchEnd={this.offSteer}
             onMouseOut={this.mouseOutSteer}
           >
             Right
@@ -92,6 +91,7 @@ class DriveRemoteControlPage extends React.Component {
             onMouseDown={this.onForward}
             onTouchStart={this.onForward}
             onMouseUp={this.offGas}
+            onTouchEnd={this.offGas}
             onMouseOut={this.mouseOutGas}
           >
             Forward
@@ -100,6 +100,7 @@ class DriveRemoteControlPage extends React.Component {
             onMouseDown={this.onReverse}
             onTouchStart={this.onReverse}
             onMouseUp={this.offGas}
+            onTouchEnd={this.offGas}
             onMouseOut={this.mouseOutGas}
           >
             Reverse
