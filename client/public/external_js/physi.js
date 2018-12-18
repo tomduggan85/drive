@@ -175,9 +175,9 @@ window.Physijs = (function() {
 		};
 	};
 
-	Physijs.HingeConstraint = function( objecta, objectb, position, axis ) {
-		if ( axis === undefined ) {
-			axis = position;
+	Physijs.HingeConstraint = function( objecta, objectb, position, axisa, axisb ) {
+		if ( axisa === undefined ) {
+			axisa = position;
 			position = objectb;
 			objectb = undefined;
 		}
@@ -189,7 +189,8 @@ window.Physijs = (function() {
 		this.objecta = objecta._physijs.id;
 		this.positiona = convertWorldPositionToObject( position, objecta ).clone();
 		this.position = position.clone();
-		this.axis = axis;
+		this.axisa = axisa;
+		this.axisb = axisb;
 
 		if ( objectb ) {
 			this.objectb = objectb._physijs.id;
@@ -204,7 +205,8 @@ window.Physijs = (function() {
 			objectb: this.objectb,
 			positiona: this.positiona,
 			positionb: this.positionb,
-			axis: this.axis
+			axisa: this.axisa,
+			axisb: this.axisb
 		};
 	};
 	/*

@@ -129,17 +129,32 @@ export class Vehicle {
     this.createWheelMaterialAndGeometry();
 
     const $wheel = new Physijs.CylinderMesh( this.wheelGeometry, this.wheelMaterial, this.vehicleDef.wheelMass );
+    
     $wheel.rotation.x = Math.PI / 2;
+
     $wheel.position.set( x, y, z );
     
     this.$scene.add( $wheel );
 
-    const constraint = new Physijs.DOFConstraint(
-      $wheel, this.$chassis, new THREE.Vector3( x, y, z )
-    );
-    this.$scene.addConstraint( constraint, { disableCollision: true } );
-    constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
-    constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
+    let constraint;
+    if (isFront) {
+      constraint = new Physijs.DOFConstraint(
+        $wheel, this.$chassis, new THREE.Vector3( x, y, z )
+      );
+      this.$scene.addConstraint( constraint, { disableCollision: true } );
+      constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
+      constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
+    }
+    else {
+      constraint = new Physijs.HingeConstraint(
+        $wheel,
+        this.$chassis,
+        new THREE.Vector3( x, y, z ),
+        new THREE.Vector3( 0, 1, 0 ),
+        new THREE.Vector3( 0, 0, 1 )
+      );
+      this.$scene.addConstraint( constraint, { disableCollision: true } );
+    }
 
     this.loadWheelAsset( $wheel, isFront, isLeft );
     
@@ -220,22 +235,25 @@ export class Vehicle {
   onForward() {
     const { maxVel, torque } = this.vehicleDef;
     Object.values(this.wheels.R).forEach(({ constraint }) => {
-      constraint.configureAngularMotor( 2, 1, 0, -maxVel, torque );
-      constraint.enableAngularMotor( 2 );
+      //constraint.configureAngularMotor( 2, 1, 0, -maxVel, torque );
+      //constraint.enableAngularMotor( 2 );
+      constraint.enableAngularMotor( -maxVel, torque );
     });
   }
 
   onReverse() {
     const { maxVel, torque } = this.vehicleDef;
     Object.values(this.wheels.R).forEach(({ constraint }) => {
-      constraint.configureAngularMotor( 2, 1, 0, maxVel, torque );
-      constraint.enableAngularMotor( 2 );
+      //constraint.configureAngularMotor( 2, 1, 0, maxVel, torque );
+      //constraint.enableAngularMotor( 2 );
+      constraint.enableAngularMotor( maxVel, torque );
     });
   }
 
   offGas() {
     Object.values(this.wheels.R).forEach(({ constraint }) => {
-      constraint.disableAngularMotor( 2 );
+      //constraint.disableAngularMotor( 2 );
+      constraint.disableMotor();
     });
   }
 
