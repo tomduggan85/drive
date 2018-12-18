@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import uuid from 'uuid';
-import { VEHICLE_TYPES } from './Vehicle';
+import { VEHICLE_TYPES } from '../shared/Vehicles';
 import './SplashPage.css';
 import classnames from 'classnames'
 
@@ -32,6 +31,7 @@ class SplashPage extends React.Component {
         Player { playerIndex } vehicle:
         {VEHICLE_TYPES.map( vehicleType => (
           <div
+            key={vehicleType}
             className={classnames('vehicle-type', {selected: currentSelection === vehicleType})}
             onClick={() => this.selectVehicle( playerIndex, vehicleType )}
           >

@@ -1,9 +1,9 @@
 import React from 'react';
 import './DriveMatchPage.css';
-import DriveScene from './DriveScene';
+import DriveScene from '../3d/DriveScene';
 import CameraRenderer from './CameraRenderer';
-import { getSocket } from './shared/DriveMatchSocket';
-import { VEHICLE_TYPES } from './Vehicle';
+import { getSocket } from '../shared/DriveMatchSocket';
+import { VEHICLE_TYPES } from '../shared/Vehicles';
 
 class DriveMatchPage extends React.Component {
 

@@ -23,8 +23,6 @@ wss.on('connection', ( connection, request ) => {
   matchConnections[ matchId ][ connectionId ] = connection;
 
   connection.on('message', ( message ) => {
-    console.log('received: %s', message);
-
     // Echo to all others in match
     Object.values( matchConnections[ matchId ]).forEach(( matchConnection ) => {
       matchConnection.send( message );
@@ -33,7 +31,7 @@ wss.on('connection', ( connection, request ) => {
  
   
   connection.on('close', () => {
-    console.log(`closing connection id ${ connectionId }`)
+    console.log(`Closing connection id ${ connectionId }`)
     delete matchConnections[ matchId ][ connectionId ];
   })
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import './DriveRemoteControlPage.css';
-import { getSocket } from './shared/DriveMatchSocket';
+import { getSocket } from '../shared/DriveMatchSocket';
 
 const playerId = 0;
 
