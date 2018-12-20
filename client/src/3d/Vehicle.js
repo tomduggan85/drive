@@ -19,6 +19,7 @@ export class Vehicle {
 
     this.createChassis();
     this.createBody();
+    this.createSuspension();
 
     /*
       TODO: Change shape of this.wheels to allow for front-wheel-drive cars (where two of the
@@ -60,14 +61,8 @@ export class Vehicle {
       new THREE.MeshNormalMaterial(), CHASSIS_FRICTION, CHASSIS_RESTITUTION
     );
     chassisMaterial.visible = SHOW_DEBUG_COLLISION_VOLUMES;
-
-    /*
-      The first shape in the chassisShapes is assumed to be the "main" shape, and gets all of the chassis mass.
-      Each additional shape is given an arbitrary small mass, as they are usually the higher shapes
-      and I want to keep the center of gravity low, for stability and realism.
-    */
-
-    const { size, offset } = vehicleDef.chassisShapes[0];
+    
+    const { size, offset } = vehicleDef.chassisShape;
     this.$chassis = new Physijs.BoxMesh(
       new THREE.BoxGeometry( size.x, size.y, size.z ),
       chassisMaterial,
@@ -84,18 +79,23 @@ export class Vehicle {
     );
     bodyMaterial.visible = SHOW_DEBUG_COLLISION_VOLUMES;
 
-    
-    const { size, offset } = vehicleDef.chassisShapes[1];
+    /*
+      The first shape in the bodyShapes is assumed to be the "main" shape, and gets all of the body mass.
+      Each additional shape is given an arbitrary small mass, as they are usually the higher shapes
+      and I want to keep the center of gravity low, for stability and realism.
+    */
+
+    const { size, offset } = vehicleDef.bodyShapes[0];
     this.$body = new Physijs.BoxMesh(
       new THREE.BoxGeometry( size.x, size.y, size.z ),
       bodyMaterial,
-      3000
+      vehicleDef.bodyMass
     );
     this.$body.position.set( offset.x, offset.y + 5, offset.z )
 
-    for ( let i = 2; i < vehicleDef.chassisShapes.length; i++ ) {
+    for ( let i = 1; i < vehicleDef.bodyShapes.length; i++ ) {
       const someSmallMass = 50;
-      const { size, offset } = vehicleDef.chassisShapes[i];
+      const { size, offset } = vehicleDef.bodyShapes[i];
 
       const $shape = new Physijs.BoxMesh(
         new THREE.BoxGeometry( size.x, size.y, size.z ),
@@ -103,40 +103,62 @@ export class Vehicle {
         someSmallMass
       );
       $shape.position.set( offset.x, offset.y, offset.z )
-
       this.$body.add($shape);
     }
 
-    //Main chassis must be added to the scene *after* additional objects have been added to it, for PhysiJS to create the compound collision shape.
+    //Add $body to the scene *after* adding all shapes to the $body, or PhysiJS won't combine them all into a single rigidBody.
     $scene.add( this.$body );
-    const $body = this.$body;
+    this.loadBodyAsset();
+  }
 
-    const y =  this.vehicleDef.rideHeight + 3;
+  createSuspension() {
+
+    /*
+      Create four linear spring constraints to connect the vehicle body to the chassis, to simulate a car suspension.
+      This is not a realistic model, but it's a stable model.  A realistic model would be to connect the wheels to the chassis
+      using individual springs so they can move up and down independently, and then fix the chassis and body together.
+      Instead, all four wheels are fixed (though they can rotate) to the chassis, and the body is loosely connected using these springs.
+      This provides a similar visual effect (body roll when turning, the body moving independently of the wheels when colliding), but has some
+      limitations: when the car is upside down, the chassis and wheels bounce in the air, and the wheels can't move independently of one another
+      and are instead always on the same plane.
+      The downside of per-wheel suspension was instability in the physics engine - it's difficult to choose masses, when all of the car mass is applied to the 
+      wheels via the springs, which result in stable springs and wheels that can actually turn and have friction against the ground.
+    */
+
+    const { $scene, $body } = this;
+    const {
+      wheelBase,
+      trackWidth,
+      rideHeight,
+      suspensionTravel,
+      suspensionStiffness,
+      suspensionDamping
+    } = this.vehicleDef;
+
+    const springY = rideHeight + suspensionTravel;
     const springLocations = [
-      {x: this.vehicleDef.wheelBase / 2, y, z: this.vehicleDef.trackWidth / 2 },
-      {x: -this.vehicleDef.wheelBase / 2, y, z: this.vehicleDef.trackWidth / 2 },
-      {x: this.vehicleDef.wheelBase / 2, y, z: -this.vehicleDef.trackWidth / 2 },
-      {x: -this.vehicleDef.wheelBase / 2, y, z: -this.vehicleDef.trackWidth / 2 },
+      {x: wheelBase / 2, springY, z: trackWidth / 2 },
+      {x: -wheelBase / 2, springY, z: trackWidth / 2 },
+      {x: wheelBase / 2, springY, z: -trackWidth / 2 },
+      {x: -wheelBase / 2, springY, z: -trackWidth / 2 },
     ]
 
-    springLocations.forEach( loc => {
+    springLocations.forEach( location => {
       const constraint = new Physijs.DOFSpringConstraint(
-        $body, this.$chassis, new THREE.Vector3( loc.x, loc.y, loc.z )
+        $body, this.$chassis, new THREE.Vector3( location.x, location.y, location.z )
       );
       $scene.addConstraint( constraint, { disableCollision: true } );
       constraint.setAngularLowerLimit({ x: 1, y: 1, z: 1 });
       constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 });
 
       constraint.setLinearLowerLimit({ x: 0, y: 0, z: 0 });
-      constraint.setLinearUpperLimit({ x: 0, y: 3, z: 0 });
+      constraint.setLinearUpperLimit({ x: 0, y: suspensionTravel, z: 0 });
       for (let i = 0; i < 3; i++ ) {
         constraint.enableSpring( i );
-        constraint.setStiffness( i, 100000 );
-        constraint.setDamping( i, 0.000005 );
+        constraint.setStiffness( i, suspensionStiffness );
+        constraint.setDamping( i, suspensionDamping );
       }
     });
-
-    this.loadBodyAsset();
   }
 
   loadBodyAsset() {
@@ -189,6 +211,7 @@ export class Vehicle {
 
     let constraint;
     if (isFront) {
+      //Front wheels use un-motorized DOF constraint which can turn freely (Z rotation) and uses limits to steer (Y rotation)
       constraint = new Physijs.DOFConstraint(
         $wheel, this.$chassis, new THREE.Vector3( x, y, z )
       );
@@ -197,6 +220,7 @@ export class Vehicle {
       constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
     }
     else {
+      //Rear wheels use simple hinge constraint, which has ammo's motor API.
       constraint = new Physijs.HingeConstraint(
         $wheel,
         this.$chassis,
@@ -207,9 +231,27 @@ export class Vehicle {
       this.$scene.addConstraint( constraint, { disableCollision: true } );
     }
 
+    this.disableWheelCollisionWithBody( $wheel );
     this.loadWheelAsset( $wheel, isFront, isLeft );
     
     return { $wheel, constraint }
+  }
+
+  disableWheelCollisionWithBody( $wheel ) {
+
+    /*
+      Create a dummy DOF constraint between wheel and body for the purpose of disabling collisions between them.
+      Dummy means that the constraint has no limits on any angular or linear axes, so it does not actually constrain motion at all.
+    */
+
+    const dummyconstraint = new Physijs.DOFConstraint(
+      $wheel, this.$body, new THREE.Vector3( 0, 0, 0 ) //Should this still be wheel location (x,y,z)?
+    );
+    this.$scene.addConstraint( dummyconstraint, { disableCollision: true } );
+    dummyconstraint.setAngularLowerLimit({ x: 1, y: 1, z: 1 });
+    dummyconstraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
+    dummyconstraint.setLinearLowerLimit({ x: 1, y: 1, z: 1 });
+    dummyconstraint.setLinearUpperLimit({ x: 0, y: 0, z: 0 }); 
   }
 
   loadWheelAsset( $wheel, isFront, isLeft ) {

@@ -6,12 +6,13 @@ export const VEHICLE_DEFS = {
     maxVel: 200,
     torque: 4000,
     chassisMass: 5000,
-    chassisShapes: [
-      { offset: { x: -1, y: 8, z: 0 }, size: { x: 23, y: 3, z: 6} }, //z was 12
-      { offset: { x: 0, y: 2, z: 0 }, size: { x: 31, y: 2, z: 5} }, //z was 11
+    chassisShape: { offset: { x: -1, y: 8, z: 0 }, size: { x: 25, y: 3, z: 12} },
+    bodyShapes: [
+      { offset: { x: 0, y: 2, z: 0 }, size: { x: 31, y: 2, z: 11} },
       { offset: { x: -5, y: 4, z: 0 }, size: { x: 18, y: 2, z: 10} },
       { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
     ],
+    bodyMass: 3000,
     wheelMass: 150,
     tireFriction: 3,
     steerAngle: Math.PI / 8,
@@ -31,6 +32,7 @@ export const VEHICLE_DEFS = {
     wheelDiameter: 2.0,
     wheelWidth: 1.3,
     rideHeight: 5,
+    suspensionTravel: 3,
   },
 
   lada: {
@@ -38,13 +40,14 @@ export const VEHICLE_DEFS = {
     trackWidth: 11,
     maxVel: 200,
     torque: 4000,
+    chassisShape: { offset: { x: -1, y: 8, z: 0 }, size: { x: 29, y: 3, z: 12} },
     chassisMass: 5000,
-    chassisShapes: [
-      { offset: { x: -1, y: 8, z: 0 }, size: { x: 29, y: 3, z: 6} }, //z was 12
-      { offset: { x: -0.5, y: 2, z: 0 }, size: { x: 29, y: 2, z: 5} }, //z was 12
+    bodyShapes: [
+      { offset: { x: -0.5, y: 2, z: 0 }, size: { x: 29, y: 2, z: 12} }, //z was 12
       { offset: { x: -1, y: 4, z: 0 }, size: { x: 15, y: 3, z: 10} },
       { offset: { x: -1, y: 6, z: 0 }, size: { x: 12, y: 1.5, z: 8.5} },
     ],
+    bodyMass: 3000,
     wheelMass: 150,
     tireFriction: 3,
     steerAngle: Math.PI / 8,
@@ -64,6 +67,9 @@ export const VEHICLE_DEFS = {
     wheelDiameter: 2.0,
     wheelWidth: 1.3,
     rideHeight: 5.5,
+    suspensionTravel: 3,
+    suspensionStiffness: 100000,
+    suspensionDamping: 0.000005,
   },
 
   '50s': {
