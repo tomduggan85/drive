@@ -8,7 +8,7 @@ class FollowCameraRenderer extends CameraRenderer {
 
   constructor( props ) {
     super( props );
-    this.$followObject = this.props.driveScene.vehicles[this.props.vehicleIndex].$body;
+    this.$followObject = this.props.driveScene.vehicles[this.props.vehicleIndex].$chassis;
   }
 
   stepFollow() {
@@ -23,7 +23,7 @@ class FollowCameraRenderer extends CameraRenderer {
     */
     const { position } = this.$followObject;
     const rotation = this.$followObject.rotation.y;
-    let targetRotation = -rotation - 0.4;
+    let targetRotation = -rotation;
 
     if ( Math.abs( this.$followObject.rotation.x)  > Math.PI/2 ) {
       //Above-mentioned range issues

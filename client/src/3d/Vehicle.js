@@ -141,7 +141,9 @@ export class Vehicle {
       {x: -wheelBase / 2, springY, z: trackWidth / 2 },
       {x: wheelBase / 2, springY, z: -trackWidth / 2 },
       {x: -wheelBase / 2, springY, z: -trackWidth / 2 },
-    ]
+    ];
+
+    console.error(springY)
 
     springLocations.forEach( location => {
       const constraint = new Physijs.DOFSpringConstraint(
