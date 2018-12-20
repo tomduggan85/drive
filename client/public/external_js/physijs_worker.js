@@ -242,67 +242,70 @@ createShape = function( description ) {
 public_functions.init = function( params ) {
 	importScripts( params.ammo );
 
-	_transform = new Ammo.btTransform;
-	_vec3_1 = new Ammo.btVector3(0,0,0);
-	_vec3_2 = new Ammo.btVector3(0,0,0);
-	_vec3_3 = new Ammo.btVector3(0,0,0);
-	_quat = new Ammo.btQuaternion(0,0,0,0);
+	Ammo().then(function(Ammo) {
 
-	REPORT_CHUNKSIZE = params.reportsize || 50;
-	if ( SUPPORT_TRANSFERABLE ) {
-		// Transferable messages are supported, take advantage of them with TypedArrays
-		worldreport = new Float32Array(2 + REPORT_CHUNKSIZE * WORLDREPORT_ITEMSIZE); // message id + # of objects to report + chunk size * # of values per object
-		collisionreport = new Float32Array(2 + REPORT_CHUNKSIZE * COLLISIONREPORT_ITEMSIZE); // message id + # of collisions to report + chunk size * # of values per object
-		vehiclereport = new Float32Array(2 + REPORT_CHUNKSIZE * VEHICLEREPORT_ITEMSIZE); // message id + # of vehicles to report + chunk size * # of values per object
-		constraintreport = new Float32Array(2 + REPORT_CHUNKSIZE * CONSTRAINTREPORT_ITEMSIZE); // message id + # of constraints to report + chunk size * # of values per object
-	} else {
-		// Transferable messages are not supported, send data as normal arrays
-		worldreport = [];
-		collisionreport = [];
-		vehiclereport = [];
-		constraintreport = [];
-	}
-	worldreport[0] = MESSAGE_TYPES.WORLDREPORT;
-	collisionreport[0] = MESSAGE_TYPES.COLLISIONREPORT;
-	vehiclereport[0] = MESSAGE_TYPES.VEHICLEREPORT;
-	constraintreport[0] = MESSAGE_TYPES.CONSTRAINTREPORT;
+		_transform = new Ammo.btTransform;
+		_vec3_1 = new Ammo.btVector3(0,0,0);
+		_vec3_2 = new Ammo.btVector3(0,0,0);
+		_vec3_3 = new Ammo.btVector3(0,0,0);
+		_quat = new Ammo.btQuaternion(0,0,0,0);
 
-	var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration,
-		dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration ),
-		solver = new Ammo.btSequentialImpulseConstraintSolver,
-		broadphase;
+		REPORT_CHUNKSIZE = params.reportsize || 50;
+		if ( SUPPORT_TRANSFERABLE ) {
+			// Transferable messages are supported, take advantage of them with TypedArrays
+			worldreport = new Float32Array(2 + REPORT_CHUNKSIZE * WORLDREPORT_ITEMSIZE); // message id + # of objects to report + chunk size * # of values per object
+			collisionreport = new Float32Array(2 + REPORT_CHUNKSIZE * COLLISIONREPORT_ITEMSIZE); // message id + # of collisions to report + chunk size * # of values per object
+			vehiclereport = new Float32Array(2 + REPORT_CHUNKSIZE * VEHICLEREPORT_ITEMSIZE); // message id + # of vehicles to report + chunk size * # of values per object
+			constraintreport = new Float32Array(2 + REPORT_CHUNKSIZE * CONSTRAINTREPORT_ITEMSIZE); // message id + # of constraints to report + chunk size * # of values per object
+		} else {
+			// Transferable messages are not supported, send data as normal arrays
+			worldreport = [];
+			collisionreport = [];
+			vehiclereport = [];
+			constraintreport = [];
+		}
+		worldreport[0] = MESSAGE_TYPES.WORLDREPORT;
+		collisionreport[0] = MESSAGE_TYPES.COLLISIONREPORT;
+		vehiclereport[0] = MESSAGE_TYPES.VEHICLEREPORT;
+		constraintreport[0] = MESSAGE_TYPES.CONSTRAINTREPORT;
 
-	if ( !params.broadphase ) params.broadphase = { type: 'dynamic' };
-	switch ( params.broadphase.type ) {
-		case 'sweepprune':
+		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration,
+			dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration ),
+			solver = new Ammo.btSequentialImpulseConstraintSolver,
+			broadphase;
 
-			_vec3_1.setX(params.broadphase.aabbmin.x);
-			_vec3_1.setY(params.broadphase.aabbmin.y);
-			_vec3_1.setZ(params.broadphase.aabbmin.z);
+		if ( !params.broadphase ) params.broadphase = { type: 'dynamic' };
+		switch ( params.broadphase.type ) {
+			case 'sweepprune':
 
-			_vec3_2.setX(params.broadphase.aabbmax.x);
-			_vec3_2.setY(params.broadphase.aabbmax.y);
-			_vec3_2.setZ(params.broadphase.aabbmax.z);
+				_vec3_1.setX(params.broadphase.aabbmin.x);
+				_vec3_1.setY(params.broadphase.aabbmin.y);
+				_vec3_1.setZ(params.broadphase.aabbmin.z);
 
-			broadphase = new Ammo.btAxisSweep3(
-				_vec3_1,
-				_vec3_2
-			);
+				_vec3_2.setX(params.broadphase.aabbmax.x);
+				_vec3_2.setY(params.broadphase.aabbmax.y);
+				_vec3_2.setZ(params.broadphase.aabbmax.z);
 
-			break;
+				broadphase = new Ammo.btAxisSweep3(
+					_vec3_1,
+					_vec3_2
+				);
 
-		case 'dynamic':
-		default:
-			broadphase = new Ammo.btDbvtBroadphase;
-			break;
-	}
+				break;
 
-	world = new Ammo.btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
+			case 'dynamic':
+			default:
+				broadphase = new Ammo.btDbvtBroadphase;
+				break;
+		}
 
-	fixedTimeStep = params.fixedTimeStep;
-	rateLimit = params.rateLimit;
+		world = new Ammo.btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
 
-	transferableMessage({ cmd: 'worldReady' });
+		fixedTimeStep = params.fixedTimeStep;
+		rateLimit = params.rateLimit;
+
+		transferableMessage({ cmd: 'worldReady' });
+	});
 };
 
 public_functions.registerMaterial = function( description ) {
@@ -734,9 +737,11 @@ public_functions.addConstraint = function ( details ) {
 				_vec3_2.setY(details.positionb.y);
 				_vec3_2.setZ(details.positionb.z);
 
-				_vec3_3.setX(details.axis.x);
-				_vec3_3.setY(details.axis.y);
-				_vec3_3.setZ(details.axis.z);
+				_vec3_3.setX(details.axisa.x);
+				_vec3_3.setY(details.axisa.y);
+				_vec3_3.setZ(details.axisa.z);
+				
+				var _vec3_4 = new Ammo.btVector3(details.axisb.x, details.axisb.y, details.axisb.z);
 
 				constraint = new Ammo.btHingeConstraint(
 					_objects[ details.objecta ],
@@ -744,7 +749,7 @@ public_functions.addConstraint = function ( details ) {
 					_vec3_1,
 					_vec3_2,
 					_vec3_3,
-					_vec3_3
+					_vec3_4
 				);
 			}
 			break;
@@ -840,8 +845,11 @@ public_functions.addConstraint = function ( details ) {
 
 			break;
 
+		case 'dofspring':
 		case 'dof':
 			var transforma, transformb, rotation;
+
+			var AmmoConstraintType = details.type === 'dof' ? Ammo.btGeneric6DofConstraint : Ammo.btGeneric6DofSpringConstraint
 
 			transforma = new Ammo.btTransform();
 			transforma.setIdentity();
@@ -870,14 +878,15 @@ public_functions.addConstraint = function ( details ) {
 				rotation.setEulerZYX( -details.axisb.z, -details.axisb.y, -details.axisb.x );
 				transformb.setRotation( rotation );
 
-				constraint = new Ammo.btGeneric6DofConstraint(
+				constraint = new AmmoConstraintType(
 					_objects[ details.objecta ],
 					_objects[ details.objectb ],
 					transforma,
-					transformb
+					transformb,
+					false
 				);
 			} else {
-				constraint = new Ammo.btGeneric6DofConstraint(
+				constraint = new AmmoConstraintType(
 					_objects[ details.objecta ],
 					transforma
 				);
@@ -894,6 +903,10 @@ public_functions.addConstraint = function ( details ) {
 	};
 
 	world.addConstraint( constraint, details.disableCollision );
+
+	//Hack-patch these methods, which are no longer on the constraint object in ammo.js
+	constraint.getRigidBodyA = () =>  _objects[ details.objecta ];
+	constraint.getRigidBodyB = () => details.objectb ? _objects[ details.objectb ] : null;
 
 	constraint.enableFeedback();
 	_constraints[ details.id ] = constraint;
@@ -971,7 +984,8 @@ public_functions.hinge_enableAngularMotor = function( params ) {
 	}
 };
 public_functions.hinge_disableMotor = function( params ) {
-	_constraints[ params.constraint ].enableMotor( false );
+	var constraint = _constraints[ params.constraint ];
+	constraint.enableMotor( false );
 	if ( constraint.getRigidBodyB() ) {
 		constraint.getRigidBodyB().activate();
 	}
@@ -1149,6 +1163,33 @@ public_functions.dof_disableAngularMotor = function( params ) {
 	var motor = constraint.getRotationalLimitMotor( params.which );
 	motor.set_m_enableMotor( false );
 
+	constraint.getRigidBodyA().activate();
+	if ( constraint.getRigidBodyB() ) {
+		constraint.getRigidBodyB().activate();
+	}
+};
+public_functions.dofspring_enableSpring = function( params ) {
+	var constraint = _constraints[ params.constraint ];
+
+	constraint.enableSpring( params.which, true );
+	constraint.getRigidBodyA().activate();
+	if ( constraint.getRigidBodyB() ) {
+		constraint.getRigidBodyB().activate();
+	}
+};
+public_functions.dofspring_setStiffness = function( params ) {
+	var constraint = _constraints[ params.constraint ];
+
+	constraint.setStiffness( params.which, params.stiffness );
+	constraint.getRigidBodyA().activate();
+	if ( constraint.getRigidBodyB() ) {
+		constraint.getRigidBodyB().activate();
+	}
+};
+public_functions.dofspring_setDamping = function( params ) {
+	var constraint = _constraints[ params.constraint ];
+
+	constraint.setDamping( params.which, params.damping );
 	constraint.getRigidBodyA().activate();
 	if ( constraint.getRigidBodyB() ) {
 		constraint.getRigidBodyB().activate();
@@ -1335,6 +1376,9 @@ reportVehicles = function() {
 };
 
 reportConstraints = function() {
+	
+	return; //Does not work with latest ammo.js
+
 	var index, constraint,
 		offset_body,
 		transform, origin,
@@ -1363,10 +1407,10 @@ reportConstraints = function() {
 
 			constraintreport[ offset ] = index;
 			constraintreport[ offset + 1 ] = offset_body.id;
-			constraintreport[ offset + 2 ] = origin.getX();
-			constraintreport[ offset + 3 ] = origin.getY();
-			constraintreport[ offset + 4 ] = origin.getZ();
-			constraintreport[ offset + 5 ] = constraint.getAppliedImpulse();
+			constraintreport[ offset + 2 ] = origin.x();
+			constraintreport[ offset + 3 ] = origin.y();
+			constraintreport[ offset + 4 ] = origin.z();
+			constraintreport[ offset + 5 ] = 0; //This API is no longer in ammo.js: constraint.getAppliedImpulse();
 		}
 	}
 
