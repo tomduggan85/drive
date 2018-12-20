@@ -385,6 +385,68 @@ window.Physijs = (function() {
 		this.scene.execute( 'dof_disableAngularMotor', { constraint: this.id, which: which } );
 	};
 
+	Physijs.DOFSpringConstraint = function( objecta, objectb, position ) {
+		if ( position === undefined ) {
+			position = objectb;
+			objectb = undefined;
+		}
+		this.type = 'dofspring';
+		this.appliedImpulse = 0;
+		this.id = getObjectId();
+		this.scene = objecta.parent;
+		this.objecta = objecta._physijs.id;
+		this.positiona = convertWorldPositionToObject( position, objecta ).clone();
+		this.axisa = { x: objecta.rotation.x, y: objecta.rotation.y, z: objecta.rotation.z };
+
+		if ( objectb ) {
+			this.objectb = objectb._physijs.id;
+			this.positionb = convertWorldPositionToObject( position, objectb ).clone();
+			this.axisb = { x: objectb.rotation.x, y: objectb.rotation.y, z: objectb.rotation.z };
+		}
+	};
+	Physijs.DOFSpringConstraint.prototype.getDefinition = function() {
+		return {
+			type: this.type,
+			id: this.id,
+			objecta: this.objecta,
+			objectb: this.objectb,
+			positiona: this.positiona,
+			positionb: this.positionb,
+			axisa: this.axisa,
+			axisb: this.axisb
+		};
+	};
+	Physijs.DOFSpringConstraint.prototype.setLinearLowerLimit = function( limit ) {
+		this.scene.execute( 'dof_setLinearLowerLimit', { constraint: this.id, x: limit.x, y: limit.y, z: limit.z } );
+	};
+	Physijs.DOFSpringConstraint.prototype.setLinearUpperLimit = function( limit ) {
+		this.scene.execute( 'dof_setLinearUpperLimit', { constraint: this.id, x: limit.x, y: limit.y, z: limit.z } );
+	};
+	Physijs.DOFSpringConstraint.prototype.setAngularLowerLimit = function( limit ) {
+		this.scene.execute( 'dof_setAngularLowerLimit', { constraint: this.id, x: limit.x, y: limit.y, z: limit.z } );
+	};
+	Physijs.DOFSpringConstraint.prototype.setAngularUpperLimit = function( limit ) {
+		this.scene.execute( 'dof_setAngularUpperLimit', { constraint: this.id, x: limit.x, y: limit.y, z: limit.z } );
+	};
+	Physijs.DOFSpringConstraint.prototype.enableAngularMotor = function( which ) {
+		this.scene.execute( 'dof_enableAngularMotor', { constraint: this.id, which: which } );
+	};
+	Physijs.DOFSpringConstraint.prototype.configureAngularMotor = function( which, low_angle, high_angle, velocity, max_force ) {
+		this.scene.execute( 'dof_configureAngularMotor', { constraint: this.id, which: which, low_angle: low_angle, high_angle: high_angle, velocity: velocity, max_force: max_force } );
+	};
+	Physijs.DOFSpringConstraint.prototype.disableAngularMotor = function( which ) {
+		this.scene.execute( 'dof_disableAngularMotor', { constraint: this.id, which: which } );
+	};
+	Physijs.DOFSpringConstraint.prototype.enableSpring = function( which ) {
+		this.scene.execute( 'dofspring_enableSpring', { constraint: this.id, which: which } );
+	};
+	Physijs.DOFSpringConstraint.prototype.setStiffness = function( which, stiffness ) {
+		this.scene.execute( 'dofspring_setStiffness', { constraint: this.id, which: which, stiffness: stiffness } );
+	};
+	Physijs.DOFSpringConstraint.prototype.setDamping = function( which, damping ) {
+		this.scene.execute( 'dofspring_setDamping', { constraint: this.id, which: which, damping: damping } );
+	};
+
 	// Physijs.Scene
 	Physijs.Scene = function( params ) {
 		var self = this;

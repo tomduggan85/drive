@@ -18,6 +18,7 @@ export class Vehicle {
     this.loader = new THREE.GLTFLoader();
 
     this.createChassis();
+    this.createBody();
 
     /*
       TODO: Change shape of this.wheels to allow for front-wheel-drive cars (where two of the
@@ -42,6 +43,11 @@ export class Vehicle {
     this.$chassis.position.set(props.position.x, props.position.y, props.position.z);
     this.$chassis.__dirtyPosition = true;
     this.$chassis.__dirtyRotation = true;
+
+    this.$body.rotation.set(props.rotation.x, props.rotation.y, props.rotation.z);
+    this.$body.position.set(props.position.x, props.position.y, props.position.z);
+    this.$body.__dirtyPosition = true;
+    this.$body.__dirtyRotation = true;
     
     document.addEventListener( 'keydown', this.onKeyDown );
     document.addEventListener( 'keyup', this.onKeyUp );
@@ -68,29 +74,74 @@ export class Vehicle {
       vehicleDef.chassisMass
     );
     this.$chassis.position.set( offset.x, offset.y, offset.z )
+    $scene.add(this.$chassis);
+  }
+
+  createBody() {
+    const { $scene, vehicleDef } = this;
+    const bodyMaterial = Physijs.createMaterial(
+      new THREE.MeshNormalMaterial(), CHASSIS_FRICTION, CHASSIS_RESTITUTION
+    );
+    bodyMaterial.visible = SHOW_DEBUG_COLLISION_VOLUMES;
+
     
-    for ( let i = 1; i < vehicleDef.chassisShapes.length; i++ ) {
+    const { size, offset } = vehicleDef.chassisShapes[1];
+    this.$body = new Physijs.BoxMesh(
+      new THREE.BoxGeometry( size.x, size.y, size.z ),
+      bodyMaterial,
+      3000
+    );
+    this.$body.position.set( offset.x, offset.y + 5, offset.z )
+
+    for ( let i = 2; i < vehicleDef.chassisShapes.length; i++ ) {
       const someSmallMass = 50;
       const { size, offset } = vehicleDef.chassisShapes[i];
 
       const $shape = new Physijs.BoxMesh(
         new THREE.BoxGeometry( size.x, size.y, size.z ),
-        chassisMaterial,
+        bodyMaterial,
         someSmallMass
       );
       $shape.position.set( offset.x, offset.y, offset.z )
 
-      this.$chassis.add($shape);
+      this.$body.add($shape);
     }
 
     //Main chassis must be added to the scene *after* additional objects have been added to it, for PhysiJS to create the compound collision shape.
-    $scene.add( this.$chassis );
-    this.loadChassisAsset();
+    $scene.add( this.$body );
+    const $body = this.$body;
+
+    const y =  this.vehicleDef.rideHeight + 3;
+    const springLocations = [
+      {x: this.vehicleDef.wheelBase / 2, y, z: this.vehicleDef.trackWidth / 2 },
+      {x: -this.vehicleDef.wheelBase / 2, y, z: this.vehicleDef.trackWidth / 2 },
+      {x: this.vehicleDef.wheelBase / 2, y, z: -this.vehicleDef.trackWidth / 2 },
+      {x: -this.vehicleDef.wheelBase / 2, y, z: -this.vehicleDef.trackWidth / 2 },
+    ]
+
+    springLocations.forEach( loc => {
+      const constraint = new Physijs.DOFSpringConstraint(
+        $body, this.$chassis, new THREE.Vector3( loc.x, loc.y, loc.z )
+      );
+      $scene.addConstraint( constraint, { disableCollision: true } );
+      constraint.setAngularLowerLimit({ x: 1, y: 1, z: 1 });
+      constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 });
+
+      constraint.setLinearLowerLimit({ x: 0, y: 0, z: 0 });
+      constraint.setLinearUpperLimit({ x: 0, y: 3, z: 0 });
+      for (let i = 0; i < 3; i++ ) {
+        constraint.enableSpring( i );
+        constraint.setStiffness( i, 100000 );
+        constraint.setDamping( i, 0.000005 );
+      }
+    });
+
+    this.loadBodyAsset();
   }
 
-  loadChassisAsset() {
+  loadBodyAsset() {
     const { chassisAsset: { uri, scale, position, rotation } } = this.vehicleDef;
-    const { $chassis } = this;
+    const { $body } = this;
 
     this.loader.load(
       uri,
@@ -98,11 +149,11 @@ export class Vehicle {
         asset.scale.set(scale, scale, scale)
         asset.position.set( position.x, position.y, position.z );
         asset.rotation.set( rotation.x, rotation.y, rotation.z )
-        $chassis.add( asset );
+        $body.add( asset );
       },
       undefined, //onProgress
       ( error ) => {
-        console.error( error, `Error loading chassis asset: ${ uri }` );
+        console.error( error, `Error loading body asset: ${ uri }` );
       }
     );
   }

@@ -845,8 +845,11 @@ public_functions.addConstraint = function ( details ) {
 
 			break;
 
+		case 'dofspring':
 		case 'dof':
 			var transforma, transformb, rotation;
+
+			var AmmoConstraintType = details.type === 'dof' ? Ammo.btGeneric6DofConstraint : Ammo.btGeneric6DofSpringConstraint
 
 			transforma = new Ammo.btTransform();
 			transforma.setIdentity();
@@ -875,7 +878,7 @@ public_functions.addConstraint = function ( details ) {
 				rotation.setEulerZYX( -details.axisb.z, -details.axisb.y, -details.axisb.x );
 				transformb.setRotation( rotation );
 
-				constraint = new Ammo.btGeneric6DofConstraint(
+				constraint = new AmmoConstraintType(
 					_objects[ details.objecta ],
 					_objects[ details.objectb ],
 					transforma,
@@ -883,7 +886,7 @@ public_functions.addConstraint = function ( details ) {
 					false
 				);
 			} else {
-				constraint = new Ammo.btGeneric6DofConstraint(
+				constraint = new AmmoConstraintType(
 					_objects[ details.objecta ],
 					transforma
 				);
@@ -1160,6 +1163,33 @@ public_functions.dof_disableAngularMotor = function( params ) {
 	var motor = constraint.getRotationalLimitMotor( params.which );
 	motor.set_m_enableMotor( false );
 
+	constraint.getRigidBodyA().activate();
+	if ( constraint.getRigidBodyB() ) {
+		constraint.getRigidBodyB().activate();
+	}
+};
+public_functions.dofspring_enableSpring = function( params ) {
+	var constraint = _constraints[ params.constraint ];
+
+	constraint.enableSpring( params.which, true );
+	constraint.getRigidBodyA().activate();
+	if ( constraint.getRigidBodyB() ) {
+		constraint.getRigidBodyB().activate();
+	}
+};
+public_functions.dofspring_setStiffness = function( params ) {
+	var constraint = _constraints[ params.constraint ];
+
+	constraint.setStiffness( params.which, params.stiffness );
+	constraint.getRigidBodyA().activate();
+	if ( constraint.getRigidBodyB() ) {
+		constraint.getRigidBodyB().activate();
+	}
+};
+public_functions.dofspring_setDamping = function( params ) {
+	var constraint = _constraints[ params.constraint ];
+
+	constraint.setDamping( params.which, params.damping );
 	constraint.getRigidBodyA().activate();
 	if ( constraint.getRigidBodyB() ) {
 		constraint.getRigidBodyB().activate();

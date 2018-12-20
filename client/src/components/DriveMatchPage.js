@@ -2,6 +2,7 @@ import React from 'react';
 import './DriveMatchPage.css';
 import DriveScene from '../3d/DriveScene';
 import FollowCameraRenderer from './FollowCameraRenderer';
+import CameraRenderer from './CameraRenderer';
 import { getSocket } from '../shared/DriveMatchSocket';
 import { VEHICLE_TYPES } from '../shared/Vehicles';
 
