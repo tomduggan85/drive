@@ -43,7 +43,7 @@ export const VEHICLE_DEFS = {
     chassisShape: { offset: { x: -1, y: 8, z: 0 }, size: { x: 29, y: 3, z: 12} },
     chassisMass: 5000,
     bodyShapes: [
-      { offset: { x: -0.5, y: 2, z: 0 }, size: { x: 29, y: 2, z: 12} }, //z was 12
+      { offset: { x: -0.5, y: 2, z: 0 }, size: { x: 29, y: 2, z: 12} },
       { offset: { x: -1, y: 4, z: 0 }, size: { x: 15, y: 3, z: 10} },
       { offset: { x: -1, y: 6, z: 0 }, size: { x: 12, y: 1.5, z: 8.5} },
     ],
@@ -78,12 +78,13 @@ export const VEHICLE_DEFS = {
     maxVel: 200,
     torque: 3000,
     chassisMass: 5000,
-    chassisShapes: [
-      { offset: { x: -1, y: 8, z: 0 }, size: { x: 33.5, y: 3, z: 12} },
+    chassisShape: { offset: { x: -1, y: 8, z: 0 }, size: { x: 33.5, y: 3, z: 12} },
+    bodyShapes:  [
       { offset: { x: 0, y: 2, z: 0 }, size: { x: 32, y: 2, z: 12} },
       { offset: { x: -1, y: 4, z: 0 }, size: { x: 15, y: 3, z: 10} },
       { offset: { x: -1, y: 6, z: 0 }, size: { x: 12, y: 1.5, z: 8.5} },
     ],
+    bodyMass: 3000,
     wheelMass: 150,
     tireFriction: 3,
     steerAngle: Math.PI / 8,
@@ -102,7 +103,10 @@ export const VEHICLE_DEFS = {
     },
     wheelDiameter: 2.1,
     wheelWidth: 1.3,
-    rideHeight: 7,
+    rideHeight: 5.7,
+    suspensionTravel: 3,
+    suspensionStiffness: 100000,
+    suspensionDamping: 0.000005,
   },
 
   'pontiac': {
@@ -111,12 +115,13 @@ export const VEHICLE_DEFS = {
     maxVel: 200,
     torque: 3000,
     chassisMass: 5000,
-    chassisShapes: [
-      { offset: { x: -1, y: 8, z: 0 }, size: { x: 33.5, y: 3, z: 11.5} },
+    chassisShape: { offset: { x: -1, y: 8, z: 0 }, size: { x: 33.5, y: 3, z: 11.5} },
+    bodyShapes: [
       { offset: { x: 0, y: 2, z: 0 }, size: { x: 30.8, y: 2, z: 11.5} },
       { offset: { x: -3, y: 3.8, z: 0 }, size: { x: 13, y: 3, z: 10} },
       { offset: { x: -3, y: 5.5, z: 0 }, size: { x: 11, y: 1.5, z: 8.5} },
     ],
+    bodyMass: 3000,
     wheelMass: 150,
     tireFriction: 3,
     steerAngle: Math.PI / 8,
@@ -135,7 +140,10 @@ export const VEHICLE_DEFS = {
     },
     wheelDiameter: 2.2,
     wheelWidth: 1.3,
-    rideHeight: 7,
+    rideHeight: 5.7,
+    suspensionTravel: 3,
+    suspensionStiffness: 100000,
+    suspensionDamping: 0.000005,
   },
 
   woodywagon: {
@@ -144,12 +152,13 @@ export const VEHICLE_DEFS = {
     maxVel: 200,
     torque: 3000,
     chassisMass: 5000,
-    chassisShapes: [
-      { offset: { x: -1, y: 8, z: 0 }, size: { x: 34, y: 3, z: 11.5} },
+    chassisShape: { offset: { x: -1, y: 8, z: 0 }, size: { x: 34, y: 3, z: 11.5} },
+    bodyShapes: [
       { offset: { x: 0, y: 2, z: 0 }, size: { x: 33, y: 1.5, z: 11.5} },
       { offset: { x: -6, y: 4, z: 0 }, size: { x: 20, y: 2, z: 10} },
       { offset: { x: -5, y: 5.5, z: 0 }, size: { x: 15, y: 1, z: 8.5} },
     ],
+    bodyMass: 3000,
     wheelMass: 150,
     tireFriction: 3,
     steerAngle: Math.PI / 8,
@@ -169,6 +178,9 @@ export const VEHICLE_DEFS = {
     wheelDiameter: 2.0,
     wheelWidth: 1.3,
     rideHeight: 6.9,
+    suspensionTravel: 3,
+    suspensionStiffness: 100000,
+    suspensionDamping: 0.000005,
   },
 };
 
