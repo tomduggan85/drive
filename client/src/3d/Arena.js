@@ -19,7 +19,7 @@ class Arena {
   }
 
   createGround() {
-    const groundTextureMap = new THREE.TextureLoader().load('/assets/images/dirt3_pixelize10.jpg');
+    const groundTextureMap = new THREE.TextureLoader().load('/assets/images/dirt3.jpg');
     groundTextureMap.wrapS = THREE.RepeatWrapping;
     groundTextureMap.wrapT = THREE.RepeatWrapping;
     groundTextureMap.repeat.set( 10, 10 );
