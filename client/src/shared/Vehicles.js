@@ -6,7 +6,7 @@ export const VEHICLE_DEFS = {
     maxVel: 200,
     torque: 4000,
     chassisMass: 4000,
-    chassisShape: { offset: { x: -1, y: 2, z: 0 }, size: { x: 25, y: 3, z: 11} },
+    chassisShape: { offset: { x: -1, y: 1.6, z: 0 }, size: { x: 25, y: 3, z: 11} },
     bodyShapes: [
       { offset: { x: -1, y: 3.15, z: 0 }, size: { x: 32, y: 3, z: 12} },
       { offset: { x: 0, y: 2, z: 0 }, size: { x: 31, y: 2, z: 11} },
@@ -43,7 +43,7 @@ export const VEHICLE_DEFS = {
     trackWidth: 11,
     maxVel: 200,
     torque: 4000,
-    chassisShape: { offset: { x: -1, y: 2, z: 0 }, size: { x: 25, y: 3, z: 11} },
+    chassisShape: { offset: { x: -1, y: 1.8, z: 0 }, size: { x: 25, y: 3, z: 11} },
     chassisMass: 4000,
     bodyShapes: [
       { offset: { x: -1, y: 3, z: 0 }, size: { x: 29, y: 3, z: 12} },
