@@ -23,7 +23,7 @@ class FollowCameraRenderer extends CameraRenderer {
     */
     const { position } = this.$followObject;
     const rotation = this.$followObject.rotation.y;
-    let targetRotation = -rotation;
+    let targetRotation = -rotation - 0.4;
 
     if ( Math.abs( this.$followObject.rotation.x)  > Math.PI/2 ) {
       //Above-mentioned range issues

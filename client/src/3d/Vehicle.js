@@ -91,7 +91,7 @@ export class Vehicle {
       bodyMaterial,
       vehicleDef.bodyMass
     );
-    this.$body.position.set( offset.x, offset.y + 5, offset.z )
+    this.$body.position.set( offset.x, offset.y, offset.z )
 
     for ( let i = 1; i < vehicleDef.bodyShapes.length; i++ ) {
       const someSmallMass = 50;
@@ -142,8 +142,6 @@ export class Vehicle {
       {x: wheelBase / 2, springY, z: -trackWidth / 2 },
       {x: -wheelBase / 2, springY, z: -trackWidth / 2 },
     ];
-
-    console.error(springY)
 
     springLocations.forEach( location => {
       const constraint = new Physijs.DOFSpringConstraint(
