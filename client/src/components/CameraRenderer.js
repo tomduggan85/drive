@@ -1,6 +1,9 @@
 /* global THREE */
 
 import React from 'react';
+import './CameraRenderer.css';
+
+const RETRO_SCREEN_RESOLUTION = 320; //Most common Nintendo 64 resolution
 
 class CameraRenderer extends React.Component {
 
@@ -15,17 +18,23 @@ class CameraRenderer extends React.Component {
   }
 
   componentDidMount() {
-    const { width, height } = this.$el.getBoundingClientRect();
+    const {
+      screenWidth,
+      screenHeight,
+      aspectRatio
+    } = this.getScreenDims();
 
     this.$camera = new THREE.PerspectiveCamera(
       40, //Field of view
-      width/height, //Aspect ratio
+      aspectRatio, //Aspect ratio
       0.1, //Near plane
       1000 //Far plane
     );
 
+    console.error(screenWidth, screenHeight);
+
     this.$renderer = new THREE.WebGLRenderer();
-    this.$renderer.setSize(width, height);
+    this.$renderer.setSize(screenWidth, screenHeight);
     this.$el.appendChild(this.$renderer.domElement);
 
     //Default birds-eye view
@@ -36,15 +45,33 @@ class CameraRenderer extends React.Component {
     this.$scene.addEventListener('update', this.step.bind( this ));
   }
 
+  getScreenDims() {
+    const { width, height } = this.$el.getBoundingClientRect();
+    const aspectRatio = width/height;
+    const screenWidth = Math.min(RETRO_SCREEN_RESOLUTION, width);
+    const screenHeight = screenWidth / aspectRatio;
+
+    return {
+      screenWidth,
+      screenHeight,
+      aspectRatio
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener( 'resize', this.onResize );
   }
 
   onResize = () => {
-    const { width, height } = this.$el.getBoundingClientRect();
-    this.$camera.aspect = width / height;
+    const {
+      screenWidth,
+      screenHeight,
+      aspectRatio
+    } = this.getScreenDims();
+
+    this.$camera.aspect = aspectRatio;
     this.$camera.updateProjectionMatrix();
-    this.$renderer.setSize( width, height );
+    this.$renderer.setSize( screenWidth, screenHeight );
   }
 
   step() {

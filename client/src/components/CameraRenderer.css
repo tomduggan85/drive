@@ -1,0 +1,7 @@
+
+/* override three.js canvas dimensions to get a downsampled screen resolution appearance */
+
+.camera-renderer canvas {
+  width: 100% !important; 
+  height: 100% !important;
+}
