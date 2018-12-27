@@ -31,9 +31,9 @@ class DriveMatchPage extends React.Component {
   render() {
     return (
       <div className="drive-match-page">
-        <FollowCameraRenderer driveScene={this.driveScene} vehicleIndex={0} />
-        {<FollowCameraRenderer driveScene={this.driveScene} vehicleIndex={1} />}
-        {/*<CameraRenderer driveScene={this.driveScene} />*/}
+        <FollowCameraRenderer scene={this.driveScene} vehicleIndex={0} />
+        {<FollowCameraRenderer scene={this.driveScene} vehicleIndex={1} />}
+        {/*<CameraRenderer scene={this.driveScene} />*/}
       </div>
     );
   }

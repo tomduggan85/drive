@@ -1,7 +1,7 @@
 import React from 'react';
 import uuid from 'uuid';
 import { VEHICLE_TYPES } from '../shared/Vehicles';
-import './SelectVehiclePage.css';
+import './SelectVehiclePage.scss';
 import classnames from 'classnames'
 
 class SelectVehiclePage extends React.Component {

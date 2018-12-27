@@ -1,26 +1,34 @@
 import React from 'react';
-import './SplashPage.css';
+import './SplashPage.scss';
+import StaticVehicleScene from '../3d/StaticVehicleScene';
+import CameraRenderer from './CameraRenderer';
 
 class SplashPage extends React.Component {
 
-  selectVehicle = ( playerIndex, vehicleType ) => {
-    this.setState({
-      [ `selectedVehiclePlayer${ playerIndex }` ]: vehicleType
-    })
+  constructor( props ) {
+    super( props );
+  
+    this.scene = new StaticVehicleScene({
+      vehicleType: 'its_a_volvo'
+    });
   }
 
   start = () => {
     this.props.history.push('/select-vehicle');
   }
 
-
   render() {
     return (
       <div className='SplashPage' onClick={this.start}>
-        <div className='title'>
+        <div className='title-section'>
           <div className='title-row'>American</div>
-          <div className='title-row'>Demolition</div>
+          <div className='title-row'>Demolition<span className='numeral'>64</span></div>
         </div>
+        <CameraRenderer
+          scene={this.scene}
+          transparent={true}
+          position={[ 0, 10, -35 ]}
+        />
         <div className='start'>
           • press start •
         </div>

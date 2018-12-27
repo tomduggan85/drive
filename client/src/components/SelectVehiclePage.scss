@@ -1,8 +1,9 @@
+@import 'src/shared-styles.scss';
+
 .SelectVehiclePage {
   width: 100vw;
   height: 100vh;
-  //background: -webkit-linear-gradient(top, #893264 0%,#59487f 12%,#232530 100%);
-  background: -webkit-linear-gradient(top, #893264 0%,#59487f 12%,#232530 95%,#111C44 100%);
+  background: $sunset-bg-2;
   text-align: center;
 
   font-family: 'Nineteen Ninety Seven', monospace;
