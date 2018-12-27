@@ -1,45 +1,13 @@
 .SplashPage {
   width: 100vw;
   height: 100vh;
+  cursor: pointer;
   //background: -webkit-linear-gradient(top, #893264 0%,#59487f 12%,#232530 100%);
   background: -webkit-linear-gradient(top, #893264 0%,#59487f 12%,#232530 95%,#111C44 100%);
   text-align: center;
 
   font-family: 'Nineteen Ninety Seven', monospace;
   //font-family: 'Pixel Emulator', monospace;
-}
-
-.SplashPage .start-match {
-  border: 5px solid #000;
-  width: 300px;
-  cursor: pointer;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-  font-size: 30px;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin: 0 auto;
-}
-
-.SplashPage .start:hover {
-  opacity: 0.7;
-}
-
-.SplashPage .vehicle-selector {
-  display: inline-block;
-  margin: 40px;
-  padding: 40px;
-  background: #eee;
-}
-
-.SplashPage .vehicle-type {
-  cursor: pointer;
-  padding: 3px;
-}
-
-.SplashPage .vehicle-type.selected {
-  font-weight: bold;
 }
 
 .SplashPage .title {
@@ -104,9 +72,8 @@
   }
 }
 
-.SplashPage .start-selection {
+.SplashPage .start {
   font-size: 30px;
   animation: blink 1.5s infinite;
-  cursor: pointer;
   color: #C43131;
 }
