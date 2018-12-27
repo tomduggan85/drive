@@ -9,7 +9,8 @@ class SplashPage extends React.Component {
   state = {
     matchId: uuid().substr(0, 5), //hacky way to generate a random matchId on each splash page mount.
     selectedVehiclePlayer1: VEHICLE_TYPES[0], 
-    selectedVehiclePlayer2: VEHICLE_TYPES[1]
+    selectedVehiclePlayer2: VEHICLE_TYPES[1],
+    showVehicleSelection: false,
   }
 
   startMatch = () => {
@@ -21,6 +22,10 @@ class SplashPage extends React.Component {
     this.setState({
       [ `selectedVehiclePlayer${ playerIndex }` ]: vehicleType
     })
+  }
+
+  startSelection = () => {
+    this.setState({ showVehicleSelection: true })
   }
 
   renderVehicleSelector( playerIndex ) {
@@ -43,16 +48,34 @@ class SplashPage extends React.Component {
   }
 
   render() {
+    const { showVehicleSelection } = this.state;
     return (
       <div className='SplashPage'>
-        {this.renderVehicleSelector(1)}
-        {this.renderVehicleSelector(2)}
-        <div
-          className='start'
-          onClick={this.startMatch}
-        >
-            Start
-        </div>
+        {showVehicleSelection ? (
+          <>
+            {this.renderVehicleSelector(1)}
+            {this.renderVehicleSelector(2)}
+            <div
+              className='start-match'
+              onClick={this.startMatch}
+            >
+                Start
+            </div>
+          </>
+        ) : (
+          <>
+            <div className='title'>
+              <div className='title-row'>DUMB</div>
+              <div className='title-row'>RACER</div>
+            </div>
+            <div
+              className='start-selection'
+              onClick={this.startSelection}
+            >
+              • press start •
+            </div>
+        </>
+      )}
       </div>
     );
   }

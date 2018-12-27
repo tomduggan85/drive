@@ -1,3 +1,28 @@
+@font-face {
+  font-family: 'DominoFarm';
+  src: url(./fonts/domino-farm.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Nineteen Ninety Seven';
+  src: url(./fonts/Nineteen Ninety Seven.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'ARCADE';
+  src: url(./fonts/ARCADE.TTF) format('truetype');
+}
+
+@font-face {
+  font-family: 'Pixel Emulator';
+  src: url(./fonts/Pixel Emulator.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'PressStart2P';
+  src: url(./fonts/PressStart2P.ttf) format('truetype');
+}
+
 body {
   margin: 0;
   padding: 0;
