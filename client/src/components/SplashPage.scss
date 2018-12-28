@@ -56,7 +56,7 @@
   width: 100vw;
   height: 100vh;
   cursor: pointer;
-  background: $sunset-bg-2;
+  background: $sunset-bg-4;
   text-align: center;
   overflow: hidden;
 
@@ -88,9 +88,10 @@
   }
 
   .numeral {
+    font-weight: bold;
     animation: slide-in 0.5s linear;
     font-family: 'PressStart2P', monospace;
-    margin-left: 30px;
+    margin-left: 20px;
     font-size: 180px;
     background: $text-bg-blue-to-purple-1;
     -webkit-background-clip: text;
@@ -100,7 +101,7 @@
     top: -20px;
     display: inline-block;
     width: 350px;
-    margin-right: -170px;
+    margin-right: -160px;
     
     animation-delay: 0.2s;
   }
