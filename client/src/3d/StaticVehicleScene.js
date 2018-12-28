@@ -9,6 +9,7 @@ class StaticVehicleScene {
     this.loader = new THREE.GLTFLoader(); 
 
     this.vehicleDef = VEHICLE_DEFS[ props.vehicleType ];
+    this.onLoad = props.onLoad;
 
     this.createLights();
     this.createVehicle();
@@ -45,28 +46,32 @@ class StaticVehicleScene {
 
   onChassisLoaded = ( loadedObject ) => {
     const { scene: asset } = loadedObject;
-    const { chassisAsset: { scale, rotation, position } } = this.vehicleDef;
+    const { chassisAsset: { scale, rotation } } = this.vehicleDef;
 
+    //TODO fix magic position values
     asset.scale.set(scale, scale, scale)
     asset.position.set( -2.8, 0, -1.2 );
     asset.rotation.set( rotation.x, rotation.y, rotation.z );
     this.$vehicle.add( asset );
-
   }
 
   onWheelLoaded = ( wheelIndex, loadedObject ) => {
     const { scene: asset } = loadedObject;
     const { wheelAsset: { scale, rotation } } = this.vehicleDef;
 
-    console.error( scale, rotation )
     const x = -this.vehicleDef.wheelBase / 2 * (wheelIndex < 2 ? 1 : -1);
-    const y = 1.8;
+    const y = 1.8; //TODO use vehicle ride height
     const z = -this.vehicleDef.trackWidth / 2 * (wheelIndex % 2 ? 1 : -1);
 
     asset.scale.set(scale, scale, scale)
     asset.position.set( x, y, z );
     asset.rotation.set( Math.PI / 2, 0, 0 );
     this.$vehicle.add( asset );
+
+    if ( wheelIndex === 3  && this.onLoad) {
+      //Consider vehicle loaded once wheelIndex 3 is in the scene.
+      this.onLoad();
+    }
   }
 
   createLights() {    
@@ -75,14 +80,15 @@ class StaticVehicleScene {
 
   step = () => {
     requestAnimationFrame( this.step );
-    const tx = Date.now() / 2000;
-    const ty = Date.now() / 3000;
-
-    const rx = Math.sin(tx) * 0.2;
-    const ry = Math.sin(ty) * 1.5;
-    
 
     if ( this.$vehicle ) {
+      //Gentle partial spin, for splash page
+      const tx = Date.now() / 2000;
+      const ty = Date.now() / 3000;
+
+      const rx = Math.sin(tx) * 0.2;
+      const ry = Math.sin(ty) * 1.0;
+      
       this.$vehicle.rotation.x = rx;
       this.$vehicle.rotation.y = ry;
     }

@@ -2,8 +2,13 @@ import React from 'react';
 import './SplashPage.scss';
 import StaticVehicleScene from '../3d/StaticVehicleScene';
 import CameraRenderer from './CameraRenderer';
+import classnames from 'classnames';
 
 class SplashPage extends React.Component {
+  
+  state = {
+    isStarting: false,
+  }
 
   constructor( props ) {
     super( props );
@@ -14,12 +19,24 @@ class SplashPage extends React.Component {
   }
 
   start = () => {
-    this.props.history.push('/select-vehicle');
+    const { history } = this.props;
+    this.setState({ isStarting: true });
+
+    setTimeout(() => {
+      history.push('/select-vehicle');
+    }, 400 );
   }
 
   render() {
+    const { isStarting } = this.state;
+
     return (
-      <div className='SplashPage' onClick={this.start}>
+      <div className={classnames( 'SplashPage', { 'is-starting': isStarting })} onClick={this.start}>
+        <div className='silhouette-layer'>
+          <img src='/assets/images/palms.png' className='palm left' alt='palm'/>
+          <img src='/assets/images/palms.png' className='palm right' alt='palm'/>
+          <img src='/assets/images/console.png' className='console' alt='console'/>
+        </div>
         <div className='title-section'>
           <div className='title-row'>American</div>
           <div className='title-row'>Demolition<span className='numeral'>64</span></div>

@@ -38,6 +38,20 @@
   }
 }
 
+@keyframes flash-white {
+  0% {
+    filter: brightness(0%);
+  }
+
+  50% {
+    filter: brightness(100%);
+  }
+
+  100% {
+    filter: brightness(0%);
+  }
+}
+
 .SplashPage {
   width: 100vw;
   height: 100vh;
@@ -52,6 +66,8 @@
     padding-top: 100px;
     text-align: center;
     margin-left: -50px;
+    z-index: 2;
+    position: relative;
   }
 
   .title-row {
@@ -61,9 +77,10 @@
     -webkit-text-fill-color: transparent;
     animation-fill-mode: both;
     font-family: 'ARCADE';
-    margin-top: -40px;
-    font-size: 230px;
-    //text-transform: uppercase;
+    margin-top: -80px;
+    font-size: 200px;
+    text-transform: uppercase;
+    letter-spacing: -3px;
 
     &:nth-of-type(2) {
       animation-delay: 0.2s;
@@ -74,13 +91,13 @@
     animation: slide-in 0.5s linear;
     font-family: 'PressStart2P', monospace;
     margin-left: 30px;
-    font-size: 160px;
+    font-size: 180px;
     background: $text-bg-blue-to-purple-1;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation-fill-mode: both;
     position: relative;
-    top: -25px;
+    top: -20px;
     display: inline-block;
     width: 350px;
     margin-right: -170px;
@@ -96,13 +113,59 @@
     position: absolute;
     bottom: 40px;
     text-align: center;
+    animation-delay: 1.5s;
+    visibility: hidden;
     width: 100%;
+    z-index: 1;
   }
 
   .camera-renderer {
     border: none;
-    width: 1200px;
-    height: 600px;
     margin: 0 auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 1000px;
+    bottom: -10vh;
+    top: 50vh;
+    z-index: 1;
+  }
+
+  .silhouette-layer {
+    opacity: 0.2;
+
+    .console {
+      position: absolute;
+      width: 100vw;
+      bottom: -200px;
+      left: 0;
+      filter: brightness(0%);
+    }
+
+    .palm {
+      position: absolute;
+      height: 80vh;
+      bottom: 0;
+      filter: brightness(0%);
+
+      &.left {
+        left: 0;
+      }
+
+      &.right {
+        right: 0;
+        transform: scaleX(-1);
+      }
+    }
+  }
+
+  &.is-starting {
+    .palm,
+    .console {
+      animation: flash-white 0.15s linear 2;
+      animation-timing-function: step-start;
+      animation-fill-mode: both;
+    }
   }
 }
+

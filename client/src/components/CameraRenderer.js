@@ -3,7 +3,7 @@
 import React from 'react';
 import './CameraRenderer.css';
 
-const RETRO_SCREEN_RESOLUTION = 320; //Most common Nintendo 64 resolution
+const RETRO_SCREEN_WIDTH = 320; //Most common Nintendo 64 resolution
 
 class CameraRenderer extends React.Component {
 
@@ -46,13 +46,14 @@ class CameraRenderer extends React.Component {
     this.$camera.lookAt( this.$scene.position );
 
     window.addEventListener( 'resize', this.onResize );
+    this.step = this.step.bind(this);
     this.step();
   }
 
   getScreenDims() {
     const { width, height } = this.$el.getBoundingClientRect();
     const aspectRatio = width/height;
-    const screenWidth = Math.min(RETRO_SCREEN_RESOLUTION, width);
+    const screenWidth = Math.min(RETRO_SCREEN_WIDTH, width);
     const screenHeight = screenWidth / aspectRatio;
 
     return {
@@ -78,7 +79,7 @@ class CameraRenderer extends React.Component {
     this.$renderer.setSize( screenWidth, screenHeight );
   }
 
-  step = () => {
+  step() {
     requestAnimationFrame(this.step)
     
     this.$renderer.render(
