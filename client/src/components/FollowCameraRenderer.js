@@ -8,7 +8,7 @@ class FollowCameraRenderer extends CameraRenderer {
 
   constructor( props ) {
     super( props );
-    this.$followObject = this.props.driveScene.vehicles[this.props.vehicleIndex].$chassis;
+    this.$followObject = this.props.scene.vehicles[this.props.vehicleIndex].$chassis;
   }
 
   stepFollow() {

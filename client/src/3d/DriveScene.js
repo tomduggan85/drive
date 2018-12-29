@@ -59,11 +59,7 @@ class DriveScene {
   }
 
   createLights() {    
-    this.$scene.add( new THREE.AmbientLight( 0x404040, 15 ));
-    
-    const pointLight = new THREE.PointLight( 0x404040, 10 );
-    pointLight.position.set(20, 20, 0);
-    this.$scene.add( pointLight );
+    this.$scene.add( new THREE.AmbientLight( 0x404040, 17 ));
   }
 
   onSocketMessage = ( message ) => {

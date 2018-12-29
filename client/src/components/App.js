@@ -4,6 +4,7 @@ import './App.css';
 import DriveMatchPage from './DriveMatchPage';
 import SplashPage from './SplashPage';
 import DriveRemoteControlPage from './DriveRemoteControlPage';
+import SelectVehiclePage from './SelectVehiclePage';
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,6 +19,7 @@ class App extends Component {
         <Switch>
           <Route path='/match/:matchId/remote' component={DriveRemoteControlPage}/>
           <Route path='/match/:matchId' component={DriveMatchPage}/>
+          <Route path='/select-vehicle' component={SelectVehiclePage} />
           <Route component={SplashPage} />
         </Switch>
       </Router>

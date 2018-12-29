@@ -1,0 +1,172 @@
+@import 'src/shared-styles.scss';
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100vh);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100vw);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes blink {
+  0% {
+    visibility: hidden;
+  }
+
+  49% {
+    visibility: hidden;
+  }
+
+  50% {
+    visibility: visible;
+  }
+
+  100% {
+    visibility: visible;
+  }
+}
+
+@keyframes flash-white {
+  0% {
+    filter: brightness(0%);
+  }
+
+  50% {
+    filter: brightness(100%);
+  }
+
+  100% {
+    filter: brightness(0%);
+  }
+}
+
+.SplashPage {
+  width: 100vw;
+  height: 100vh;
+  cursor: pointer;
+  background: $sunset-bg-4;
+  text-align: center;
+  overflow: hidden;
+
+  font-family: 'Nineteen Ninety Seven', monospace;
+
+  .title-section {
+    padding-top: 140px;
+    text-align: center;
+    margin-left: -50px;
+    z-index: 2;
+    position: relative;
+  }
+
+  .title-row {
+    animation: slide-up 0.3s linear;
+    background: $text-bg-orange-twotone-2;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation-fill-mode: both;
+    font-family: 'ARCADE';
+    margin-top: -80px;
+    font-size: 200px;
+    text-transform: uppercase;
+    letter-spacing: -3px;
+
+    &:nth-of-type(2) {
+      animation-delay: 0.2s;
+    }
+  }
+
+  .numeral {
+    font-weight: bold;
+    animation: slide-in 0.5s linear;
+    font-family: 'PressStart2P', monospace;
+    margin-left: 20px;
+    font-size: 180px;
+    background: $text-bg-blue-to-purple-1;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation-fill-mode: both;
+    position: relative;
+    top: -20px;
+    display: inline-block;
+    width: 350px;
+    margin-right: -160px;
+    
+    animation-delay: 0.2s;
+  }
+
+  .start {
+    font-size: 30px;
+    animation: blink 1.5s infinite;
+    color: #fff;
+    text-shadow: 4px 4px 0px #000;
+    position: absolute;
+    bottom: 40px;
+    text-align: center;
+    animation-delay: 1.5s;
+    visibility: hidden;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .camera-renderer {
+    border: none;
+    margin: 0 auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 1000px;
+    bottom: -10vh;
+    top: 50vh;
+    z-index: 1;
+  }
+
+  .silhouette-layer {
+    opacity: 0.2;
+
+    .console {
+      position: absolute;
+      width: 100vw;
+      bottom: -200px;
+      left: 0;
+      filter: brightness(0%);
+    }
+
+    .palm {
+      position: absolute;
+      height: 80vh;
+      bottom: 0;
+      filter: brightness(0%);
+
+      &.left {
+        left: 0;
+      }
+
+      &.right {
+        right: 0;
+        transform: scaleX(-1);
+      }
+    }
+  }
+
+  &.is-starting {
+    .palm,
+    .console {
+      animation: flash-white 0.15s linear 2;
+      animation-timing-function: step-start;
+      animation-fill-mode: both;
+    }
+  }
+}
+

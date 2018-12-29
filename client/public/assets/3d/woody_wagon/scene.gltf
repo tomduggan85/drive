@@ -806,8 +806,6 @@
   ],
   "materials": [
     {
-      "alphaMode": "BLEND",
-      "doubleSided": true,
       "emissiveFactor": [
         0,
         0,

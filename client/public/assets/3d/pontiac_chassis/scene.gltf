@@ -161,8 +161,6 @@
     ],
     "materials" : [
         {
-            "alphaMode": "BLEND",
-            "doubleSided": true,
             "name" : "Material_69",
             "normalTexture" : {
                 "index" : 0,
