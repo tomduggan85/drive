@@ -14,3 +14,10 @@ $text-bg-orange-to-blue-1: -webkit-linear-gradient(top, #ffffff 0%,#ffffff 17%,#
 $text-bg-orange-to-blue-2: -webkit-linear-gradient(top, #ffffff 0%,#ffffff 22%,#ffb76b 32%,#d838ea 42%,#7d00dd 55%,#007af4 68%,#ffffff 100%);
 $text-bg-blue-to-purple-1: -webkit-linear-gradient(top, #345cc9 1%,#ffffff 39%,#ffb76b 56%,#d838ea 70%,#7d00dd 100%,#7d00dd 100%);
 $text-bg-blue-to-purple-2: -webkit-linear-gradient(top, #345cc9 17%,#ffffff 39%,#ffb76b 56%,#d838ea 70%,#7d00dd 100%,#7d00dd 100%);
+
+
+@mixin gradientText($gradient) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

@@ -7,37 +7,86 @@
   text-align: center;
 
   font-family: 'Nineteen Ninety Seven', monospace;
-}
 
-.SelectVehiclePage .start-match {
-  border: 5px solid #000;
-  width: 300px;
-  cursor: pointer;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-  font-size: 30px;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin: 0 auto;
-}
+  .title {
+    padding-top: 40px;
+    font-size: 30px;
+  }
 
-.SelectVehiclePage .start:hover {
-  opacity: 0.7;
-}
+  .flex-container {
+    display: flex;
+  }
 
-.SelectVehiclePage .vehicle-selector {
-  display: inline-block;
-  margin: 40px;
-  padding: 40px;
-  background: #eee;
-}
+  .vehicle-tiles {
+    width: 650px;
+  }
+    
+  .vehicle-tile {
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+    box-sizing: border-box;
+    margin: 2px;
+    float: left;
+    border: 4px solid #222;
+    border-top-color: #777;
+    border-left-color: #777;
+    background: rgba(#444, 0.7);
+    overflow: hidden;
 
-.SelectVehiclePage .vehicle-type {
-  cursor: pointer;
-  padding: 3px;
-}
+    img {
+      width: 220px;
+      height: 220px;
+      margin-left: -10px;
+      margin-top: -10px;
+      filter: grayscale(80%) brightness(70%);
+    }
 
-.SelectVehiclePage .vehicle-type.selected {
-  font-weight: bold;
+    &:hover {
+      border: 8px solid #ff0057;
+      background: $text-bg-orange-twotone-2;
+
+      img {
+        filter: none;
+        margin-left: -14px;
+        margin-top: -14px;
+      }
+    }
+  }
+
+  &.player-2 {
+    .flex-container {
+      flex-direction: row-reverse;
+    }
+
+    .vehicle-tile:hover {
+      border: 8px solid #5754cc;
+    }
+  }
+
+  .vehicle-info {
+    
+    .previews {
+      position: relative;
+      width: 800px;
+      height: 400px;
+    }
+
+    .preview {
+      position: absolute;
+      top: 0;
+      left: 0;
+      visibility: hidden;
+
+      &.is-active {
+        visibility: visible;
+      }
+    }
+
+    .camera-renderer {
+      border: none;
+      width: 800px;
+      height: 400px;
+    }
+  }
 }

@@ -72,9 +72,7 @@
 
   .title-row {
     animation: slide-up 0.3s linear;
-    background: $text-bg-orange-twotone-2;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    @include gradientText($text-bg-orange-twotone-2);
     animation-fill-mode: both;
     font-family: 'ARCADE';
     margin-top: -80px;
@@ -93,9 +91,7 @@
     font-family: 'PressStart2P', monospace;
     margin-left: 20px;
     font-size: 180px;
-    background: $text-bg-blue-to-purple-1;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    @include gradientText($text-bg-blue-to-purple-1);
     animation-fill-mode: both;
     position: relative;
     top: -20px;

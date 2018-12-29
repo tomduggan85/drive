@@ -1,6 +1,6 @@
 import React from 'react';
 import './SplashPage.scss';
-import StaticVehicleScene from '../3d/StaticVehicleScene';
+import StaticVehicleScene, { ANIMATION_TYPES } from '../3d/StaticVehicleScene';
 import CameraRenderer from './CameraRenderer';
 import classnames from 'classnames';
 
@@ -14,7 +14,8 @@ class SplashPage extends React.Component {
     super( props );
   
     this.scene = new StaticVehicleScene({
-      vehicleType: 'its_a_volvo'
+      vehicleType: 'its_a_volvo',
+      animationType: ANIMATION_TYPES.SPLASH_SPIN,
     });
   }
 
@@ -24,7 +25,7 @@ class SplashPage extends React.Component {
 
     setTimeout(() => {
       history.push('/select-vehicle');
-    }, 400 );
+    }, 280 );
   }
 
   render() {

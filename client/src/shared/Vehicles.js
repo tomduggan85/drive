@@ -22,6 +22,7 @@ export const VEHICLE_DEFS = {
       scale: 7.5,
       position: {x: -1.9, y: -3.5, z: -1.2},
       rotation: {x: 0, y: Math.PI / 2, z: 0},
+      staticSceneOffset: {x: -2.8, y: -1.8, z: -1.2 },
     },
     wheelAsset: {
       uri: '/assets/3d/wagon_wheel/scene.gltf',
@@ -60,6 +61,7 @@ export const VEHICLE_DEFS = {
       scale: 0.069,
       position: {x: -0.3, y: -3.8, z: 0},
       rotation: {x: 0, y: 0, z: 0},
+      staticSceneOffset: {x: -1.6, y: -2.2, z: 0 },
     },
     wheelAsset: {
       uri: '/assets/3d/lada_wheel/scene.gltf',
@@ -98,6 +100,7 @@ export const VEHICLE_DEFS = {
       scale: 0.048,
       position: {x: 1.5, y: -2, z: 0},
       rotation: {x: 0, y: Math.PI / 2, z: 0},
+      staticSceneOffset: {x: 0, y: -1.3, z: 0 },
     },
     wheelAsset: {
       uri: '/assets/3d/lada_wheel/scene.gltf',
@@ -136,6 +139,7 @@ export const VEHICLE_DEFS = {
       scale: 0.147,
       position: {x: 1, y: -2.9, z: 0.45},
       rotation: {x: 0, y: 0, z: 0},
+      staticSceneOffset: {x: 0, y: -1.9, z: 0.5 },
     },
     wheelAsset: {
       uri: '/assets/3d/pontiac_wheel/scene.gltf',
@@ -174,6 +178,7 @@ export const VEHICLE_DEFS = {
       scale: 4.75,
       position: {x: 12.2, y: -3.4, z: -6.4},
       rotation: {x: 0, y: Math.PI / 2, z: 0},
+      staticSceneOffset: {x: 11, y: -2, z: -6.4 },
     },
     wheelAsset: {
       uri: '/assets/3d/woody_wagon_wheel/scene.gltf',
