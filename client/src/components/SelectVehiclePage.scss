@@ -19,16 +19,45 @@
   width: 100vw;
   height: 100vh;
   background: $sunset-bg-4;
-  text-align: center;
+  
   font-family: 'Nineteen Ninety Seven', monospace;
+
 
   .title {
     padding-top: 40px;
-    font-size: 30px;
+    padding-bottom: 40px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+
+    .player {
+      font-weight: bold;
+      @include gradientText($text-bg-orange-twotone-2);
+      font-size: 55px;
+      text-transform: uppercase;
+      display: inline-block;
+      text-shadow: none;
+      animation: blink 1.5s infinite;
+    }
+
+    .directive {
+      font-size: 55px;
+      color: #ddd;
+      //text-shadow: 4px 4px 0px #000;
+      line-height: 55px;
+      text-transform: uppercase;
+      margin-left: 20px;
+      @include gradientText($text-bg-orange-twotone-2);
+
+
+    }
   }
 
   .flex-container {
     display: flex;
+    position: relative;
+    z-index: 2
   }
 
   .vehicle-tiles {
@@ -45,7 +74,7 @@
     border: 4px solid #777;
     border-top-color: #222;
     border-left-color: #222;
-    background: rgba(#444, 0.7);
+    background: rgba(#444, 0.5);
     overflow: hidden;
 
     &.selected {
@@ -87,11 +116,26 @@
   }
 
   .vehicle-info {
+
+    .stats {
+      color: #eee;
+      text-shadow: 3px 3px 0px #000;
+      font-size: 20px;
+      text-align: center;
+
+      .vehicle-name {
+        font-size: 40px;
+        @include gradientText($text-bg-blue-to-purple-2);
+        text-shadow: none;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+    }
     
     .previews {
       position: relative;
-      width: 800px;
-      height: 400px;
+      width: 900px;
+      height: 450px;
     }
 
     .preview {
@@ -99,6 +143,8 @@
       top: 0;
       left: 0;
       visibility: hidden;
+      width: 100%;
+      height: 100%;
 
       &.is-active {
         visibility: visible;
@@ -107,8 +153,8 @@
 
     .camera-renderer {
       border: none;
-      width: 800px;
-      height: 400px;
+      width: 100%;
+      height: 100%;
     }
   }
 }

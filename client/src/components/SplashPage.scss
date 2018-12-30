@@ -20,24 +20,6 @@
   }
 }
 
-@keyframes blink {
-  0% {
-    visibility: hidden;
-  }
-
-  49% {
-    visibility: hidden;
-  }
-
-  50% {
-    visibility: visible;
-  }
-
-  100% {
-    visibility: visible;
-  }
-}
-
 .SplashPage {
   width: 100vw;
   height: 100vh;

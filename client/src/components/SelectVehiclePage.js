@@ -81,7 +81,10 @@ class SelectVehiclePage extends React.Component {
     return (
       <div className={`SelectVehiclePage player-${ displayedPlayer }`}>
         <PalmSilhouette />
-        <div className='title'>Player {displayedPlayer} choose your vehicle</div>
+        <div className='title'>
+          <div className='player'>Player {displayedPlayer}</div>
+          <div className='directive'>choose your car</div>
+        </div>
         <div className='flex-container'>
           <div className='vehicle-info'>
             <div className='previews'>
@@ -99,9 +102,9 @@ class SelectVehiclePage extends React.Component {
               ))}
             </div>
             <div className='stats'>
-              <div>{ previewedVehicle }</div>
+              <div className='vehicle-name'>{ previewedVehicle }</div>
               <div>HP: {previewedVehicleDef.stats.hp}</div>
-              <div>Top speed: {previewedVehicleDef.stats.topsSeed} mph</div>
+              <div>Top speed: {previewedVehicleDef.stats.topSpeed} mph</div>
               <div>0-60: {previewedVehicleDef.stats.zero60} s</div>
               <div>Weight: {previewedVehicleDef.stats.weight} lbs.</div>
             </div>

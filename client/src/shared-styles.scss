@@ -21,3 +21,21 @@ $text-bg-blue-to-purple-2: -webkit-linear-gradient(top, #345cc9 17%,#ffffff 39%,
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+@keyframes blink {
+  0% {
+    visibility: hidden;
+  }
+
+  49% {
+    visibility: hidden;
+  }
+
+  50% {
+    visibility: visible;
+  }
+
+  100% {
+    visibility: visible;
+  }
+}
