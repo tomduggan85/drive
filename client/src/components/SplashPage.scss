@@ -38,20 +38,6 @@
   }
 }
 
-@keyframes flash-white {
-  0% {
-    filter: brightness(0%);
-  }
-
-  50% {
-    filter: brightness(100%);
-  }
-
-  100% {
-    filter: brightness(0%);
-  }
-}
-
 .SplashPage {
   width: 100vw;
   height: 100vh;
@@ -126,43 +112,6 @@
     bottom: -10vh;
     top: 50vh;
     z-index: 1;
-  }
-
-  .silhouette-layer {
-    opacity: 0.2;
-
-    .console {
-      position: absolute;
-      width: 100vw;
-      bottom: -200px;
-      left: 0;
-      filter: brightness(0%);
-    }
-
-    .palm {
-      position: absolute;
-      height: 80vh;
-      bottom: 0;
-      filter: brightness(0%);
-
-      &.left {
-        left: 0;
-      }
-
-      &.right {
-        right: 0;
-        transform: scaleX(-1);
-      }
-    }
-  }
-
-  &.is-starting {
-    .palm,
-    .console {
-      animation: flash-white 0.15s linear 2;
-      animation-timing-function: step-start;
-      animation-fill-mode: both;
-    }
   }
 }
 

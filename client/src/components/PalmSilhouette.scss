@@ -1,0 +1,52 @@
+
+@keyframes flash-palm-silhouette {
+  0% {
+    filter: brightness(0%);
+  }
+
+  50% {
+    filter: brightness(100%);
+  }
+
+  100% {
+    filter: brightness(0%);
+  }
+}
+
+.PalmSilhouette {
+  opacity: 0.2;
+
+  .console {
+    position: absolute;
+    width: 100vw;
+    bottom: -200px;
+    left: 0;
+    filter: brightness(0%);
+  }
+
+  .palm {
+    position: absolute;
+    height: 80vh;
+    bottom: 0;
+    filter: brightness(0%);
+
+    &.left {
+      left: 0;
+    }
+
+    &.right {
+      right: 0;
+      transform: scaleX(-1);
+    }
+  }
+
+
+  &.is-flashing {
+    .palm,
+    .console {
+      animation: flash-palm-silhouette 0.15s linear 2;
+      animation-timing-function: step-start;
+      animation-fill-mode: both;
+    }
+  }
+}

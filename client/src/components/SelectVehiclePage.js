@@ -8,8 +8,15 @@ import './SelectVehiclePage.scss';
 import classnames from 'classnames'
 import StaticVehicleScene, { ANIMATION_TYPES } from '../3d/StaticVehicleScene';
 import CameraRenderer from './CameraRenderer';
+import PalmSilhouette from './PalmSilhouette';
 
 const PLAYER_COUNT = 2;
+
+const waitFor = ( time ) => {
+  return new Promise( resolve => {
+    setTimeout( resolve, time )
+  });
+};
 
 class SelectVehiclePage extends React.Component {
 
@@ -37,10 +44,17 @@ class SelectVehiclePage extends React.Component {
     this.props.history.push( `/match/${ matchId }?v1=${ selections[0] }&v2=${ selections[1] }` );
   }
 
-  selectVehicle = async ( vehicleType ) => {
+  selectVehicle = async ( vehicleType, e ) => {
     const selections = [...this.state.selections, vehicleType];
+    e.persist();
+    const { currentTarget } = e;
+    currentTarget.classList.add('selected');
     await this.setState({ selections });
     
+    
+    await waitFor( 300 );
+    currentTarget.classList.remove('selected');
+
     if ( selections.length === PLAYER_COUNT ) {
       this.startMatch();
     } else {
@@ -62,9 +76,11 @@ class SelectVehiclePage extends React.Component {
     const displayedPlayer = this.state.currentPlayer + 1;
     const { scenes } = this;
     const { previewedVehicle } = this.state;
+    const previewedVehicleDef = VEHICLE_DEFS[ previewedVehicle ];
 
     return (
       <div className={`SelectVehiclePage player-${ displayedPlayer }`}>
+        <PalmSilhouette />
         <div className='title'>Player {displayedPlayer} choose your vehicle</div>
         <div className='flex-container'>
           <div className='vehicle-info'>
@@ -83,11 +99,11 @@ class SelectVehiclePage extends React.Component {
               ))}
             </div>
             <div className='stats'>
-              Stats<br/>
-              Stats<br/>
-              Stats<br/>
-              Stats<br/>
-              Stats<br/>
+              <div>{ previewedVehicle }</div>
+              <div>HP: {previewedVehicleDef.stats.hp}</div>
+              <div>Top speed: {previewedVehicleDef.stats.topsSeed} mph</div>
+              <div>0-60: {previewedVehicleDef.stats.zero60} s</div>
+              <div>Weight: {previewedVehicleDef.stats.weight} lbs.</div>
             </div>
           </div>
           <div className='vehicle-tiles'>
@@ -96,7 +112,7 @@ class SelectVehiclePage extends React.Component {
                 key={i}
                 className='vehicle-tile'
                 onMouseEnter={() => this.previewVehicle( vehicleType )}
-                onClick={() => this.selectVehicle( vehicleType )}
+                onClick={(e) => this.selectVehicle( vehicleType, e )}
               >
                 <img src={`/assets/images/vehicles/${ vehicleType }.png`} alt={vehicleType} />
               </div>

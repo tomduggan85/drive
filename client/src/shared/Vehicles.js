@@ -37,6 +37,12 @@ export const VEHICLE_DEFS = {
     suspensionTravel: 3,
     suspensionStiffness: 200000,
     suspensionDamping: 0.000002,
+    stats: {
+      weight: 3000,
+      zero60: 2.3,
+      hp: 380,
+      topSpeed: 184,
+    },
   },
 
   lada: {
@@ -76,6 +82,12 @@ export const VEHICLE_DEFS = {
     suspensionTravel: 3,
     suspensionStiffness: 180000,
     suspensionDamping: 0.0000022,
+    stats: {
+      weight: 2500,
+      zero60: 2.8,
+      hp: 285,
+      topSpeed: 168,
+    },
   },
 
   '50s': {
@@ -115,6 +127,12 @@ export const VEHICLE_DEFS = {
     suspensionTravel: 3,
     suspensionStiffness: 180000,
     suspensionDamping: 0.0000022,
+    stats: {
+      weight: 4200,
+      zero60: 3.3,
+      hp: 350,
+      topSpeed: 148,
+    },
   },
 
   'pontiac': {
@@ -154,6 +172,12 @@ export const VEHICLE_DEFS = {
     suspensionTravel: 3,
     suspensionStiffness: 180000,
     suspensionDamping: 0.0000022,
+    stats: {
+      weight: 2800,
+      zero60: 2.5,
+      hp: 290,
+      topSpeed: 170,
+    },
   },
 
   woodywagon: {
@@ -193,6 +217,12 @@ export const VEHICLE_DEFS = {
     suspensionTravel: 3,
     suspensionStiffness: 180000,
     suspensionDamping: 0.0000022,
+    stats: {
+      weight: 3200,
+      zero60: 2.5,
+      hp: 385,
+      topSpeed: 178,
+    },
   },
 };
 

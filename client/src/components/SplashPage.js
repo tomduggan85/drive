@@ -2,7 +2,7 @@ import React from 'react';
 import './SplashPage.scss';
 import StaticVehicleScene, { ANIMATION_TYPES } from '../3d/StaticVehicleScene';
 import CameraRenderer from './CameraRenderer';
-import classnames from 'classnames';
+import PalmSilhouette from './PalmSilhouette';
 
 class SplashPage extends React.Component {
   
@@ -32,12 +32,8 @@ class SplashPage extends React.Component {
     const { isStarting } = this.state;
 
     return (
-      <div className={classnames( 'SplashPage', { 'is-starting': isStarting })} onClick={this.start}>
-        <div className='silhouette-layer'>
-          <img src='/assets/images/palms.png' className='palm left' alt='palm'/>
-          <img src='/assets/images/palms.png' className='palm right' alt='palm'/>
-          <img src='/assets/images/console.png' className='console' alt='console'/>
-        </div>
+      <div className='SplashPage' onClick={this.start}>
+        <PalmSilhouette isFlashing={isStarting} />
         <div className='title-section'>
           <div className='title-row'>American</div>
           <div className='title-row'>Demolition<span className='numeral'>64</span></div>
