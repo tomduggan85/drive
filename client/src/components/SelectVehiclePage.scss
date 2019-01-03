@@ -25,7 +25,7 @@
 
   .title {
     padding-top: 40px;
-    padding-bottom: 40px;
+    padding-bottom: 60px;
     display: flex;
     width: 100%;
     justify-content: center;
@@ -47,7 +47,7 @@
       //text-shadow: 4px 4px 0px #000;
       line-height: 55px;
       text-transform: uppercase;
-      margin-left: 20px;
+      margin-left: 30px;
       @include gradientText($text-bg-orange-twotone-2);
 
 
