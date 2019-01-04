@@ -16,6 +16,11 @@ class PlayerVehicleDisplay extends React.Component {
             <div className='description'>cars left</div>
             <div className='value'>{CARS_LEFT}</div>
           </div>
+          <div className='damage-indicator'>
+            <img src='/assets/images/damage_indicator_engine.png' className='engine' />
+            <img src='/assets/images/damage_indicator_car.png' className='car' />
+          </div>
+
         </div>
       </div>
     );
