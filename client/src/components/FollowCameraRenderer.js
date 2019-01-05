@@ -25,15 +25,21 @@ class FollowCameraRenderer extends CameraRenderer {
     */
     const { position } = this.$followObject;
     const rotation = this.$followObject.rotation.y;
-    let targetRotation = -rotation - 0.4;
+    let targetRotation = -rotation// - 0.4;
 
     if ( Math.abs( this.$followObject.rotation.x)  > Math.PI/2 ) {
       //Above-mentioned range issues
       targetRotation = Math.PI + rotation;
     }
 
-    //const angularVelocity = this.$followObject.getAngularVelocity().y;
-    //targetRotation += angularVelocity * 0.15;
+    /*const angularVelocity = this.$followObject.getAngularVelocity().y;
+    const threshold = 0.5;
+    if (angularVelocity > threshold) {
+      targetRotation += (angularVelocity-threshold) * 0.25;
+    }
+    else if (angularVelocity < -threshold) {
+      targetRotation += (angularVelocity+threshold) * 0.25; 
+    }*/
     
     this.$camera.position.set(
       position.x + Math.cos(targetRotation) * -this.followDistance,
