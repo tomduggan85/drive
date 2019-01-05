@@ -3,7 +3,7 @@
 const GROUND_FRICTION = 3;
 const GROUND_RESTITUTION = 0.4;
 
-const ARENA_RADIUS = 200;
+const ARENA_RADIUS = 300;
 const WALL_SEGMENTS = 16;
 const WALL_HEIGHT = 20;
 const WALL_THICKNESS = 5;

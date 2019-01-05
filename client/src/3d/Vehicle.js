@@ -17,6 +17,8 @@ export class Vehicle {
     this.keys = props.keys;
     this.loader = new THREE.GLTFLoader();
 
+    this.followDistance = this.vehicleDef.followDistance;
+
     this.createChassis();
     this.createBody();
     this.createSuspension();

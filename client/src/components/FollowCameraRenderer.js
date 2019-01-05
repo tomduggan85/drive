@@ -1,14 +1,16 @@
 
 import CameraRenderer from './CameraRenderer'
 
-const FOLLOW_DIST = -45;
+const DEFAULT_FOLLOW_DIST = 45;
 const FOLLOW_HEIGHT = 15;
 
 class FollowCameraRenderer extends CameraRenderer {
 
   constructor( props ) {
     super( props );
-    this.$followObject = this.props.scene.vehicles[this.props.vehicleIndex].$chassis;
+    const vehicle = this.props.scene.vehicles[this.props.vehicleIndex];
+    this.$followObject = vehicle.$chassis;
+    this.followDistance = vehicle.followDistance || DEFAULT_FOLLOW_DIST
   }
 
   stepFollow() {
@@ -34,9 +36,9 @@ class FollowCameraRenderer extends CameraRenderer {
     //targetRotation += angularVelocity * 0.15;
     
     this.$camera.position.set(
-      position.x + Math.cos(targetRotation) * FOLLOW_DIST,
+      position.x + Math.cos(targetRotation) * -this.followDistance,
       position.y + FOLLOW_HEIGHT, 
-      position.z + Math.sin(targetRotation) * FOLLOW_DIST
+      position.z + Math.sin(targetRotation) * -this.followDistance
     );
 
     this.$camera.lookAt(position )
