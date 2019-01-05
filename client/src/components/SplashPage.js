@@ -14,7 +14,7 @@ class SplashPage extends React.Component {
     super( props );
   
     this.scene = new StaticVehicleScene({
-      vehicleType: 'its_a_volvo',
+      vehicleType: 'chicago_limo',
       animationType: ANIMATION_TYPES.SPLASH_SPIN,
     });
   }
