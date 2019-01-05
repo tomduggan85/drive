@@ -4,7 +4,8 @@ import { VEHICLE_DEFS } from '../shared/Vehicles';
 
 export const ANIMATION_TYPES = {
   SPLASH_SPIN: 'SPLASH_SPIN',
-  CONTINUOUS_SPIN: 'CONTINUOUS_SPIN'
+  CONTINUOUS_SPIN: 'CONTINUOUS_SPIN',
+  STATIC_SCREENSHOT: 'STATIC_SCREENSHOT',
 };
 
 const VEHICLE_DISPLAY_HEIGHT = 1.8;
@@ -17,8 +18,7 @@ class StaticVehicleScene {
 
     this.vehicleDef = VEHICLE_DEFS[ props.vehicleType ];
     this.animationType = props.animationType;
-    this.onLoad = props.onLoad;
-
+    
     this.createLights();
     this.createVehicle();
 
@@ -41,16 +41,18 @@ class StaticVehicleScene {
       }
     );
 
-    for ( let i = 0; i < 4; i++ ) {
+    this.vehicleDef.wheels.map( function( wheelDef ) {
+
       this.loader.load(
         wheelUri,
-        this.onWheelLoaded.bind( this, i ),
+        this.onWheelLoaded.bind( this, wheelDef ),
         undefined, //onProgress
         ( error ) => {
           console.error( error, `Error loading static wheel asset: ${ wheelUri }` );
         }
       );
-    }
+    
+    }.bind(this) )
   }
 
   onChassisLoaded = ( loadedObject ) => {
@@ -64,26 +66,20 @@ class StaticVehicleScene {
     this.$vehicle.add( asset );
   }
 
-  onWheelLoaded = ( wheelIndex, loadedObject ) => {
+  onWheelLoaded = ( wheelDef, loadedObject ) => {
     const { scene: asset } = loadedObject;
     const { wheelAsset: { scale, rotation, flip } } = this.vehicleDef;
+    const { x, z } = wheelDef
 
-    const x = -this.vehicleDef.wheelBase / 2 * (wheelIndex < 2 ? 1 : -1);
     const y = 0;
-    const z = -this.vehicleDef.trackWidth / 2 * (wheelIndex % 2 ? 1 : -1);
 
     asset.scale.set(scale, scale, scale)
-    if ( wheelIndex % 2 === 0 ) {
+    if ( z < 0 ) {
       asset.scale[ flip ] *= -1;
     }
     asset.position.set( x, y, z );
-    asset.rotation.set( Math.PI / 2 - rotation.x, rotation.y, rotation.z );//asset.rotation.set( Math.PI / 2, 0, 0 );
+    asset.rotation.set( Math.PI / 2 - rotation.x, rotation.y, rotation.z );
     this.$vehicle.add( asset );
-
-    if ( wheelIndex === 3  && this.onLoad) {
-      //Consider vehicle loaded once wheelIndex 3 is in the scene.
-      this.onLoad();
-    }
   }
 
   createLights() {    
@@ -96,7 +92,7 @@ class StaticVehicleScene {
     const ty = Date.now() / 3000;
 
     const rx = Math.sin(tx) * 0.2;
-    const ry = Math.sin(ty) * 1.0;
+    const ry = Math.sin(ty) * 0.7;
     
     this.$vehicle.rotation.x = rx;
     this.$vehicle.rotation.y = ry;
@@ -105,6 +101,10 @@ class StaticVehicleScene {
   stepContinuousSpin() {
     const ty = Date.now() / 1000;
     this.$vehicle.rotation.y = -ty;
+  }
+
+  setupStaticScreenshot() {
+   this.$vehicle.rotation.y = 1.25; 
   }
 
   step = () => {
@@ -119,6 +119,10 @@ class StaticVehicleScene {
 
         case ANIMATION_TYPES.CONTINUOUS_SPIN:
           this.stepContinuousSpin();
+          break;
+
+        case ANIMATION_TYPES.STATIC_SCREENSHOT:
+          this.setupStaticScreenshot();
           break;
 
         default:

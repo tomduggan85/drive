@@ -21,20 +21,7 @@ export class Vehicle {
     this.createBody();
     this.createSuspension();
 
-    /*
-      TODO: Change shape of this.wheels to allow for front-wheel-drive cars (where two of the
-      wheels both steer and drive, and two wheels have no powered function)
-    */
-    this.wheels = {
-      'F': {
-        'L': this.createWheel(true, true),
-        'R': this.createWheel(true, false),
-      },
-      'R': {
-        'L': this.createWheel(false, true),
-        'R': this.createWheel(false, false),
-      }
-    }
+    this.wheels = this.vehicleDef.wheels.map( this.createWheel );
 
     /*
       TODO: Move all scene objects ($chassis and wheels) by one single transformation matrix
@@ -193,11 +180,13 @@ export class Vehicle {
     }
   }
 
-  createWheel( isFront, isLeft ) {
-
-    const x = this.vehicleDef.wheelBase / 2 * (isFront ? 1 : -1);
+  createWheel = ( wheelDef ) => {
+    const { x, z, drive, steer } = wheelDef;
     const y = this.vehicleDef.rideHeight;
-    const z = this.vehicleDef.trackWidth / 2 * (isLeft ? -1 : 1);
+
+    if ( drive && steer ) {
+      throw new Error("Drive-and-steer is not yet supported by current ammo bindings");
+    }
 
     this.createWheelMaterialAndGeometry();
 
@@ -210,17 +199,17 @@ export class Vehicle {
     this.$scene.add( $wheel );
 
     let constraint;
-    if (isFront) {
-      //Front wheels use un-motorized DOF constraint which can turn freely (Z rotation) and uses limits to steer (Y rotation)
+    if ( steer ) {
+      //Steered wheels use un-motorized DOF constraint which can turn freely (Z rotation) and uses limits to steer (Y rotation)
       constraint = new Physijs.DOFConstraint(
         $wheel, this.$chassis, new THREE.Vector3( x, y, z )
       );
       this.$scene.addConstraint( constraint, { disableCollision: true } );
-      constraint.setAngularLowerLimit({ x: 0, y: 0, z: isFront ? 1 : 0 });
+      constraint.setAngularLowerLimit({ x: 0, y: 0, z: 1 });
       constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 }); 
     }
     else {
-      //Rear wheels use simple hinge constraint, which has ammo's motor API.
+      //Drive and unpowered wheels use simple hinge constraint, which has ammo's motor API.
       constraint = new Physijs.HingeConstraint(
         $wheel,
         this.$chassis,
@@ -232,9 +221,9 @@ export class Vehicle {
     }
 
     this.disableWheelCollisionWithBody( $wheel );
-    this.loadWheelAsset( $wheel, isFront, isLeft );
+    this.loadWheelAsset( $wheel, z < 0 );
     
-    return { $wheel, constraint }
+    return { $wheel, constraint, drive, steer }
   }
 
   disableWheelCollisionWithBody( $wheel ) {
@@ -254,7 +243,7 @@ export class Vehicle {
     dummyconstraint.setLinearUpperLimit({ x: 0, y: 0, z: 0 }); 
   }
 
-  loadWheelAsset( $wheel, isFront, isLeft ) {
+  loadWheelAsset( $wheel, isLeft ) {
     const { wheelAsset: { uri, scale, position, rotation, flip } } = this.vehicleDef;
 
     this.loader.load(
@@ -327,49 +316,50 @@ export class Vehicle {
 
   onForward() {
     const { maxVel, torque } = this.vehicleDef;
-    Object.values(this.wheels.R).forEach(({ constraint }) => {
-      //constraint.configureAngularMotor( 2, 1, 0, -maxVel, torque );
-      //constraint.enableAngularMotor( 2 );
-      constraint.enableAngularMotor( -maxVel, torque );
+    this.wheels.forEach(({ constraint, drive }) => {
+      if ( drive ) constraint.enableAngularMotor( -maxVel, torque );
     });
   }
 
   onReverse() {
     const { maxVel, torque } = this.vehicleDef;
-    Object.values(this.wheels.R).forEach(({ constraint }) => {
-      //constraint.configureAngularMotor( 2, 1, 0, maxVel, torque );
-      //constraint.enableAngularMotor( 2 );
-      constraint.enableAngularMotor( maxVel, torque );
+    this.wheels.forEach(({ constraint, drive }) => {
+      if ( drive ) constraint.enableAngularMotor( maxVel, torque );
     });
   }
 
   offGas() {
-    Object.values(this.wheels.R).forEach(({ constraint }) => {
-      //constraint.disableAngularMotor( 2 );
-      constraint.disableMotor();
+    this.wheels.forEach(({ constraint, drive }) => {
+      if ( drive ) constraint.disableMotor();
     });
   }
 
   onLeft() {
     const { steerAngle } = this.vehicleDef;
-    Object.values(this.wheels.F).forEach(({ constraint }) => {
-      constraint.setAngularLowerLimit({ x: 0, y: steerAngle, z: 1 });
-      constraint.setAngularUpperLimit({ x: 0, y: steerAngle, z: 0 });
+    this.wheels.forEach(({ constraint, steer }) => {
+      if ( steer ) {
+        constraint.setAngularLowerLimit({ x: 0, y: steerAngle, z: 1 });
+        constraint.setAngularUpperLimit({ x: 0, y: steerAngle, z: 0 });
+      }
     });
   }
 
   onRight() {
     const { steerAngle } = this.vehicleDef;
-    Object.values(this.wheels.F).forEach(({ constraint }) => {
-      constraint.setAngularLowerLimit({ x: 0, y: -steerAngle, z: 1 });
-      constraint.setAngularUpperLimit({ x: 0, y: -steerAngle, z: 0 });
+    this.wheels.forEach(({ constraint, steer }) => {
+      if ( steer ) {
+        constraint.setAngularLowerLimit({ x: 0, y: -steerAngle, z: 1 });
+        constraint.setAngularUpperLimit({ x: 0, y: -steerAngle, z: 0 });
+      }
     });
   }
 
   offSteer() {
-    Object.values(this.wheels.F).forEach(({ constraint }) => {
-      constraint.setAngularLowerLimit({ x: 0, y: 0, z: 1 });
-      constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 });
+    this.wheels.forEach(({ constraint, steer }) => {
+      if ( steer ) {
+        constraint.setAngularLowerLimit({ x: 0, y: 0, z: 1 });
+        constraint.setAngularUpperLimit({ x: 0, y: 0, z: 0 });
+      }
     });
   }
 }
