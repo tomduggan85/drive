@@ -38,6 +38,13 @@ export class Vehicle {
     this.$body.position.set(props.position.x, props.position.y, props.position.z);
     this.$body.__dirtyPosition = true;
     this.$body.__dirtyRotation = true;
+
+    this.wheels.forEach(({ $wheel }) => {
+      $wheel.rotation.set(props.rotation.x, props.rotation.y, props.rotation.z);
+      $wheel.position.set(props.position.x, props.position.y, props.position.z);
+      $wheel.__dirtyPosition = true;
+      $wheel.__dirtyRotation = true;
+    })
     
     document.addEventListener( 'keydown', this.onKeyDown );
     document.addEventListener( 'keyup', this.onKeyUp );

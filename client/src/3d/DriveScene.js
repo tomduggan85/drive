@@ -4,6 +4,7 @@ import { Vehicle } from './Vehicle';
 import Arena from './Arena';
 
 const GRAVITY = -50;
+const ADD_DUMMY_VEHICLES = true;
 
 class DriveScene {
   
@@ -56,6 +57,86 @@ class DriveScene {
         }
       })
     ];
+
+    if ( ADD_DUMMY_VEHICLES ) {
+      this.vehicles.push(new Vehicle({
+        $scene: this.$scene,
+        vehicleType: 'pontiac',
+        position: {x: 0, y: 8, z: 60},
+        rotation: {x: 0, y: Math.PI/2, z: 0},
+        keys: {
+          left: 37,
+          right: 39,
+          forward: 38,
+          reverse: 40,
+        }
+      }));
+      
+      this.vehicles.push(new Vehicle({
+        $scene: this.$scene,
+        vehicleType: '50s',
+        position: {x: 0, y: 8, z: -60},
+        rotation: {x: 0, y: -Math.PI/2, z: 0},
+        keys: {
+          left: 65,
+          right: 68,
+          forward: 87,
+          reverse: 83,
+        }
+      }));
+
+      this.vehicles.push(new Vehicle({
+        $scene: this.$scene,
+        vehicleType: 'lada',
+        position: {x: 0, y: 8, z: 0},
+        rotation: {x: 0, y: 0, z: 0},
+        keys: {
+          left: 0,
+          right: 0,
+          forward: 0,
+          reverse: 0,
+        }
+      }));
+
+      this.vehicles.push(new Vehicle({
+        $scene: this.$scene,
+        vehicleType: 'its_a_volvo',
+        position: {x: 60, y: 8, z: 60},
+        rotation: {x: 0, y: 3 * Math.PI / 4, z: 0},
+        keys: {
+          left: 0,
+          right: 0,
+          forward: 0,
+          reverse: 0,
+        }
+      }));
+
+      this.vehicles.push(new Vehicle({
+        $scene: this.$scene,
+        vehicleType: 'woodywagon',
+        position: {x: -60, y: 8, z: 60},
+        rotation: {x: 0, y: -3 * Math.PI / 4, z: 0},
+        keys: {
+          left: 39,
+          right: 37,
+          forward: 38,
+          reverse: 40,
+        }
+      }));
+
+      this.vehicles.push(new Vehicle({
+        $scene: this.$scene,
+        vehicleType: 'lada',
+        position: {x: -60, y: 8, z: -60},
+        rotation: {x: 0, y: -3 * Math.PI / 4, z: 0},
+        keys: {
+          left: 39,
+          right: 37,
+          forward: 38,
+          reverse: 40,
+        }
+      }));
+    }
   }
 
   createLights() {    
