@@ -48,7 +48,7 @@ class FollowCameraRenderer extends CameraRenderer {
       position.z + Math.sin(targetRotation) * -this.followDistance
     );
 
-    const lookPosition = new THREE.Vector3( position.x, position.y + 5, position.z )
+    const lookPosition = new THREE.Vector3( position.x, position.y + 8, position.z )
     this.$camera.lookAt( lookPosition )
   }
 

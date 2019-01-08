@@ -3,12 +3,14 @@
 const GROUND_FRICTION = 3;
 const GROUND_RESTITUTION = 0.4;
 
-const ARENA_RADIUS = 250;
+const ARENA_RADIUS = 300;
 const WALL_SEGMENTS = 100;
 const WALL_HEIGHT = 12;
 const WALL_THICKNESS = 5;
 const WALL_FRICTION = 1;
 const WALL_RESTITUTION = 0.9;
+
+const ROOF_HEIGHT = 140;
 
 class Arena {
 
@@ -18,6 +20,7 @@ class Arena {
     this.createWall();
     this.createRail();
     this.createCrowd();
+    this.createRoof();
   }
 
   createGround() {
@@ -98,10 +101,9 @@ class Arena {
   createCrowd() {
     const crowdSections = WALL_SEGMENTS;
     const crowdStartRadius = ARENA_RADIUS + 35;
-    const crowdHeight = 25;
-    const crowdEndRadius = crowdStartRadius + 180;
-    const crowdEndHeight = 90;
-    const roofHeight = crowdEndHeight + 15;
+    const crowdHeight = 20;
+    const crowdEndRadius = crowdStartRadius + 220;
+    const crowdEndHeight = 100;
 
     const crowdTextureMap = new THREE.TextureLoader().load('/assets/images/crowd/crowd2.jpg');
     crowdTextureMap.wrapS = THREE.RepeatWrapping;
@@ -150,8 +152,8 @@ class Arena {
 
     const backConcretePoints = [
       new THREE.Vector2( crowdEndRadius, crowdEndHeight ),
-      new THREE.Vector2( crowdEndRadius + 20, crowdEndHeight ),
-      new THREE.Vector2( crowdEndRadius + 20, roofHeight ),
+      new THREE.Vector2( crowdEndRadius + 40, crowdEndHeight ),
+      new THREE.Vector2( crowdEndRadius + 40, ROOF_HEIGHT ),
     ];
 
     const $backConcrete = new THREE.Mesh(
@@ -212,6 +214,78 @@ class Arena {
       $strut.rotation.y = -angle;
 
       this.$scene.add( $strut );
+    }
+  }
+
+  createRoof() {
+    const texture = new THREE.TextureLoader().load('/assets/images/roof2.jpg');
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 40, 40 );
+    const size = ARENA_RADIUS * 4;
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+    });
+
+    const $roof = new THREE.Mesh(
+      new THREE.BoxGeometry( size, 2, size ),
+      material
+    );
+    $roof.position.y = ROOF_HEIGHT;
+
+    this.$scene.add( $roof );
+
+    const beamTexture = new THREE.TextureLoader().load('/assets/images/roof1.jpg');
+    beamTexture.wrapS = THREE.RepeatWrapping;
+    beamTexture.wrapT = THREE.RepeatWrapping;
+    beamTexture.repeat.set( 20, 20 );
+
+    const beamMaterial = new THREE.MeshBasicMaterial({
+      map: beamTexture,
+    });
+
+    const beams = 20;
+    for ( let i = 0; i < beams; i++ ) {
+      const beamDiameter = 1
+      const beamHeight = 3
+      const beamPos = -size/2 + i/beams * size
+      const $topBeam = new THREE.Mesh(
+        new THREE.BoxGeometry( size, beamHeight, beamDiameter ),
+        beamMaterial
+      );
+      const $bottomBeam = new THREE.Mesh(
+        new THREE.BoxGeometry( size, beamHeight, beamDiameter ),
+        beamMaterial
+      );
+
+      $topBeam.position.set(0, ROOF_HEIGHT - beamHeight/2, beamPos)
+      $bottomBeam.position.set(0, ROOF_HEIGHT - 18, beamPos)
+
+      this.$scene.add( $topBeam );
+      this.$scene.add( $bottomBeam );
+
+      const struts = 30;
+      for ( let j = 0; j < struts; j++ ) {
+        
+        const $strut = new THREE.Mesh(
+          new THREE.BoxGeometry( 1, 18, 1 ),
+          beamMaterial
+        );
+        
+        $strut.position.set(-size/2 + j/struts * size, ROOF_HEIGHT - 9, beamPos)
+
+        const $strut2 = new THREE.Mesh(
+          new THREE.BoxGeometry( 1, 42, 1 ),
+          beamMaterial
+        );
+        
+        $strut2.position.set(-20 - size/2 + j/struts * size, ROOF_HEIGHT - 10, beamPos)
+        $strut2.rotation.z = 1.25;
+        
+        this.$scene.add( $strut );
+        this.$scene.add( $strut2 );
+      }
     }
   }
 }
