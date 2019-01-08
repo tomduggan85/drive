@@ -1,3 +1,4 @@
+/* global THREE Physijs */
 
 import CameraRenderer from './CameraRenderer'
 
@@ -47,7 +48,8 @@ class FollowCameraRenderer extends CameraRenderer {
       position.z + Math.sin(targetRotation) * -this.followDistance
     );
 
-    this.$camera.lookAt(position )
+    const lookPosition = new THREE.Vector3( position.x, position.y + 5, position.z )
+    this.$camera.lookAt( lookPosition )
   }
 
   step() {

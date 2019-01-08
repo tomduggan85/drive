@@ -115,7 +115,7 @@ class DriveScene {
         $scene: this.$scene,
         vehicleType: 'woodywagon',
         position: {x: -60, y: 8, z: 60},
-        rotation: {x: 0, y: -3 * Math.PI / 4, z: 0},
+        rotation: {x: 0, y: -7 * Math.PI / 4, z: 0},
         keys: {
           left: 39,
           right: 37,
@@ -128,7 +128,7 @@ class DriveScene {
         $scene: this.$scene,
         vehicleType: 'lada',
         position: {x: -60, y: 8, z: -60},
-        rotation: {x: 0, y: -3 * Math.PI / 4, z: 0},
+        rotation: {x: 0, y: 7 * Math.PI / 4, z: 0},
         keys: {
           left: 39,
           right: 37,
