@@ -10,7 +10,7 @@ const WALL_THICKNESS = 5;
 const WALL_FRICTION = 1;
 const WALL_RESTITUTION = 0.9;
 
-const ROOF_HEIGHT = 140;
+const ROOF_HEIGHT = 150;
 
 class Arena {
 
@@ -19,6 +19,7 @@ class Arena {
     this.createGround();
     this.createWall();
     this.createRail();
+    this.createColumns();
     this.createCrowd();
     this.createRoof();
   }
@@ -100,24 +101,36 @@ class Arena {
 
   createCrowd() {
     const crowdSections = WALL_SEGMENTS;
-    const crowdStartRadius = ARENA_RADIUS + 35;
+    const crowdStartRadius = ARENA_RADIUS + 25;
     const crowdHeight = 20;
-    const crowdEndRadius = crowdStartRadius + 220;
-    const crowdEndHeight = 100;
+
+    //For non-overhang upper deck:
+    const lowerDeckEnd = [crowdStartRadius + 120, 60]
+    const upperDeckStart = [crowdStartRadius + 120, 68]
+    const deckHeight = 5
+
+    //for overhang upper deck:
+    //const lowerDeckEnd = [crowdStartRadius + 190, 80]
+    //const upperDeckStart = [crowdStartRadius + 70, 70]
+    //const deckHeight = 10
+
+    const crowdEndRadius = crowdStartRadius + 280;
+    const crowdEndHeight = 120;
 
     const crowdTextureMap = new THREE.TextureLoader().load('/assets/images/crowd/crowd2.jpg');
     crowdTextureMap.wrapS = THREE.RepeatWrapping;
     crowdTextureMap.wrapT = THREE.RepeatWrapping;
-    crowdTextureMap.repeat.set( 40, 3 );
+    crowdTextureMap.repeat.set( 25, 1 );
 
     const material = new THREE.MeshBasicMaterial({
       map: crowdTextureMap,
       side: THREE.DoubleSide
     });
     
+    //Lower deck crowd
     const crowdPoints = [
       new THREE.Vector2( crowdStartRadius, crowdHeight ),
-      new THREE.Vector2( crowdEndRadius, crowdEndHeight ),
+      new THREE.Vector2( lowerDeckEnd[0], lowerDeckEnd[1] ),
     ];
 
     const $crowd = new THREE.Mesh(
@@ -127,6 +140,7 @@ class Arena {
 
     this.$scene.add( $crowd );
 
+    //Front concrete ring
     const concreteTextureMap = new THREE.TextureLoader().load('/assets/images/concrete2.jpeg');
     concreteTextureMap.wrapS = THREE.RepeatWrapping;
     concreteTextureMap.wrapT = THREE.RepeatWrapping;
@@ -150,6 +164,34 @@ class Arena {
 
     this.$scene.add( $concrete );
 
+    //Upper deck
+    const upperDeckPoints = [
+      new THREE.Vector2( upperDeckStart[0], upperDeckStart[1] ),
+      new THREE.Vector2( crowdEndRadius, crowdEndHeight ),
+    ];
+
+    const $upperDeckCrowd = new THREE.Mesh(
+      new THREE.LatheGeometry( upperDeckPoints, crowdSections, Math.PI / WALL_SEGMENTS ),
+      material
+    );
+
+    this.$scene.add( $upperDeckCrowd );
+
+    //Connecting concrete between lower and upper
+    const connectingConcretePoints = [
+      new THREE.Vector2( lowerDeckEnd[0], lowerDeckEnd[1] ),
+      new THREE.Vector2( upperDeckStart[0], upperDeckStart[1] - deckHeight ),
+      new THREE.Vector2( upperDeckStart[0], upperDeckStart[1] ),
+    ];
+
+    const $connectingConcrete = new THREE.Mesh(
+      new THREE.LatheGeometry( connectingConcretePoints, crowdSections, Math.PI / WALL_SEGMENTS ),
+      concreteMaterial
+    );
+
+    this.$scene.add( $connectingConcrete );
+
+    //Back concrete ring to ceiling
     const backConcretePoints = [
       new THREE.Vector2( crowdEndRadius, crowdEndHeight ),
       new THREE.Vector2( crowdEndRadius + 40, crowdEndHeight ),
@@ -162,6 +204,74 @@ class Arena {
     );
 
     this.$scene.add( $backConcrete );
+
+    //lower deck stairs
+    this.createStairs(
+      [crowdStartRadius, crowdHeight],
+      lowerDeckEnd,
+      Math.PI,
+      16
+    )
+
+    //upper deck stairs
+    this.createStairs(
+      upperDeckStart,
+      [crowdEndRadius, crowdEndHeight],
+      Math.PI,
+      16
+    )
+  }
+
+  createStairs( from, to, startAngle, count ) {
+    const texture = new THREE.TextureLoader().load('/assets/images/stairs.png');
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 1, 3 );
+    const offsetHeight = 0.1;
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide
+    });
+    
+    const points = [
+      new THREE.Vector2( from[0], from[1] + offsetHeight ),
+      new THREE.Vector2( to[0], to[1] + offsetHeight ),
+    ];
+
+    for ( let i = 0; i < count; i++ ) {
+      const angle = startAngle + 2 * Math.PI / count * i;
+
+      const $stairs = new THREE.Mesh(
+        new THREE.LatheGeometry( points, 1, angle, 0.04 ),
+        material
+      );
+
+      this.$scene.add( $stairs );
+    }
+  }
+
+  createColumns() {
+    const columns = 12;
+    const texture = new THREE.TextureLoader().load('/assets/images/roof2.jpg');
+    const columnRadius = 350;
+    const columnSize = 3;
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+    });
+    for ( let i = 0; i < columns; i++ ) {
+      const $strut = new THREE.Mesh(
+        new THREE.BoxGeometry( columnSize, ROOF_HEIGHT, columnSize ),
+        material
+      );
+
+      const angle =0.1 + i / columns * 2 * Math.PI;
+      $strut.position.set( columnRadius * Math.cos( angle ), ROOF_HEIGHT/2, columnRadius * Math.sin( angle ) );
+      $strut.rotation.y = -angle;
+
+      this.$scene.add( $strut );
+    }
   }
 
   createRail() {
@@ -222,7 +332,7 @@ class Arena {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set( 40, 40 );
-    const size = ARENA_RADIUS * 4;
+    const size = ARENA_RADIUS * 6;
 
     const material = new THREE.MeshBasicMaterial({
       map: texture,
