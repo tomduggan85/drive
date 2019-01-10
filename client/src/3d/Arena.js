@@ -5,7 +5,7 @@ const GROUND_RESTITUTION = 0.4;
 
 const ARENA_RADIUS = 300;
 const WALL_SEGMENTS = 100;
-const WALL_HEIGHT = 12;
+const WALL_HEIGHT = 16;
 const WALL_THICKNESS = 5;
 const WALL_FRICTION = 1;
 const WALL_RESTITUTION = 0.9;
@@ -18,7 +18,7 @@ class Arena {
     this.$scene = props.$scene;
     this.createGround();
     this.createWall();
-    this.createRail(ARENA_RADIUS + 25, 23);
+    this.createRail(ARENA_RADIUS + 27, 23);
     this.createRail(ARENA_RADIUS + 145, 71);
     this.createColumns();
     this.createCrowd();
@@ -102,18 +102,12 @@ class Arena {
 
   createCrowd() {
     const crowdSections = WALL_SEGMENTS;
-    const crowdStartRadius = ARENA_RADIUS + 25;
+    const crowdStartRadius = ARENA_RADIUS + 27;
     const crowdHeight = 20;
 
-    //For non-overhang upper deck:
     const lowerDeckEnd = [crowdStartRadius + 120, 60]
     const upperDeckStart = [crowdStartRadius + 120, 68]
     const deckHeight = 5
-
-    //for overhang upper deck:
-    //const lowerDeckEnd = [crowdStartRadius + 190, 80]
-    //const upperDeckStart = [crowdStartRadius + 70, 70]
-    //const deckHeight = 10
 
     const crowdEndRadius = crowdStartRadius + 280;
     const crowdEndHeight = 120;
@@ -181,7 +175,6 @@ class Arena {
     //Connecting concrete between lower and upper
     const connectingConcretePoints = [
       new THREE.Vector2( lowerDeckEnd[0], lowerDeckEnd[1] ),
-      new THREE.Vector2( upperDeckStart[0], upperDeckStart[1] - deckHeight ),
       new THREE.Vector2( upperDeckStart[0], upperDeckStart[1] ),
     ];
 
@@ -288,10 +281,6 @@ class Arena {
       side: THREE.BackSide
     });
 
-    /*const rails = [
-      {height: 19, radius: 0.4},
-      {height: 16, radius: 0.4},
-    ];*/
     const rails = [
       {height: railHeight, radius: 0.3},
       {height: railHeight - 1.5, radius: 0.3},

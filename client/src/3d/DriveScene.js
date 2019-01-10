@@ -140,7 +140,7 @@ class DriveScene {
   }
 
   createLights() {    
-    this.$scene.add( new THREE.AmbientLight( 0x404040, 17 ));
+    this.$scene.add( new THREE.AmbientLight( 0x404040, 14 ));
   }
 
   onSocketMessage = ( message ) => {
