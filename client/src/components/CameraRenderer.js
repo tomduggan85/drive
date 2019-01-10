@@ -29,7 +29,7 @@ class CameraRenderer extends React.Component {
       40, //Field of view
       aspectRatio, //Aspect ratio
       0.1, //Near plane
-      1000 //Far plane
+      1500 //Far plane
     );
 
     this.$renderer = new THREE.WebGLRenderer({ alpha: !!this.props.transparent });

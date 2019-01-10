@@ -3,7 +3,7 @@
 const GROUND_FRICTION = 3;
 const GROUND_RESTITUTION = 0.4;
 
-const ARENA_RADIUS = 300;
+const ARENA_RADIUS = 350;
 const WALL_SEGMENTS = 100;
 const WALL_HEIGHT = 16;
 const WALL_THICKNESS = 5;
@@ -223,7 +223,7 @@ class Arena {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set( 1, 3 );
-    const offsetHeight = 0.1;
+    const offsetHeight = 0.5;
 
     const material = new THREE.MeshBasicMaterial({
       map: texture,
@@ -250,7 +250,7 @@ class Arena {
   createColumns() {
     const columns = 12;
     const texture = new THREE.TextureLoader().load('/assets/images/roof2.jpg');
-    const columnRadius = 350;
+    const columnRadius = ARENA_RADIUS + 50;
     const columnSize = 3;
 
     const material = new THREE.MeshBasicMaterial({
