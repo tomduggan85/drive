@@ -18,7 +18,8 @@ class Arena {
     this.$scene = props.$scene;
     this.createGround();
     this.createWall();
-    this.createRail();
+    this.createRail(ARENA_RADIUS + 25, 23);
+    this.createRail(ARENA_RADIUS + 145, 71);
     this.createColumns();
     this.createCrowd();
     this.createRoof();
@@ -220,6 +221,8 @@ class Arena {
       Math.PI,
       16
     )
+
+    this.createLightBoards([upperDeckStart[0] - 3, upperDeckStart[1] - 2])
   }
 
   createStairs( from, to, startAngle, count ) {
@@ -274,7 +277,7 @@ class Arena {
     }
   }
 
-  createRail() {
+  createRail(railSetRadius, railHeight) {
     const texture = new THREE.TextureLoader().load('/assets/images/metal.jpg');
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
@@ -285,18 +288,22 @@ class Arena {
       side: THREE.BackSide
     });
 
-    const rails = [
+    /*const rails = [
       {height: 19, radius: 0.4},
       {height: 16, radius: 0.4},
+    ];*/
+    const rails = [
+      {height: railHeight, radius: 0.3},
+      {height: railHeight - 1.5, radius: 0.3},
     ];
 
     rails.forEach(({ height, radius }) => {
       const points = [
-        new THREE.Vector2( ARENA_RADIUS, height - radius ),
-        new THREE.Vector2( ARENA_RADIUS - radius, height ),
-        new THREE.Vector2( ARENA_RADIUS, height + radius ),
-        new THREE.Vector2( ARENA_RADIUS + radius, height ),
-        new THREE.Vector2( ARENA_RADIUS, height - radius ),
+        new THREE.Vector2( railSetRadius, height - radius ),
+        new THREE.Vector2( railSetRadius - radius, height ),
+        new THREE.Vector2( railSetRadius, height + radius ),
+        new THREE.Vector2( railSetRadius + radius, height ),
+        new THREE.Vector2( railSetRadius, height - radius ),
       ];
 
       const $rail = new THREE.Mesh(
@@ -314,16 +321,60 @@ class Arena {
       map: strutTexture,
     });
     for ( let i = 0; i < struts; i++ ) {
+      const strutRadius = railSetRadius + 1
+      const strutHeight = rails[0].height
       const $strut = new THREE.Mesh(
-        new THREE.BoxGeometry( 0.6, 19, 0.6 ),
+        new THREE.BoxGeometry( 0.6, 10, 0.6 ),
         strutMaterial
       );
 
       const angle = i / struts * 2 * Math.PI;
-      $strut.position.set( ARENA_RADIUS * Math.cos( angle ), 10, ARENA_RADIUS * Math.sin( angle ) );
+      $strut.position.set( strutRadius * Math.cos( angle ), strutHeight - 5, strutRadius * Math.sin( angle ) );
       $strut.rotation.y = -angle;
 
       this.$scene.add( $strut );
+    }
+  }
+
+  createLightBoards([ radius, height ]) {
+    const texture = new THREE.TextureLoader().load('/assets/images/roof2.jpg');
+    const boardWidth = 40;
+    const boardHeight = 13;
+    const count = 8;
+    
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+    });
+
+    const lightMaterial = new THREE.MeshBasicMaterial({
+      color: 0xeeeeeee
+    });
+
+    for ( let i = 0; i < count; i++ ) {
+      const angle = -0.22 + i / count * 2 * Math.PI;
+      
+      const $board = new THREE.Mesh(
+        new THREE.BoxGeometry( boardWidth, boardHeight, 2 ),
+        material
+      );
+
+      for ( let lightX = 0; lightX < 9; lightX++ ) {
+        for ( let lightY = 0; lightY < 3; lightY++ ) {
+          const $light = new THREE.Mesh(
+            new THREE.CircleGeometry(2, 32),
+            lightMaterial
+          )
+          $light.rotation.x = Math.PI;
+          $light.position.set(-boardWidth/2 + 3 + lightX * 4.2, -4.5 + lightY * 4.2, -2);
+          $board.add($light);
+        }
+      }
+
+      $board.rotation.y = Math.PI/2 - angle;
+      $board.position.set( radius * Math.cos( angle ), height, radius * Math.sin( angle ) );
+
+      this.$scene.add( $board );
     }
   }
 
@@ -353,6 +404,10 @@ class Arena {
 
     const beamMaterial = new THREE.MeshBasicMaterial({
       map: beamTexture,
+    });
+
+    const lightMaterial = new THREE.MeshBasicMaterial({
+      color: 0xeeeeeee
     });
 
     const beams = 20;
@@ -395,6 +450,17 @@ class Arena {
         
         this.$scene.add( $strut );
         this.$scene.add( $strut2 );
+
+        if ( j % 2 === 0 ) {
+          const $light = new THREE.Mesh(
+            new THREE.CircleGeometry(3, 32),
+            lightMaterial
+          )
+
+          $light.rotation.x = Math.PI / 2;
+          $light.position.set($strut.position.x, $strut.position.y - 11, $strut.position.z)
+          this.$scene.add( $light );
+        }
       }
     }
   }
