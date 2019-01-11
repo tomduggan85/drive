@@ -5,12 +5,12 @@ const GROUND_RESTITUTION = 0.4;
 
 const ARENA_RADIUS = 350;
 const WALL_SEGMENTS = 100;
-const WALL_HEIGHT = 16;
+const WALL_HEIGHT = 13;
 const WALL_THICKNESS = 5;
 const WALL_FRICTION = 1;
 const WALL_RESTITUTION = 0.9;
 
-const ROOF_HEIGHT = 150;
+const ROOF_HEIGHT = 200;
 
 class Arena {
 
@@ -18,8 +18,6 @@ class Arena {
     this.$scene = props.$scene;
     this.createGround();
     this.createWall();
-    this.createRail(ARENA_RADIUS + 27, 23);
-    this.createRail(ARENA_RADIUS + 145, 71);
     this.createColumns();
     this.createCrowd();
     this.createRoof();
@@ -105,17 +103,16 @@ class Arena {
     const crowdStartRadius = ARENA_RADIUS + 27;
     const crowdHeight = 20;
 
-    const lowerDeckEnd = [crowdStartRadius + 120, 60]
-    const upperDeckStart = [crowdStartRadius + 120, 68]
-    const deckHeight = 5
+    const lowerDeckEnd = [crowdStartRadius + 180, 90]
+    const upperDeckStart = [lowerDeckEnd[0], lowerDeckEnd[1] + 8]
 
-    const crowdEndRadius = crowdStartRadius + 280;
-    const crowdEndHeight = 120;
+    const crowdEndRadius = crowdStartRadius + 360;
+    const crowdEndHeight = 170;
 
     const crowdTextureMap = new THREE.TextureLoader().load('/assets/images/crowd/crowd2.jpg');
     crowdTextureMap.wrapS = THREE.RepeatWrapping;
     crowdTextureMap.wrapT = THREE.RepeatWrapping;
-    crowdTextureMap.repeat.set( 25, 1 );
+    crowdTextureMap.repeat.set( 37, 1.7 );
 
     const material = new THREE.MeshBasicMaterial({
       map: crowdTextureMap,
@@ -216,6 +213,9 @@ class Arena {
     )
 
     this.createLightBoards([upperDeckStart[0] - 3, upperDeckStart[1] - 2])
+
+    this.createRail(crowdStartRadius, crowdHeight + 3);
+    this.createRail(upperDeckStart[0], upperDeckStart[1] + 3);
   }
 
   createStairs( from, to, startAngle, count ) {
@@ -442,11 +442,11 @@ class Arena {
 
         if ( j % 2 === 0 ) {
           const $light = new THREE.Mesh(
-            new THREE.CircleGeometry(3, 32),
+            new THREE.CylinderGeometry(2, 2, 2, 32),
             lightMaterial
           )
 
-          $light.rotation.x = Math.PI / 2;
+          //$light.rotation.x = Math.PI / 2;
           $light.position.set($strut.position.x, $strut.position.y - 11, $strut.position.z)
           this.$scene.add( $light );
         }
