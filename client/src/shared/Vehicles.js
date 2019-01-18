@@ -4,7 +4,8 @@ export const VEHICLE_DEFS = {
     wheelBase: 19,
     trackWidth: 11.5,
     maxVel: 200,
-    torque: 5500,
+    torque: 5200,
+    firstPersonPosition: [ 2, 4.8, 0 ],
     chassisMass: 4000,
     chassisShape: { offset: { x: -1, y: 1.6, z: 0 }, size: { x: 25, y: 3, z: 11} },
     bodyShapes: [
@@ -15,7 +16,7 @@ export const VEHICLE_DEFS = {
     ],
     bodyMass: 4000,
     wheelMass: 150,
-    tireFriction: 2.5,
+    tireFriction: 3,
     steerAngle: Math.PI / 8,
     chassisAsset: {
       uri: '/assets/3d/wagon_chassis/scene.gltf',
@@ -55,7 +56,8 @@ export const VEHICLE_DEFS = {
     wheelBase: 18,
     trackWidth: 11,
     maxVel: 200,
-    torque: 5500,
+    torque: 5200,
+    firstPersonPosition: [ 3.2, 4.8, 0 ],
     chassisShape: { offset: { x: -1, y: 1.8, z: 0 }, size: { x: 25, y: 3, z: 11} },
     chassisMass: 4000,
     bodyShapes: [
@@ -66,7 +68,7 @@ export const VEHICLE_DEFS = {
     ],
     bodyMass: 4000,
     wheelMass: 150,
-    tireFriction: 2.5,
+    tireFriction: 3,
     steerAngle: Math.PI / 8,
     chassisAsset: {
       uri: '/assets/3d/lada_chassis/scene.gltf',
@@ -106,7 +108,8 @@ export const VEHICLE_DEFS = {
     wheelBase: 19.5,
     trackWidth: 9.8,
     maxVel: 200,
-    torque: 5500,
+    torque: 5200,
+    firstPersonPosition: [ 3.5, 5.5, 0 ],
     chassisMass: 4000,
     chassisShape: { offset: { x: -1, y: 1.4, z: 0 }, size: { x: 30, y: 3, z: 10} },
     bodyShapes:  [
@@ -117,7 +120,7 @@ export const VEHICLE_DEFS = {
     ],
     bodyMass: 4000,
     wheelMass: 150,
-    tireFriction: 2.5,
+    tireFriction: 3,
     steerAngle: Math.PI / 8,
     chassisAsset: {
       uri: '/assets/3d/50s_chassis/scene.gltf',
@@ -157,7 +160,8 @@ export const VEHICLE_DEFS = {
     wheelBase: 19.0,
     trackWidth: 10.5,
     maxVel: 200,
-    torque: 5500,
+    torque: 5200,
+    firstPersonPosition: [ 2.5, 5, 0 ],
     chassisMass: 4000,
     chassisShape: { offset: { x: -1, y: 1.5, z: 0 }, size: { x: 25, y: 3, z: 10} },
     bodyShapes: [
@@ -168,7 +172,7 @@ export const VEHICLE_DEFS = {
     ],
     bodyMass: 4000,
     wheelMass: 150,
-    tireFriction: 2.5,
+    tireFriction: 3,
     steerAngle: Math.PI / 8,
     chassisAsset: {
       uri: '/assets/3d/pontiac_chassis/scene.gltf',
@@ -208,7 +212,8 @@ export const VEHICLE_DEFS = {
     wheelBase: 19.5,
     trackWidth: 10.5,
     maxVel: 200,
-    torque: 5500,
+    torque: 5200,
+    firstPersonPosition: [ 3.5, 4.8, 0 ],
     chassisMass: 4000,
     chassisShape: { offset: { x: -1, y: 1.5, z: 0 }, size: { x: 30, y: 3, z: 10} },
     bodyShapes: [
@@ -219,7 +224,7 @@ export const VEHICLE_DEFS = {
     ],
     bodyMass: 4000,
     wheelMass: 150,
-    tireFriction: 2.5,
+    tireFriction: 3,
     steerAngle: Math.PI / 8,
     chassisAsset: {
       uri: '/assets/3d/woody_wagon_chassis/scene.gltf',
@@ -259,6 +264,7 @@ export const VEHICLE_DEFS = {
     wheelBase: 32,
     trackWidth: 11.5,
     followDistance: 50,
+    firstPersonPosition: [ 9.5, 5, 0 ],
     maxVel: 200,
     torque: 4000,
     chassisMass: 4800,
@@ -271,7 +277,7 @@ export const VEHICLE_DEFS = {
     ],
     bodyMass: 4000,
     wheelMass: 150,
-    tireFriction: 2.5,
+    tireFriction: 3,
     steerAngle: Math.PI / 8,
     chassisAsset: {
       uri: '/assets/3d/limo_chassis/scene.gltf',

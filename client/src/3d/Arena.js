@@ -3,7 +3,7 @@
 const GROUND_FRICTION = 3;
 const GROUND_RESTITUTION = 0.4;
 
-const ARENA_RADIUS = 420;
+const ARENA_RADIUS = 380;
 const WALL_SEGMENTS = 100;
 const WALL_HEIGHT = 13;
 const WALL_THICKNESS = 5;
@@ -48,7 +48,7 @@ class Arena {
 
     this.$scene.add( $ground );
 
-    this.createGroundRing(ARENA_RADIUS - 35, 10, -18);
+    this.createGroundRing(ARENA_RADIUS - 40, 10, -18);
     this.createBerm();
   }
 
@@ -105,7 +105,7 @@ class Arena {
     const radius = 2500
 
     const $berm = new Physijs.SphereMesh(
-      new THREE.SphereGeometry(radius, 100, 100),
+      new THREE.SphereGeometry(radius, 400, 400),
       material,
       0 //Zero mass means immovable object
     );

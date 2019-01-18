@@ -18,6 +18,7 @@ export class Vehicle {
     this.loader = new THREE.GLTFLoader();
 
     this.followDistance = this.vehicleDef.followDistance;
+    this.firstPersonPosition = this.vehicleDef.firstPersonPosition;
 
     this.createChassis();
     this.createBody();

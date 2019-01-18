@@ -88,11 +88,16 @@ class CameraRenderer extends React.Component {
     );
   }
 
+  onClick = () => {
+
+  }
+
   render() {
     return (
       <div
         className='camera-renderer'
         ref={(el) => { this.$el = el; }}
+        onClick={this.onClick}
       />
     );
   }

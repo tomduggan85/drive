@@ -7,11 +7,15 @@ const FOLLOW_HEIGHT = 15;
 
 class FollowCameraRenderer extends CameraRenderer {
 
+  state = {
+    firstPersonMode: false
+  }
+
   constructor( props ) {
     super( props );
-    const vehicle = this.props.scene.vehicles[this.props.vehicleIndex];
-    this.$followObject = vehicle.$chassis;
-    this.followDistance = vehicle.followDistance || DEFAULT_FOLLOW_DIST
+    this.vehicle = this.props.scene.vehicles[this.props.vehicleIndex];
+    this.$followObject = this.vehicle.$chassis;
+    this.followDistance = this.vehicle.followDistance || DEFAULT_FOLLOW_DIST
   }
 
   stepFollow() {
@@ -53,8 +57,26 @@ class FollowCameraRenderer extends CameraRenderer {
   }
 
   step() {
-    this.stepFollow();
+    if ( !this.state.firstPersonMode ) {
+      this.stepFollow();
+    }
     super.step();
+  }
+
+  toggleFirstPersonMode() {
+    if ( this.state.firstPersonMode ) {
+      this.$scene.add( this.$camera );
+      this.setState({ firstPersonMode: false });
+    } else {
+      this.$camera.position.set( this.vehicle.firstPersonPosition[0], this.vehicle.firstPersonPosition[1], this.vehicle.firstPersonPosition[2] );
+      this.$camera.rotation.set( 0, -Math.PI / 2, 0 );
+      this.vehicle.$body.add( this.$camera );
+      this.setState({ firstPersonMode: true });
+    }
+  }
+
+  onClick = () => {
+    this.toggleFirstPersonMode()
   }
 }
 
