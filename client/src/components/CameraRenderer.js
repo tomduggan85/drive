@@ -3,7 +3,7 @@
 import React from 'react';
 import './CameraRenderer.css';
 
-const DOWNSAMPLE_RATIO = 4; // Reduce all camera screen resolutions by 4, effectively bringing a 1280px laptop down to 320px wide, the most common N64 resolution
+const DOWNSAMPLE_RATIO = 3; // Reduce all camera screen resolutions by 4, effectively bringing a 1280px laptop down to 320px wide, the most common N64 resolution
 
 class CameraRenderer extends React.Component {
 
