@@ -43,8 +43,77 @@ class Arena {
       material,
       0 //Zero mass means immovable object
     );
+    $ground.position.y = -10;
 
     this.$scene.add( $ground );
+
+    this.createGroundRing(ARENA_RADIUS - 40, 5, -18);
+    this.createGroundRing(ARENA_RADIUS - 100, 2.5, -21.5);
+
+    this.createBerm();
+  }
+
+  createGroundRing( ringRadius, slopeAngle, yPos ) {
+
+    const groundTextureMap = new THREE.TextureLoader().load('/assets/images/dirt4.jpg');
+    groundTextureMap.wrapS = THREE.RepeatWrapping;
+    groundTextureMap.wrapT = THREE.RepeatWrapping;
+    groundTextureMap.repeat.set( 1, 1 );
+    
+    const ringSegments = 64;
+    const ringThickness = 100;
+    const ringHeightThickness = 30
+
+    for ( let i = 0; i < ringSegments; i++ ) {
+      const ringSegmentLength = 1 / ringSegments * 2 * Math.PI * ringRadius + 5;
+      const angle = 2 * Math.PI * i / ringSegments;
+
+      const material  = Physijs.createMaterial(
+        new THREE.MeshBasicMaterial({
+          map: groundTextureMap
+        }),
+        GROUND_FRICTION,
+        GROUND_RESTITUTION,
+      );
+
+      const $ring = new Physijs.BoxMesh(
+        new THREE.BoxGeometry( ringThickness, ringHeightThickness, ringSegmentLength),
+        material,
+        0 //Zero mass means immovable object
+      );
+
+      $ring.position.set( ringRadius * Math.cos( angle ), yPos, ringRadius * Math.sin( angle ) );
+      $ring.rotation.y = -angle;
+      $ring.rotation.z = slopeAngle * Math.PI / 180;
+      this.$scene.add($ring);
+    }
+  }
+
+  createBerm() {
+    const groundTextureMap = new THREE.TextureLoader().load('/assets/images/dirt4.jpg');
+    groundTextureMap.wrapS = THREE.RepeatWrapping;
+    groundTextureMap.wrapT = THREE.RepeatWrapping;
+    groundTextureMap.repeat.set( 100, 100 );
+
+    const material  = Physijs.createMaterial(
+        new THREE.MeshBasicMaterial({
+          map: groundTextureMap
+        }),
+        GROUND_FRICTION,
+        GROUND_RESTITUTION,
+      );
+
+    const radius = 1500
+
+    const $berm = new Physijs.SphereMesh(
+      new THREE.SphereGeometry(radius, 100, 100),
+      material,
+      0 //Zero mass means immovable object
+    );
+    $berm.position.y = -radius + 5;
+    $berm.rotation.x = -Math.PI / 2
+
+    this.$scene.add( $berm );
   }
 
   createWall() {
