@@ -42,7 +42,6 @@ class SplashPage extends React.Component {
           scene={this.scene}
           transparent={true}
           position={[ 0, 10, -35 ]}
-          screenResolution={450}
         />
         <div className='start'>
           • press start •
