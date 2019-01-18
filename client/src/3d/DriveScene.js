@@ -3,7 +3,7 @@
 import { Vehicle } from './Vehicle';
 import Arena from './Arena';
 
-const GRAVITY = -50;
+const GRAVITY = -100;
 const ADD_DUMMY_VEHICLES = true;
 
 class DriveScene {
