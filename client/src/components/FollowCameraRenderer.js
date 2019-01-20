@@ -36,15 +36,16 @@ class FollowCameraRenderer extends CameraRenderer {
   }
 
   getAveragedAngularVelocity() {
-    this.angularVelHistory.push( this.$followObject.getAngularVelocity().y )
-    this.angularVelHistory = this.angularVelHistory.slice(-ANGULAR_VELOCITY_HISTORY_LENGTH)
-    const { length } = this.angularVelHistory
+    this.angularVelHistory = [ 
+      ...this.angularVelHistory.slice(-ANGULAR_VELOCITY_HISTORY_LENGTH + 1),
+      this.$followObject.getAngularVelocity().y
+    ];
+    const { length } = this.angularVelHistory;
     
-    return this.angularVelHistory.reduce((accum, v) => accum + v / length, 0)
+    return this.angularVelHistory.reduce((accum, v) => accum + v / length, 0);
   }
 
   getCamSmoothingFactor() {
-
     const angularVelocity = this.getAveragedAngularVelocity()
     const threshold = 0.1;
 
