@@ -14,6 +14,7 @@ export class Vehicle {
     this.vehicleType = props.vehicleType;
     this.$scene = props.$scene;
     this.vehicleDef = VEHICLE_DEFS[ props.vehicleType ];
+    this.vehicleIndex = props.vehicleIndex
     this.keys = props.keys;
     this.loader = new THREE.GLTFLoader();
 
@@ -106,6 +107,8 @@ export class Vehicle {
     //Add $body to the scene *after* adding all shapes to the $body, or PhysiJS won't combine them all into a single rigidBody.
     $scene.add( this.$body );
     this.loadBodyAsset();
+
+    this.$body.addEventListener( 'collision', this.onBodyCollision );
   }
 
   createSuspension() {
@@ -278,6 +281,15 @@ export class Vehicle {
         console.error( error, `Error wheel chassis asset: ${ uri }` );
       }
     );
+  }
+
+  onBodyCollision = ( otherObject, relVel, relAngularVel, normal, contactPoint, impulse ) => {
+    const damage = Math.floor(impulse / 10000)
+    const DAMAGE_THRESHOLD = 5
+
+    if ( damage > DAMAGE_THRESHOLD ) {
+      console.error(`Vehicle #${ this.vehicleIndex } took damage: ${ damage }` );
+    }
   }
 
   onKeyDown = (e) => {

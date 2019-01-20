@@ -64,7 +64,7 @@ var
 	WORLDREPORT_ITEMSIZE = 14, // how many float values each reported item needs
 	worldreport,
 
-	COLLISIONREPORT_ITEMSIZE = 5, // one float for each object id, and a Vec3 contact normal
+	COLLISIONREPORT_ITEMSIZE = 9, // one float for each object id, one for impulse, and two Vec3s (position, contact normal)
 	collisionreport,
 
 	VEHICLEREPORT_ITEMSIZE = 9, // vehicle id, wheel index, 3 for position, 4 for rotation
@@ -1293,13 +1293,21 @@ reportCollisions = function() {
 			pt = manifold.getContactPoint( j );
 			//if ( pt.getDistance() < 0 ) {
 				offset = 2 + (collisionreport[1]++) * COLLISIONREPORT_ITEMSIZE;
-				collisionreport[ offset ] = _objects_ammo[ manifold.getBody0() ];
-				collisionreport[ offset + 1 ] = _objects_ammo[ manifold.getBody1() ];
+				collisionreport[ offset ] = _objects_ammo[ manifold.getBody0().a ];
+				collisionreport[ offset + 1 ] = _objects_ammo[ manifold.getBody1().a ];
+				//console.error(pt.get_m_positionWorldOnB().y())
 
 				_vector = pt.get_m_normalWorldOnB();
 				collisionreport[ offset + 2 ] = _vector.x();
 				collisionreport[ offset + 3 ] = _vector.y();
 				collisionreport[ offset + 4 ] = _vector.z();
+
+				_vector = pt.get_m_positionWorldOnB();
+				collisionreport[ offset + 5 ] = _vector.x();
+				collisionreport[ offset + 6 ] = _vector.y();
+				collisionreport[ offset + 7 ] = _vector.z();
+
+				collisionreport[ offset + 8 ] = pt.getAppliedImpulse()
 				break;
 			//}
 

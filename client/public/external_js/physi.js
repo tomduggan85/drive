@@ -25,7 +25,7 @@ window.Physijs = (function() {
 			CONSTRAINTREPORT: 3
 		},
 		REPORT_ITEMSIZE = 14,
-		COLLISIONREPORT_ITEMSIZE = 5,
+		COLLISIONREPORT_ITEMSIZE = 9,
 		VEHICLEREPORT_ITEMSIZE = 9,
 		CONSTRAINTREPORT_ITEMSIZE = 6;
 
@@ -686,7 +686,7 @@ window.Physijs = (function() {
 		 */
 
 		var i, j, offset, object, object2, id1, id2,
-			collisions = {}, normal_offsets = {};
+			collisions = {}, normal_offsets = {}, contact_point_offsets = {}, impulse_offsets = {};
 
 		// Build collision manifest
 		for ( i = 0; i < data[1]; i++ ) {
@@ -696,6 +696,22 @@ window.Physijs = (function() {
 
 			normal_offsets[ object + '-' + object2 ] = offset + 2;
 			normal_offsets[ object2 + '-' + object ] = -1 * ( offset + 2 );
+
+			contact_point_offsets[ object + '-' + object2 ] = offset + 5;
+			contact_point_offsets[ object2 + '-' + object ] = offset + 5;
+
+			var impulse = data[offset + 8];
+			if ( !impulse_offsets[ object + '-' + object2 ] ) {
+				impulse_offsets[ object + '-' + object2 ] = impulse
+			} else {
+				impulse_offsets[ object + '-' + object2 ] = Math.max(impulse, impulse_offsets[ object + '-' + object2 ]);
+			}
+
+			if ( !impulse_offsets[ object2 + '-' + object ] ) {
+				impulse_offsets[ object2 + '-' + object ] = impulse
+			} else {
+				impulse_offsets[ object2 + '-' + object ] = Math.max(impulse, impulse_offsets[ object2 + '-' + object ]);
+			}
 
 			// Register collisions for both the object colliding and the object being collided with
 			if ( !collisions[ object ] ) collisions[ object ] = [];
@@ -752,7 +768,15 @@ window.Physijs = (function() {
 								);
 							}
 
-							object.dispatchEvent( 'collision', object2, _temp1, _temp2, _temp_vector3_1 );
+							var contact_point_offset = contact_point_offsets[ object._physijs.id + '-' + object2._physijs.id ];
+							_temp_vector3_2.set(
+								data[ contact_point_offset ],
+								data[ contact_point_offset + 1 ],
+								data[ contact_point_offset + 2 ]
+							);
+							var impulse = impulse_offsets[ object._physijs.id + '-' + object2._physijs.id ];
+
+							object.dispatchEvent( 'collision', object2, _temp1, _temp2, _temp_vector3_1, _temp_vector3_2, impulse );
 						}
 					}
 				}

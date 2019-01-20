@@ -4,7 +4,7 @@ import { Vehicle } from './Vehicle';
 import Arena from './Arena';
 
 const GRAVITY = -100;
-const ADD_DUMMY_VEHICLES = true;
+const ADD_DUMMY_VEHICLES = false;
 
 class DriveScene {
   
@@ -15,6 +15,7 @@ class DriveScene {
     Physijs.scripts.ammo = '/external_js/ammo.js';
 
     this.socket = props.socket;
+    this.vehicles = []
 
     this.$scene = new Physijs.Scene();
     this.$scene.setGravity(new THREE.Vector3( 0, GRAVITY, 0 ));
@@ -29,40 +30,43 @@ class DriveScene {
 
   createVehicles( vehicles ) {
     //TODO create as many vehicles as props.vehicles passes in, instead of just two.
-    this.vehicles = [
-      new Vehicle({
-        $scene: this.$scene,
-        vehicleType: vehicles[0],
-        position: {x: -110, y: 8, z: 0},
-        rotation: {x: 0, y: 0, z: 0},
-        /* WASD keys */
-        keys: {
-          left: 65,
-          right: 68,
-          forward: 87,
-          reverse: 83,
-        }
-      }),
-      new Vehicle({
-        $scene: this.$scene,
-        vehicleType: vehicles[1],
-        position: {x: 110, y: 8, z: 0},
-        rotation: {x: 0, y: Math.PI, z: 0},
-        /* Arrow keys */
-        keys: {
-          left: 37,
-          right: 39,
-          forward: 38,
-          reverse: 40,
-        }
-      })
-    ];
+    this.vehicles.push(new Vehicle({
+      $scene: this.$scene,
+      vehicleType: vehicles[0],
+      vehicleIndex: this.vehicles.length,
+      position: {x: -110, y: 16, z: 0},
+      rotation: {x: 0, y: 0, z: 0},
+      /* WASD keys */
+      keys: {
+        left: 65,
+        right: 68,
+        forward: 87,
+        reverse: 83,
+      }
+    }));
+    
+
+    this.vehicles.push(new Vehicle({
+      $scene: this.$scene,
+      vehicleType: vehicles[1],
+      vehicleIndex: this.vehicles.length,
+      position: {x: 110, y: 16, z: 0},
+      rotation: {x: 0, y: Math.PI, z: 0},
+      /* Arrow keys */
+      keys: {
+        left: 37,
+        right: 39,
+        forward: 38,
+        reverse: 40,
+      }
+    }));
 
     if ( ADD_DUMMY_VEHICLES ) {
       this.vehicles.push(new Vehicle({
         $scene: this.$scene,
         vehicleType: 'pontiac',
-        position: {x: 0, y: 8, z: 60},
+        vehicleIndex: this.vehicles.length,
+        position: {x: 0, y: 16, z: 60},
         rotation: {x: 0, y: Math.PI/2, z: 0},
         keys: {
           left: 37,
@@ -75,7 +79,8 @@ class DriveScene {
       this.vehicles.push(new Vehicle({
         $scene: this.$scene,
         vehicleType: '50s',
-        position: {x: 0, y: 8, z: -60},
+        vehicleIndex: this.vehicles.length,
+        position: {x: 0, y: 16, z: -60},
         rotation: {x: 0, y: -Math.PI/2, z: 0},
         keys: {
           left: 65,
@@ -88,7 +93,8 @@ class DriveScene {
       this.vehicles.push(new Vehicle({
         $scene: this.$scene,
         vehicleType: 'lada',
-        position: {x: 0, y: 8, z: 0},
+        vehicleIndex: this.vehicles.length,
+        position: {x: 0, y: 16, z: 0},
         rotation: {x: 0, y: 0, z: 0},
         keys: {
           left: 0,
@@ -101,7 +107,8 @@ class DriveScene {
       this.vehicles.push(new Vehicle({
         $scene: this.$scene,
         vehicleType: 'its_a_volvo',
-        position: {x: 60, y: 8, z: 60},
+        vehicleIndex: this.vehicles.length,
+        position: {x: 60, y: 16, z: 60},
         rotation: {x: 0, y: 3 * Math.PI / 4, z: 0},
         keys: {
           left: 0,
@@ -114,7 +121,8 @@ class DriveScene {
       this.vehicles.push(new Vehicle({
         $scene: this.$scene,
         vehicleType: 'woodywagon',
-        position: {x: -60, y: 8, z: 60},
+        vehicleIndex: this.vehicles.length,
+        position: {x: -60, y: 16, z: 60},
         rotation: {x: 0, y: -7 * Math.PI / 4, z: 0},
         keys: {
           left: 39,
@@ -127,7 +135,8 @@ class DriveScene {
       this.vehicles.push(new Vehicle({
         $scene: this.$scene,
         vehicleType: 'lada',
-        position: {x: -60, y: 8, z: -60},
+        vehicleIndex: this.vehicles.length,
+        position: {x: -60, y: 16, z: -60},
         rotation: {x: 0, y: 7 * Math.PI / 4, z: 0},
         keys: {
           left: 39,
