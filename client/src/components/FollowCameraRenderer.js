@@ -6,6 +6,9 @@ const DEFAULT_FOLLOW_DIST = 45;
 const FOLLOW_HEIGHT = 15;
 const LOOK_HEIGHT = 8;
 
+const ANGULAR_VELOCITY_HISTORY_LENGTH = 10
+const SMOOTHED_CAM_STRENGTH = 0.1
+
 class FollowCameraRenderer extends CameraRenderer {
 
   state = {
@@ -16,11 +19,12 @@ class FollowCameraRenderer extends CameraRenderer {
     super( props );
     this.vehicle = this.props.scene.vehicles[this.props.vehicleIndex];
     this.$followObject = this.vehicle.$chassis;
-    this.followDistance = this.vehicle.followDistance || DEFAULT_FOLLOW_DIST
+    this.followDistance = this.vehicle.followDistance || DEFAULT_FOLLOW_DIST;
 
+    this.angularVelHistory = [];
   }
 
-  stepFollow() {
+  stepFollowFixed() {
     this.$followObject.updateMatrixWorld()
     const { position } = this.$followObject;
 
@@ -31,9 +35,63 @@ class FollowCameraRenderer extends CameraRenderer {
     this.$camera.lookAt( lookPosition )
   }
 
+  getAveragedAngularVelocity() {
+    this.angularVelHistory.push( this.$followObject.getAngularVelocity().y )
+    this.angularVelHistory = this.angularVelHistory.slice(-ANGULAR_VELOCITY_HISTORY_LENGTH)
+    const { length } = this.angularVelHistory
+    
+    return this.angularVelHistory.reduce((accum, v) => accum + v / length, 0)
+  }
+
+  getCamSmoothingFactor() {
+
+    const angularVelocity = this.getAveragedAngularVelocity()
+    const threshold = 0.2;
+
+    if (angularVelocity > threshold) {
+      return (angularVelocity-threshold) * SMOOTHED_CAM_STRENGTH;
+    }
+    else if (angularVelocity < -threshold) {
+      return (angularVelocity+threshold) * SMOOTHED_CAM_STRENGTH; 
+    }
+    else {
+      return 0
+    }
+  }
+
+  stepFollowSmoothed() {
+
+    /*
+      TODO #1: Rewrite this to use a forward vector from $followObject's world transform, flatten that (zero the Y-component),
+      and use that for targetAngle, as $followObject.rotation.y has odd range problems (gimbal lock?).
+      TODO #3: Fix the bug where the camera flips to face the front of the vehicle when the vehicle is upside down (relates to #1).
+    */
+    this.$followObject.updateMatrixWorld()
+    const { position } = this.$followObject;
+    const rotation = this.$followObject.rotation.y;
+    let targetRotation = -rotation// - 0.4;
+
+    if ( Math.abs( this.$followObject.rotation.x)  > Math.PI/2 ) {
+      //Above-mentioned range issues
+      targetRotation = Math.PI + rotation;
+    }
+
+
+    targetRotation += this.getCamSmoothingFactor()
+
+    this.$camera.position.set(
+      position.x + Math.cos(targetRotation) * -this.followDistance,
+      position.y + FOLLOW_HEIGHT, 
+      position.z + Math.sin(targetRotation) * -this.followDistance
+    );
+
+    const lookPosition = new THREE.Vector3( position.x, position.y + LOOK_HEIGHT, position.z )
+    this.$camera.lookAt( lookPosition )
+  }
+
   step() {
     if ( !this.state.firstPersonMode ) {
-      this.stepFollow();
+      this.stepFollowSmoothed();
     }
 
     super.step();
