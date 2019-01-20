@@ -46,7 +46,7 @@ class FollowCameraRenderer extends CameraRenderer {
   getCamSmoothingFactor() {
 
     const angularVelocity = this.getAveragedAngularVelocity()
-    const threshold = 0.2;
+    const threshold = 0.1;
 
     if (angularVelocity > threshold) {
       return (angularVelocity-threshold) * SMOOTHED_CAM_STRENGTH;
@@ -60,25 +60,12 @@ class FollowCameraRenderer extends CameraRenderer {
   }
 
   stepFollowSmoothed() {
-
-    /*
-      TODO #1: Rewrite this to use a forward vector from $followObject's world transform, flatten that (zero the Y-component),
-      and use that for targetAngle, as $followObject.rotation.y has odd range problems (gimbal lock?).
-      TODO #3: Fix the bug where the camera flips to face the front of the vehicle when the vehicle is upside down (relates to #1).
-    */
     this.$followObject.updateMatrixWorld()
     const { position } = this.$followObject;
-    const rotation = this.$followObject.rotation.y;
-    let targetRotation = -rotation// - 0.4;
 
-    if ( Math.abs( this.$followObject.rotation.x)  > Math.PI/2 ) {
-      //Above-mentioned range issues
-      targetRotation = Math.PI + rotation;
-    }
-
-
-    targetRotation += this.getCamSmoothingFactor()
-
+    const camTargetPosition = this.$followObject.localToWorld(new THREE.Vector3(this.followDistance, FOLLOW_HEIGHT, 0))
+    const targetRotation = Math.atan2(camTargetPosition.z - position.z, camTargetPosition.x - position.x) + this.getCamSmoothingFactor()
+    
     this.$camera.position.set(
       position.x + Math.cos(targetRotation) * -this.followDistance,
       position.y + FOLLOW_HEIGHT, 
