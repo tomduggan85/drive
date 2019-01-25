@@ -1,5 +1,21 @@
 @import 'src/shared-styles.scss';
 
+
+@keyframes flashing-damage-indicator {
+  0% {
+    filter: brightness(100%);
+  }
+
+  50% {
+    filter: brightness(300%) grayscale(60%);
+  }
+
+  100% {
+    filter: brightness(100%);
+  }
+}
+
+
 .player-vehicle-display {
   position: relative;
   width: 50%;
@@ -45,6 +61,12 @@
       bottom: 25px;
       right: 25px;
       color: #fff;
+
+      &.taking-damage {
+        animation: flashing-damage-indicator 0.1s linear infinite;
+        animation-timing-function: step-start;
+        animation-fill-mode: both;
+      }
 
       .engine,
       .car {

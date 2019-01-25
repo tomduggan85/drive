@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import './PlayerVehicleDisplay.scss';
 import FollowCameraRenderer from './FollowCameraRenderer';
 import getVehicleHealth from '../selectors/getVehicleHealth';
+import isVehicleTakingDamage from '../selectors/isVehicleTakingDamage';
 import getVehiclesLeft from '../selectors/getVehiclesLeft';
+import classnames from 'classnames';
 
 //TODO move this to a different file
 const normalizeToRange = ( min, max, v ) => {
@@ -32,7 +34,8 @@ class PlayerVehicleDisplay extends React.Component {
       scene,
       vehicleIndex,
       health,
-      vehiclesLeft
+      vehiclesLeft,
+      takingDamage
     } = this.props;
 
     const damageIndicatorStyles = {
@@ -47,7 +50,7 @@ class PlayerVehicleDisplay extends React.Component {
             <div className='description'>cars left</div>
             <div className='value'>{vehiclesLeft}</div>
           </div>
-          <div className='damage-indicator'>
+          <div className={classnames('damage-indicator', { 'taking-damage': takingDamage })}>
             <img
               style={ damageIndicatorStyles }
               src='/assets/images/damage_indicator_engine.png'
@@ -70,6 +73,7 @@ class PlayerVehicleDisplay extends React.Component {
 const mapStateToProps = ( state, ownProps ) => {
   return {
     health: getVehicleHealth( ownProps.vehicleIndex )( state ),
+    takingDamage: isVehicleTakingDamage( ownProps.vehicleIndex )( state ),
     vehiclesLeft: getVehiclesLeft( state )
   }
 }
