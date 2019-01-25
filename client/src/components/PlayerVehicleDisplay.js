@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './PlayerVehicleDisplay.scss';
 import FollowCameraRenderer from './FollowCameraRenderer';
+import getVehicleHealth from '../selectors/getVehicleHealth';
+import getVehiclesLeft from '../selectors/getVehiclesLeft';
 
 //TODO move this to a different file
 const normalizeToRange = ( min, max, v ) => {
@@ -14,7 +16,7 @@ class PlayerVehicleDisplay extends React.Component {
 
   getDamageIndicatorFilter() {
     const { health } = this.props;
-    const normalizedhealthForHue = normalizeToRange( 0, 100, health )
+    const normalizedhealthForHue = normalizeToRange( 20, 80, health )
     const normalizedhealthForBrightness = normalizeToRange( 0, 20, health )
 
     const minHue = -120
@@ -29,10 +31,10 @@ class PlayerVehicleDisplay extends React.Component {
     const {
       scene,
       vehicleIndex,
-      health
+      health,
+      vehiclesLeft
     } = this.props;
 
-    const CARS_LEFT = 2;
     const damageIndicatorStyles = {
       filter: this.getDamageIndicatorFilter()
     }
@@ -43,7 +45,7 @@ class PlayerVehicleDisplay extends React.Component {
         <div className='hud'>
           <div className='cars-left'>
             <div className='description'>cars left</div>
-            <div className='value'>{CARS_LEFT}</div>
+            <div className='value'>{vehiclesLeft}</div>
           </div>
           <div className='damage-indicator'>
             <img
@@ -67,7 +69,8 @@ class PlayerVehicleDisplay extends React.Component {
 
 const mapStateToProps = ( state, ownProps ) => {
   return {
-    health: state.vehicleDamage.vehicles[ownProps.vehicleIndex] ? state.vehicleDamage.vehicles[ownProps.vehicleIndex].health : 0
+    health: getVehicleHealth( ownProps.vehicleIndex )( state ),
+    vehiclesLeft: getVehiclesLeft( state )
   }
 }
 

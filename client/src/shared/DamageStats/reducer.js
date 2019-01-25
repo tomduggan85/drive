@@ -20,8 +20,6 @@ export default ( state = initialState, action ) => {
     case APPLY_DAMAGE:
       const newVehicles = [ ...state.vehicles ]
       newVehicles[ action.vehicleIndex ].health = Math.max(0, state.vehicles[action.vehicleIndex].health - action.damage);
-      console.error(`applying damage ${ action.damage } to vehicle ${action.vehicleIndex}, health is now ${newVehicles[ action.vehicleIndex ].health}`)
-      console.error(newVehicles)
 
       return {
         ...state,

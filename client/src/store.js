@@ -1,10 +1,10 @@
 
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import VehicleDamage from './shared/VehicleDamage/reducer'
+import DamageStats from './shared/DamageStats/reducer'
 
 const combinedReducers = combineReducers({
-  vehicleDamage: VehicleDamage,
+  damageStats: DamageStats,
 })
 
 const initialState = {}

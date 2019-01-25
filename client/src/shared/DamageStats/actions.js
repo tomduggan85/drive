@@ -5,7 +5,7 @@ export const VEHICLE_DEAD = 'VEHICLE_DEAD';
 export const STARTING_HEALTH = 100;
 
 export const applyDamage = ( vehicleIndex, damage ) => async ( dispatch, getState ) => {
-  if ( getVehicleHealth( getState(), vehicleIndex ) > 0 ) {
+  if ( getVehicleHealth( vehicleIndex )( getState() ) > 0 ) {
 
     await dispatch({
       type: APPLY_DAMAGE,
@@ -13,7 +13,7 @@ export const applyDamage = ( vehicleIndex, damage ) => async ( dispatch, getStat
       damage
     });
 
-    if ( getVehicleHealth( getState(), vehicleIndex ) === 0 ) {
+    if ( getVehicleHealth( vehicleIndex )(getState()) === 0 ) {
       console.error(`vehicle ${ vehicleIndex } dead`)
       dispatch({
         type: VEHICLE_DEAD,

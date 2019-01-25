@@ -6,7 +6,7 @@ import store from '../store';
 import { beginMatch } from '../shared/CurrentMatch/actions'
 
 const GRAVITY = -100;
-const ADD_DUMMY_VEHICLES = false;
+const ADD_DUMMY_VEHICLES = true;
 
 class DriveScene {
   

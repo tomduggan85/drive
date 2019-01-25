@@ -3,7 +3,7 @@
 
 import { VEHICLE_DEFS } from '../shared/Vehicles';
 import store from '../store'
-import { applyDamage } from '../shared/VehicleDamage/actions'
+import { applyDamage } from '../shared/DamageStats/actions'
 
 const SHOW_DEBUG_COLLISION_VOLUMES = false;
 
@@ -289,7 +289,7 @@ export class Vehicle {
     const IMPULSE_TO_DAMAGE = 1 / 20000
     const DAMAGE_THRESHOLD = 5
     const SPEED_DAMAGE_REDUCER = 100
-    const MAX_DAMAGE_REDUCTION = 1.5
+    const MAX_DAMAGE_REDUCTION = 2
 
     //As speed increases from 0 to 100, reduce damage by a factor of 1 to 1.5
     const speed = this.$chassis.getLinearVelocity().length()
