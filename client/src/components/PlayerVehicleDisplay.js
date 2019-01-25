@@ -14,15 +14,15 @@ class PlayerVehicleDisplay extends React.Component {
 
   getDamageIndicatorFilter() {
     const { health } = this.props;
-    const normalizedhealthForHue = normalizeToRange( 20, 100, health )
-    const normalizedhealthForBrightness = normalizeToRange( 0, 30, health )
+    const normalizedhealthForHue = normalizeToRange( 0, 100, health )
+    const normalizedhealthForBrightness = normalizeToRange( 0, 20, health )
 
-    const minHue = -50
-    const maxHue = 30
+    const minHue = -120
+    const maxHue = -20
     const hue = minHue + normalizedhealthForHue * (maxHue - minHue)
     const brightness = normalizedhealthForBrightness * 100
 
-    return `sepia() saturate(10000%) hue-rotate(${ hue }deg) brightness(${ brightness }%)`
+    return `hue-rotate(${ hue }deg) brightness(${ brightness }%)`
   }
 
   render() {
