@@ -702,15 +702,15 @@ window.Physijs = (function() {
 
 			var impulse = data[offset + 8];
 			if ( !impulse_offsets[ object + '-' + object2 ] ) {
-				impulse_offsets[ object + '-' + object2 ] = impulse
+				impulse_offsets[ object + '-' + object2 ] = impulse;
 			} else {
-				impulse_offsets[ object + '-' + object2 ] = Math.max(impulse, impulse_offsets[ object + '-' + object2 ]);
+				impulse_offsets[ object + '-' + object2 ] += impulse;
 			}
 
 			if ( !impulse_offsets[ object2 + '-' + object ] ) {
-				impulse_offsets[ object2 + '-' + object ] = impulse
+				impulse_offsets[ object2 + '-' + object ] = impulse;
 			} else {
-				impulse_offsets[ object2 + '-' + object ] = Math.max(impulse, impulse_offsets[ object2 + '-' + object ]);
+				impulse_offsets[ object2 + '-' + object ] += impulse;
 			}
 
 			// Register collisions for both the object colliding and the object being collided with

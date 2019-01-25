@@ -1,7 +1,9 @@
 
 /* global THREE Physijs */
 
-import { VEHICLE_DEFS } from '../shared/Vehicles'
+import { VEHICLE_DEFS } from '../shared/Vehicles';
+import store from '../store'
+import { applyDamage } from '../shared/VehicleDamage/actions'
 
 const SHOW_DEBUG_COLLISION_VOLUMES = false;
 
@@ -284,11 +286,21 @@ export class Vehicle {
   }
 
   onBodyCollision = ( otherObject, relVel, relAngularVel, normal, contactPoint, impulse ) => {
-    const damage = Math.floor(impulse / 10000)
+    const IMPULSE_TO_DAMAGE = 1 / 20000
     const DAMAGE_THRESHOLD = 5
+    const SPEED_DAMAGE_REDUCER = 100
+    const MAX_DAMAGE_REDUCTION = 1.5
+
+    //As speed increases from 0 to 100, reduce damage by a factor of 1 to 1.5
+    const speed = this.$chassis.getLinearVelocity().length()
+    const damageReductionForSpeed = 1 + (Math.min(speed, SPEED_DAMAGE_REDUCER) / SPEED_DAMAGE_REDUCER * (MAX_DAMAGE_REDUCTION-1))
+    const damage = Math.floor(impulse * IMPULSE_TO_DAMAGE / damageReductionForSpeed)
+    
 
     if ( damage > DAMAGE_THRESHOLD ) {
-      console.error(`Vehicle #${ this.vehicleIndex } took damage: ${ damage }` );
+      console.error(`Vehicle #${ this.vehicleIndex } took damage: ${ damage }, speed was ${ speed }, reduction was ${ damageReductionForSpeed }, raw damage was ${ Math.floor(impulse * IMPULSE_TO_DAMAGE) }` );
+
+      store.dispatch(applyDamage(this.vehicleIndex, damage))
     }
   }
 

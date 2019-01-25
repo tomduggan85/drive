@@ -3,6 +3,7 @@
 .player-vehicle-display {
   position: relative;
   width: 50%;
+  font-family: 'Nineteen Ninety Seven', monospace;
 
   .camera-renderer {
     width: 100%;
@@ -35,7 +36,7 @@
         font-weight: bold;
         font-family: 'PressStart2P', monospace;
         font-size: 70px;
-        @include gradientText($text-bg-blue-to-purple-1);
+        @include gradientText($text-bg-orange-twotone-2);
       }
     }
 
@@ -43,6 +44,7 @@
       position: absolute;
       bottom: 25px;
       right: 25px;
+      color: #fff;
 
       .engine,
       .car {
@@ -51,7 +53,6 @@
         bottom: 0;
         width: 150px;
         height: auto;
-        filter: sepia() saturate(10000%) hue-rotate(30deg) brightness(100%);
       }
     }
   }

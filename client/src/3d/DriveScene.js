@@ -2,6 +2,8 @@
 
 import { Vehicle } from './Vehicle';
 import Arena from './Arena';
+import store from '../store';
+import { beginMatch } from '../shared/CurrentMatch/actions'
 
 const GRAVITY = -100;
 const ADD_DUMMY_VEHICLES = false;
@@ -23,6 +25,8 @@ class DriveScene {
     const arena = new Arena({ $scene: this.$scene });
     this.createLights();
     this.createVehicles( props.vehicles );
+
+    store.dispatch(beginMatch( this.vehicles ))
     
     this.socket.addEventListener('message', this.onSocketMessage );
     this.step();
