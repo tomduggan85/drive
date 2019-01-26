@@ -174,6 +174,10 @@ export class Vehicle {
         asset.position.set( position.x, position.y, position.z );
         asset.rotation.set( rotation.x, rotation.y, rotation.z )
         $body.add( asset );
+
+        //COLLISION DEFORMATION TEST
+        //console.error('doing deformation test in 1500')
+        //setTimeout(this.REMOVE_ME_doDeformationTest, 1500)
       },
       undefined, //onProgress
       ( error ) => {
@@ -300,8 +304,77 @@ export class Vehicle {
     if ( damage > DAMAGE_THRESHOLD ) {
       console.error(`Vehicle #${ this.vehicleIndex } took damage: ${ damage }, speed was ${ speed }, reduction was ${ damageReductionForSpeed }, raw damage was ${ Math.floor(impulse * IMPULSE_TO_DAMAGE) }` );
 
+      this.handleDeformation( damage, relVel, contactPoint )
       store.dispatch(applyDamage(this.vehicleIndex, damage))
     }
+  }
+
+
+  REMOVE_ME_doDeformationTest = () => {
+    //side
+    const relVel = new THREE.Vector3(0, 0, 20000)
+    const contactPoint = this.$body.localToWorld(new THREE.Vector3(0, 3, -5))
+
+    //top
+    //const relVel = new THREE.Vector3(0, 5, 0)
+    //const contactPoint = this.$body.localToWorld(new THREE.Vector3(0, 7, 0))
+    
+    const $sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(2, 50, 50),
+      new THREE.MeshNormalMaterial(),
+    );
+    $sphere.position.copy(contactPoint)
+    this.$scene.add($sphere)
+
+    this.handleDeformation( 20, relVel, contactPoint )
+  }
+
+  handleDeformation( damage, relVel, contactPoint ) {
+    const upwardDeflection = 18//hard-coded bias towards deforming slightly upwards
+    relVel.y -= upwardDeflection
+    
+    this.$body.traverse(object => {
+      
+      const { geometry } = object
+      if ( geometry && geometry.type !== 'BoxGeometry' ) {
+        let vertexWorldPos = new THREE.Vector3()
+        let vertexPos = new THREE.Vector3()
+
+        for ( let i = 0; i < geometry.attributes.position.count; i ++ ) {
+          
+          vertexPos.set(
+            geometry.attributes.position.getX(i),
+            geometry.attributes.position.getY(i),
+            geometry.attributes.position.getZ(i),
+          )
+          vertexWorldPos = object.localToWorld(vertexPos)
+          const d = vertexWorldPos.distanceTo(contactPoint)
+          const THRESHOLD = 6
+          const distanceFactor = 1 - 0.5 * (d/THRESHOLD) //as distance goes from 0 to 6, this factor goes from 1 to 0.5
+          if ( d && d <= THRESHOLD ) {
+            const MAGNITUDE = 0.04
+
+            let deformVector = new THREE.Vector3(
+              -relVel.x * MAGNITUDE,
+              -relVel.y * MAGNITUDE,
+              -relVel.z * MAGNITUDE
+            )
+            deformVector.clampLength(0, 2).multiplyScalar(distanceFactor)
+
+            vertexWorldPos.x += deformVector.x
+            vertexWorldPos.y += deformVector.y
+            vertexWorldPos.z += deformVector.z
+
+            const newPos = object.worldToLocal(vertexWorldPos)
+            geometry.attributes.position.setXYZ(i, newPos.x, newPos.y, newPos.z)
+          }
+
+          
+        }
+
+        geometry.attributes.position.needsUpdate = true
+      }
+    })
   }
 
   onKeyDown = (e) => {

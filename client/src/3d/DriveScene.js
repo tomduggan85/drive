@@ -38,7 +38,7 @@ class DriveScene {
       $scene: this.$scene,
       vehicleType: vehicles[0],
       vehicleIndex: this.vehicles.length,
-      position: {x: -110, y: 16, z: 0},
+      position: {x: -320, y: 16, z: 0},
       rotation: {x: 0, y: 0, z: 0},
       /* WASD keys */
       keys: {
@@ -54,7 +54,7 @@ class DriveScene {
       $scene: this.$scene,
       vehicleType: vehicles[1],
       vehicleIndex: this.vehicles.length,
-      position: {x: 110, y: 16, z: 0},
+      position: {x: 320, y: 16, z: 0},
       rotation: {x: 0, y: Math.PI, z: 0},
       /* Arrow keys */
       keys: {
