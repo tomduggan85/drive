@@ -65,7 +65,7 @@ class FollowCameraRenderer extends CameraRenderer {
     const { position } = this.$followObject;
 
     const camTargetPosition = this.$followObject.localToWorld(new THREE.Vector3(this.followDistance, FOLLOW_HEIGHT, 0))
-    const targetRotation = Math.atan2(camTargetPosition.z - position.z, camTargetPosition.x - position.x) + this.getCamSmoothingFactor() + 2.5 //DO NOT COMMIT
+    const targetRotation = Math.atan2(camTargetPosition.z - position.z, camTargetPosition.x - position.x) + this.getCamSmoothingFactor()
     
     this.$camera.position.set(
       position.x + Math.cos(targetRotation) * -this.followDistance,
