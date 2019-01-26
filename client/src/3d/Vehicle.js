@@ -296,10 +296,7 @@ export class Vehicle {
     const damageReductionForSpeed = 1 + (Math.min(speed, SPEED_DAMAGE_REDUCER) / SPEED_DAMAGE_REDUCER * (MAX_DAMAGE_REDUCTION-1))
     const damage = Math.floor(impulse * IMPULSE_TO_DAMAGE / damageReductionForSpeed)
     
-
     if ( damage > DAMAGE_THRESHOLD ) {
-      console.error(`Vehicle #${ this.vehicleIndex } took damage: ${ damage }, speed was ${ speed }, reduction was ${ damageReductionForSpeed }, raw damage was ${ Math.floor(impulse * IMPULSE_TO_DAMAGE) }` );
-
       this.handleDeformation( damage, relVel, contactPoints )
       store.dispatch(applyDamage(this.vehicleIndex, damage))
     }
