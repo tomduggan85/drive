@@ -686,7 +686,7 @@ window.Physijs = (function() {
 		 */
 
 		var i, j, offset, object, object2, id1, id2,
-			collisions = {}, normal_offsets = {}, contact_point_offsets = {}, impulse_offsets = {};
+			collisions = {}, normal_offsets = {}, impulses = {}, contacts = {};
 
 		// Build collision manifest
 		for ( i = 0; i < data[1]; i++ ) {
@@ -697,20 +697,30 @@ window.Physijs = (function() {
 			normal_offsets[ object + '-' + object2 ] = offset + 2;
 			normal_offsets[ object2 + '-' + object ] = -1 * ( offset + 2 );
 
-			contact_point_offsets[ object + '-' + object2 ] = offset + 5;
-			contact_point_offsets[ object2 + '-' + object ] = offset + 5;
-
-			var impulse = data[offset + 8];
-			if ( !impulse_offsets[ object + '-' + object2 ] ) {
-				impulse_offsets[ object + '-' + object2 ] = impulse;
+			var contact_point = [data[offset + 5], data[offset + 6], data[offset + 7]]
+			if ( !contacts[ object + '-' + object2 ] ) {
+				contacts[ object + '-' + object2 ] = [contact_point]
 			} else {
-				impulse_offsets[ object + '-' + object2 ] += impulse;
+				contacts[ object + '-' + object2 ].push(contact_point)
 			}
 
-			if ( !impulse_offsets[ object2 + '-' + object ] ) {
-				impulse_offsets[ object2 + '-' + object ] = impulse;
+			if ( !contacts[ object2 + '-' + object ] ) {
+				contacts[ object2 + '-' + object ] = [contact_point]
 			} else {
-				impulse_offsets[ object2 + '-' + object ] += impulse;
+				contacts[ object2 + '-' + object ].push(contact_point)
+			}			
+
+			var impulse = data[offset + 8];
+			if ( !impulses[ object + '-' + object2 ] ) {
+				impulses[ object + '-' + object2 ] = impulse;
+			} else {
+				impulses[ object + '-' + object2 ] += impulse;
+			}
+
+			if ( !impulses[ object2 + '-' + object ] ) {
+				impulses[ object2 + '-' + object ] = impulse;
+			} else {
+				impulses[ object2 + '-' + object ] += impulse;
 			}
 
 			// Register collisions for both the object colliding and the object being collided with
@@ -768,15 +778,10 @@ window.Physijs = (function() {
 								);
 							}
 
-							var contact_point_offset = contact_point_offsets[ object._physijs.id + '-' + object2._physijs.id ];
-							_temp_vector3_2.set(
-								data[ contact_point_offset ],
-								data[ contact_point_offset + 1 ],
-								data[ contact_point_offset + 2 ]
-							);
-							var impulse = impulse_offsets[ object._physijs.id + '-' + object2._physijs.id ];
+							var impulse = impulses[ object._physijs.id + '-' + object2._physijs.id ];
+							var contact_list = contacts[ object._physijs.id + '-' + object2._physijs.id ];
 
-							object.dispatchEvent( 'collision', object2, _temp1, _temp2, _temp_vector3_1, _temp_vector3_2, impulse );
+							object.dispatchEvent( 'collision', object2, _temp1, _temp2, _temp_vector3_1, contact_list, impulse );
 						}
 					}
 				}
