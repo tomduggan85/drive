@@ -61,7 +61,6 @@ class PlayerVehicleDisplay extends React.Component {
               src='/assets/images/damage_indicator_car.png'
               className='car'
             />
-            { health }
           </div>
 
         </div>
