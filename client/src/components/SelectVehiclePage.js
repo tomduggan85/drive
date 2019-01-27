@@ -66,12 +66,6 @@ class SelectVehiclePage extends React.Component {
     this.setState({ previewedVehicle: vehicleType })
   }
 
-  getTileTypes() {
-    //For visual effect, pad out the vehicle type list with some duplicates
-    const desiredTileCount = 9;
-    return [ ...VEHICLE_TYPES, ...VEHICLE_TYPES.slice(0, desiredTileCount - VEHICLE_TYPES.length)];
-  }
-
   render() {
     const displayedPlayer = this.state.currentPlayer + 1;
     const { scenes } = this;
@@ -110,7 +104,7 @@ class SelectVehiclePage extends React.Component {
             </div>
           </div>
           <div className='vehicle-tiles'>
-            {this.getTileTypes().map(( vehicleType, i ) => (
+            {VEHICLE_TYPES.map(( vehicleType, i ) => (
               <div
                 key={i}
                 className='vehicle-tile'

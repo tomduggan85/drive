@@ -104,7 +104,9 @@ class StaticVehicleScene {
   }
 
   setupStaticScreenshot() {
-   this.$vehicle.rotation.y = 1.25; 
+   this.$vehicle.rotation.y = 1.2; 
+   this.$vehicle.rotation.x = 0.1; 
+   this.$vehicle.position.set(0, 2, 5)
   }
 
   step = () => {
