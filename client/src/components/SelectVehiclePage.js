@@ -41,7 +41,7 @@ class SelectVehiclePage extends React.Component {
 
   startMatch = () => {
     const { selections, matchId } = this.state;
-    this.props.history.push( `/match/${ matchId }?v1=${ selections[0] }&v2=${ selections[1] }` );
+    this.props.history.push( `/match/${ matchId }?p1=${ selections[0] }&p2=${ selections[1] }` );
   }
 
   selectVehicle = async ( vehicleType, e ) => {

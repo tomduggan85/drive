@@ -4,9 +4,16 @@ import { Vehicle } from './Vehicle';
 import Arena from './Arena';
 import store from '../store';
 import { beginMatch } from '../shared/CurrentMatch/actions'
+import { VEHICLE_TYPES } from '../shared/Vehicles';
+import KeyboardControls from '../shared/KeyboardControls';
+import shuffle from 'lodash/shuffle'
+import without from 'lodash/without'
+
+const VEHICLE_COUNT = 8
 
 const GRAVITY = -100;
 const ADD_DUMMY_VEHICLES = true;
+
 
 class DriveScene {
   
@@ -24,7 +31,7 @@ class DriveScene {
     
     const arena = new Arena({ $scene: this.$scene });
     this.createLights();
-    this.createVehicles( props.vehicles );
+    this.createVehicles( props.playerVehicles );
 
     store.dispatch(beginMatch( this.vehicles ))
     
@@ -32,124 +39,29 @@ class DriveScene {
     this.step();
   }
 
-  createVehicles( vehicles ) {
-    //TODO create as many vehicles as props.vehicles passes in, instead of just two.
-    this.vehicles.push(new Vehicle({
-      $scene: this.$scene,
-      vehicleType: vehicles[0],
-      vehicleIndex: this.vehicles.length,
-      position: {x: -320, y: 16, z: 0},
-      rotation: {x: 0, y: 0, z: 0},
-      /* WASD keys */
-      keys: {
-        left: 65,
-        right: 68,
-        forward: 87,
-        reverse: 83,
-      }
-    }));
-    
+  buildVehicleList( playerVehicles ) {
+    const aiVehicles = without( shuffle( VEHICLE_TYPES ), ...playerVehicles )
+    return [ ...playerVehicles, ...aiVehicles ].slice(0, VEHICLE_COUNT)
+  }
 
-    this.vehicles.push(new Vehicle({
-      $scene: this.$scene,
-      vehicleType: vehicles[1],
-      vehicleIndex: this.vehicles.length,
-      position: {x: 320, y: 16, z: 0},
-      rotation: {x: 0, y: Math.PI, z: 0},
-      /* Arrow keys */
-      keys: {
-        left: 37,
-        right: 39,
-        forward: 38,
-        reverse: 40,
-      }
-    }));
+  createVehicles( playerVehicles ) {
+    const positioningRadius = 320;
+    const yPos = 3;
 
-    if ( ADD_DUMMY_VEHICLES ) {
-      this.vehicles.push(new Vehicle({
-        $scene: this.$scene,
-        vehicleType: 'pontiac',
-        vehicleIndex: this.vehicles.length,
-        position: {x: 0, y: 16, z: 60},
-        rotation: {x: 0, y: Math.PI/2, z: 0},
-        keys: {
-          left: 37,
-          right: 39,
-          forward: 38,
-          reverse: 40,
-        }
-      }));
-      
-      this.vehicles.push(new Vehicle({
-        $scene: this.$scene,
-        vehicleType: '50s',
-        vehicleIndex: this.vehicles.length,
-        position: {x: 0, y: 16, z: -60},
-        rotation: {x: 0, y: -Math.PI/2, z: 0},
-        keys: {
-          left: 65,
-          right: 68,
-          forward: 87,
-          reverse: 83,
-        }
-      }));
+    const vehicleList = this.buildVehicleList( playerVehicles )
 
-      this.vehicles.push(new Vehicle({
-        $scene: this.$scene,
-        vehicleType: 'lada',
-        vehicleIndex: this.vehicles.length,
-        position: {x: 0, y: 16, z: 0},
-        rotation: {x: 0, y: 0, z: 0},
-        keys: {
-          left: 0,
-          right: 0,
-          forward: 0,
-          reverse: 0,
-        }
-      }));
+    this.vehicles = vehicleList.map(( vehicleType, i ) => {
+      const angle = 2 * Math.PI * i / vehicleList.length;
 
-      this.vehicles.push(new Vehicle({
+      return new Vehicle({
         $scene: this.$scene,
-        vehicleType: 'its_a_volvo',
-        vehicleIndex: this.vehicles.length,
-        position: {x: 60, y: 16, z: 60},
-        rotation: {x: 0, y: 3 * Math.PI / 4, z: 0},
-        keys: {
-          left: 0,
-          right: 0,
-          forward: 0,
-          reverse: 0,
-        }
-      }));
-
-      this.vehicles.push(new Vehicle({
-        $scene: this.$scene,
-        vehicleType: 'woodywagon',
-        vehicleIndex: this.vehicles.length,
-        position: {x: -60, y: 16, z: 60},
-        rotation: {x: 0, y: -7 * Math.PI / 4, z: 0},
-        keys: {
-          left: 39,
-          right: 37,
-          forward: 38,
-          reverse: 40,
-        }
-      }));
-
-      this.vehicles.push(new Vehicle({
-        $scene: this.$scene,
-        vehicleType: 'lada',
-        vehicleIndex: this.vehicles.length,
-        position: {x: -60, y: 16, z: -60},
-        rotation: {x: 0, y: 7 * Math.PI / 4, z: 0},
-        keys: {
-          left: 39,
-          right: 37,
-          forward: 38,
-          reverse: 40,
-        }
-      }));
-    }
+        vehicleType: vehicleType,
+        vehicleIndex: i,
+        position: {x: positioningRadius * Math.cos( angle ), y: yPos, z: positioningRadius * Math.sin( angle )},
+        rotation: {x: 0, y: Math.PI - angle, z: 0},
+        keys: KeyboardControls[i % KeyboardControls.length]
+      })
+    })
   }
 
   createLights() {    

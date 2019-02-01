@@ -17,9 +17,9 @@ class DriveMatchPage extends React.Component {
     const params = new URLSearchParams(window.location.search);
     this.driveScene = new DriveScene({
       socket: this.socket,
-      vehicles: [
-        params.get('v1') || VEHICLE_TYPES[0],
-        params.get('v2') || VEHICLE_TYPES[1],
+      playerVehicles: [
+        params.get('p1'),
+        params.get('p2'),
       ]
     });
   }
