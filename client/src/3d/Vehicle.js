@@ -327,7 +327,7 @@ export class Vehicle {
           const THRESHOLD = 7
           const distanceFactor = 1 - 0.5 * (d/THRESHOLD) //as distance goes from 0 to 6, this factor goes from 1 to 0.5
           if ( d && d <= THRESHOLD ) {
-            const MAGNITUDE = 0.06
+            const MAGNITUDE = 0.048 //0.06 is too much
             const MAX = 2.3
 
             let deformVector = new THREE.Vector3(

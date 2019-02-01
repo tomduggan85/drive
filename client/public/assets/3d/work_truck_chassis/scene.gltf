@@ -3,35 +3,35 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 4852,
+            "count" : 3371,
             "max" : [
                 44.907814025878906,
-                74.21553802490234,
-                100.74676513671875
+                100.74676513671875,
+                -12.044599533081055
             ],
             "min" : [
                 -44.907814025878906,
-                2.9524707794189453,
-                -110.69435119628906
+                -110.69435119628906,
+                -74.21553802490234
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 4852,
+            "count" : 3371,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 4852,
+            "count" : 3371,
             "type" : "VEC2"
         },
         {
             "bufferView" : 3,
             "componentType" : 5123,
-            "count" : 11763,
+            "count" : 8358,
             "type" : "SCALAR"
         },
         {
@@ -40,13 +40,13 @@
             "count" : 92,
             "max" : [
                 36.4100456237793,
-                71.55856323242188,
-                44.25879669189453
+                44.25879669189453,
+                -51.25664520263672
             ],
             "min" : [
                 -36.4100456237793,
-                51.25664520263672,
-                -11.713659286499023
+                -11.713659286499023,
+                -71.55856323242188
             ],
             "type" : "VEC3"
         },
@@ -76,48 +76,48 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 58224,
+            "byteLength" : 40452,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 58224,
-            "byteOffset" : 58224
+            "byteLength" : 40452,
+            "byteOffset" : 40452
         },
         {
             "buffer" : 0,
-            "byteLength" : 38816,
-            "byteOffset" : 116448
+            "byteLength" : 26968,
+            "byteOffset" : 80904
         },
         {
             "buffer" : 0,
-            "byteLength" : 23526,
-            "byteOffset" : 155264
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 1104,
-            "byteOffset" : 178792
+            "byteLength" : 16716,
+            "byteOffset" : 107872
         },
         {
             "buffer" : 0,
             "byteLength" : 1104,
-            "byteOffset" : 179896
+            "byteOffset" : 124588
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 1104,
+            "byteOffset" : 125692
         },
         {
             "buffer" : 0,
             "byteLength" : 736,
-            "byteOffset" : 181000
+            "byteOffset" : 126796
         },
         {
             "buffer" : 0,
             "byteLength" : 150,
-            "byteOffset" : 181736
+            "byteOffset" : 127532
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 181888,
+            "byteLength" : 127684,
             "uri" : "scene.bin"
         }
     ],
@@ -140,7 +140,7 @@
         },
         {
             "mimeType" : "image/png",
-            "name" : "Material_33_metallicRoughness.png.001",
+            "name" : "Material_33_metallicRoughness.png.png",
             "uri" : "Material_33_metallicRoughness.png.png"
         },
         {
@@ -155,7 +155,7 @@
         },
         {
             "mimeType" : "image/png",
-            "name" : "Material_34_metallicRoughness.png.001",
+            "name" : "Material_34_metallicRoughness.png.png",
             "uri" : "Material_34_metallicRoughness.png.png"
         }
     ],
@@ -232,7 +232,13 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Object001_Material #33_0"
+            "name" : "Object001_Material #33_0",
+            "rotation" : [
+                7.105427357601002e-15,
+                0,
+                0,
+                1
+            ]
         },
         {
             "children" : [
@@ -244,16 +250,17 @@
                 0,
                 0,
                 0.7071067094802856
-            ],
-            "scale" : [
-                1,
-                1.0000001192092896,
-                1.0000001192092896
             ]
         },
         {
             "mesh" : 1,
-            "name" : "Object002_Material #34_0"
+            "name" : "Object002_Material #34_0",
+            "rotation" : [
+                7.105427357601002e-15,
+                0,
+                0,
+                1
+            ]
         },
         {
             "children" : [
@@ -265,11 +272,6 @@
                 0,
                 0,
                 0.7071067094802856
-            ],
-            "scale" : [
-                1,
-                1.0000001192092896,
-                1.0000001192092896
             ]
         },
         {
@@ -282,13 +284,13 @@
             ],
             "scale" : [
                 0.9255837202072144,
-                1.0000001192092896,
-                1.0000001192092896
+                1,
+                1
             ],
             "translation" : [
                 0.5331230163574219,
-                -9.283050537109375,
-                -2.778158187866211
+                -2.778158187866211,
+                9.283050537109375
             ]
         },
         {
@@ -299,7 +301,7 @@
             ],
             "name" : "RootNode",
             "rotation" : [
-                7.105427357601002e-15,
+                2.842170943040401e-14,
                 0,
                 0,
                 1
@@ -315,28 +317,73 @@
                 0,
                 0,
                 0.7071067094802856
-            ],
-            "scale" : [
-                1,
-                1.0000001192092896,
-                1.0000001192092896
             ]
         },
         {
             "children" : [
                 6
             ],
-            "name" : "RootNode (model correction matrix)"
+            "name" : "RootNode (model correction matrix)",
+            "rotation" : [
+                7.105427357601002e-15,
+                0,
+                0,
+                1
+            ]
         },
         {
             "children" : [
                 7
             ],
             "name" : "RootNode (gltf orientation matrix)",
+            "rotation" : [
+                0.7071068286895752,
+                0,
+                0,
+                0.7071067094802856
+            ],
             "scale" : [
                 1,
                 1.000000238418579,
                 1.000000238418579
+            ]
+        },
+        {
+            "name" : "Light.001",
+            "rotation" : [
+                0.5232754349708557,
+                0.3420340120792389,
+                -0.7269423604011536,
+                0.2841660678386688
+            ],
+            "scale" : [
+                1.0000001192092896,
+                1,
+                1.0000001192092896
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903862476348877,
+                -1.0054532289505005
+            ]
+        },
+        {
+            "name" : "Camera.001",
+            "rotation" : [
+                0.8937963247299194,
+                0.0906287431716919,
+                -0.3857799470424652,
+                0.20997262001037598
+            ],
+            "scale" : [
+                1,
+                1.0000004768371582,
+                1.000000238418579
+            ],
+            "translation" : [
+                7.358891487121582,
+                4.958308696746826,
+                6.925792217254639
             ]
         },
         {
@@ -380,7 +427,9 @@
             "nodes" : [
                 8,
                 9,
-                10
+                10,
+                11,
+                12
             ]
         }
     ],

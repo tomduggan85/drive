@@ -65,8 +65,8 @@
   }
     
   .vehicle-tile {
-    width: 200px;
-    height: 200px;
+    width: 19vh;
+    height: 19vh;
     cursor: pointer;
     box-sizing: border-box;
     margin: 2px;
@@ -84,8 +84,8 @@
     }
 
     img {
-      width: 220px;
-      height: 220px;
+      width: calc(19vh + 20px);
+      height: calc(19vh + 20px);
       margin-left: -10px;
       margin-top: -10px;
       filter: grayscale(80%) brightness(70%);
