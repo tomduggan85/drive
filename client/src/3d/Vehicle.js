@@ -3,7 +3,8 @@
 
 import { VEHICLE_DEFS } from '../shared/Vehicles';
 import store from '../store'
-import { applyDamage } from '../shared/DamageStats/actions'
+import { applyDamage } from '../shared/DamageStats/actions';
+import { deform } from '../shared/MeshDeformer';
 
 const SHOW_DEBUG_COLLISION_VOLUMES = false;
 
@@ -297,60 +298,9 @@ export class Vehicle {
     const damage = Math.floor(impulse * IMPULSE_TO_DAMAGE / damageReductionForSpeed)
     
     if ( damage > DAMAGE_THRESHOLD ) {
-      this.handleDeformation( damage, relVel, contactPoints )
+      deform( this.$body, contactPoints, relVel)
       store.dispatch(applyDamage(this.vehicleIndex, damage))
     }
-  }
-
-  handleDeformation( damage, relVel, contactPoints ) {
-    const upwardDeflection = 16//hard-coded bias towards deforming slightly upwards
-    relVel.y -= upwardDeflection
-
-    const contactPoint = new THREE.Vector3(contactPoints[0][0], contactPoints[0][1], contactPoints[0][2]) //TODO handle multiple contact points
-    
-    this.$body.traverse(object => {
-      
-      const { geometry } = object
-      if ( geometry && geometry.type !== 'BoxGeometry' ) {
-        let vertexWorldPos = new THREE.Vector3()
-        let vertexPos = new THREE.Vector3()
-
-        for ( let i = 0; i < geometry.attributes.position.count; i ++ ) {
-          
-          vertexPos.set(
-            geometry.attributes.position.getX(i),
-            geometry.attributes.position.getY(i),
-            geometry.attributes.position.getZ(i),
-          )
-          vertexWorldPos = object.localToWorld(vertexPos)
-          const d = vertexWorldPos.distanceTo(contactPoint)
-          const THRESHOLD = 7
-          const distanceFactor = 1 - 0.5 * (d/THRESHOLD) //as distance goes from 0 to 6, this factor goes from 1 to 0.5
-          if ( d && d <= THRESHOLD ) {
-            const MAGNITUDE = 0.04 //0.06 is too much
-            const MAX = 2.3
-
-            let deformVector = new THREE.Vector3(
-              -relVel.x * MAGNITUDE,
-              -relVel.y * MAGNITUDE,
-              -relVel.z * MAGNITUDE
-            )
-            deformVector.clampLength(0, MAX).multiplyScalar(distanceFactor)
-
-            vertexWorldPos.x += deformVector.x
-            vertexWorldPos.y += deformVector.y
-            vertexWorldPos.z += deformVector.z
-
-            const newPos = object.worldToLocal(vertexWorldPos)
-            geometry.attributes.position.setXYZ(i, newPos.x, newPos.y, newPos.z)
-          }
-
-          
-        }
-
-        geometry.attributes.position.needsUpdate = true
-      }
-    })
   }
 
   onKeyDown = (e) => {

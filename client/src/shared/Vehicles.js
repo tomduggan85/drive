@@ -320,7 +320,7 @@ export const VEHICLE_DEFS = {
     trackWidth: 10.5,
     maxVel: 200,
     torque: 5200,
-    firstPersonPosition: [ 2.3, 5.1, 0 ],
+    firstPersonPosition: [ 3, 5.3, 0 ],
     chassisMass: 4000,
     chassisShape: { offset: { x: -1, y: 1.6, z: 0 }, size: { x: 25, y: 3, z: 11} },
     bodyShapes: [
