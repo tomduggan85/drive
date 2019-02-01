@@ -25,10 +25,10 @@ export const deform = ( $rootObject, contactPoints, deformVector ) => {
           geometry.attributes.position.getZ(i),
         ))
 
-        const d = vertexWorldPos.distanceToSquared(contactPoints[0])
+        const closestDistance = Math.min( ...contactPoints.map(cp => vertexWorldPos.distanceToSquared( cp )))
         
-        if ( d && d <= MAX_AFFECTED_DISTANCE_FROM_CONTACT_POINT ) {
-          const distanceFalloff = 1 - 0.5 * (d/MAX_AFFECTED_DISTANCE_FROM_CONTACT_POINT) //as distance goes from 0 to max, falloff drops from 1 to 0.5
+        if ( closestDistance <= MAX_AFFECTED_DISTANCE_FROM_CONTACT_POINT ) {
+          const distanceFalloff = 1 - 0.5 * ( closestDistance / MAX_AFFECTED_DISTANCE_FROM_CONTACT_POINT ) //as distance goes from 0 to max, falloff drops from 1 to 0.5
 
           const vertexDeflection = new THREE.Vector3()
             .copy( deformVector ) //Start with deformVector
