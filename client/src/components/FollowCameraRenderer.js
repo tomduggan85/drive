@@ -9,10 +9,20 @@ const LOOK_HEIGHT = 8;
 const ANGULAR_VELOCITY_HISTORY_LENGTH = 10
 const SMOOTHED_CAM_STRENGTH = 0.1
 
+const ORBIT_START_DELAY = 3300
+const ORBIT_DISTANCE = 60
+const ORBIT_RATE = 1 / 2000
+
+const CAMERA_MODES = {
+  FIRST_PERSON: 'FIRST_PERSON',
+  FOLLOW: 'FOLLOW',
+  ORBIT: 'ORBIT',
+}
+
 class FollowCameraRenderer extends CameraRenderer {
 
   state = {
-    firstPersonMode: false
+    cameraMode: CAMERA_MODES.FOLLOW
   }
 
   constructor( props ) {
@@ -22,6 +32,23 @@ class FollowCameraRenderer extends CameraRenderer {
     this.followDistance = this.vehicle.followDistance || DEFAULT_FOLLOW_DIST;
 
     this.angularVelHistory = [];
+  }
+
+  componentDidUpdate( prevProps ) {
+    if ( this.props.vehicleFinished && this.props.vehicleFinished !== prevProps.vehicleFinished ) {
+      // Switch to orbit after a short delay
+      setTimeout( this.startOrbit, ORBIT_START_DELAY )
+    }
+  }
+
+  startOrbit = () => {
+    this.$scene.add( this.$camera );
+    this.setState({ cameraMode: CAMERA_MODES.ORBIT });
+  }
+
+  shouldComponentUpdate( nextProps ) {
+    //Only update if vehicleFinished changes
+    return this.props.vehicleFinished !== nextProps.vehicleFinished;
   }
 
   stepFollowFixed() {
@@ -77,23 +104,46 @@ class FollowCameraRenderer extends CameraRenderer {
     this.$camera.lookAt( lookPosition )
   }
 
-  step() {
-    if ( !this.state.firstPersonMode ) {
-      this.stepFollowSmoothed();
-    }
+  stepOrbit() {
+    const { position } = this.$followObject;
+    const rotation = performance.now() * ORBIT_RATE; //Drive rotation based on system timer
 
+    this.$camera.position.set(
+      position.x + Math.cos(rotation) * -ORBIT_DISTANCE,
+      position.y + FOLLOW_HEIGHT, 
+      position.z + Math.sin(rotation) * -ORBIT_DISTANCE
+    );
+
+    const lookPosition = new THREE.Vector3( position.x, position.y + LOOK_HEIGHT, position.z )
+    this.$camera.lookAt( lookPosition )
+  }
+
+  step() {
+    switch( this.state.cameraMode ) {
+      case CAMERA_MODES.FOLLOW:
+        this.stepFollowSmoothed();
+        break;
+
+      case CAMERA_MODES.ORBIT:
+        this.stepOrbit();
+        break;
+
+      default:
+        break;
+    }
+    
     super.step();
   }
 
   toggleFirstPersonMode() {
-    if ( this.state.firstPersonMode ) {
+    if ( this.state.cameraMode === CAMERA_MODES.FIRST_PERSON ) {
       this.$scene.add( this.$camera );
-      this.setState({ firstPersonMode: false });
-    } else {
+      this.setState({ cameraMode: CAMERA_MODES.FIRST_PERSON });
+    } else if ( this.state.cameraMode === CAMERA_MODES.FOLLOW ){
       this.$camera.position.set( this.vehicle.firstPersonPosition[0], this.vehicle.firstPersonPosition[1], this.vehicle.firstPersonPosition[2] );
       this.$camera.rotation.set( 0, -Math.PI / 2, 0 );
       this.vehicle.$body.add( this.$camera );
-      this.setState({ firstPersonMode: true });
+      this.setState({ cameraMode: CAMERA_MODES.FIRST_PERSON });
     }
   }
 

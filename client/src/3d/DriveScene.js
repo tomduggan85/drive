@@ -12,7 +12,7 @@ import without from 'lodash/without'
 const VEHICLE_COUNT = 8
 
 const GRAVITY = -100;
-const ADD_DUMMY_VEHICLES = true;
+const ADD_DUMMY_VEHICLES = false;
 
 
 class DriveScene {
@@ -40,7 +40,7 @@ class DriveScene {
   }
 
   buildVehicleList( playerVehicles ) {
-    const aiVehicles = without( shuffle( VEHICLE_TYPES ), ...playerVehicles )
+    const aiVehicles = ADD_DUMMY_VEHICLES ? without( shuffle( VEHICLE_TYPES ), ...playerVehicles ) : []
     return [ ...playerVehicles, ...aiVehicles ].slice(0, VEHICLE_COUNT)
   }
 

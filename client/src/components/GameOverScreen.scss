@@ -1,0 +1,81 @@
+@import 'src/shared-styles.scss';
+
+
+@keyframes game-over-screen-slide {
+  0% {
+    transform: translateY(-100vh);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes game-over-text-expand {
+  0% {
+    transform: scaleX(0);
+  }
+
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes score-slide-in {
+  0% {
+    transform: translateY(100vh);
+  }
+
+  100% {
+    display: block;
+    transform: translateY(0);
+  }
+}
+
+.game-over-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  font-family: 'Nineteen Ninety Seven', monospace;
+
+  animation: game-over-screen-slide 0.2s linear;
+  animation-delay: 0.7s;
+  animation-fill-mode: both;
+
+  .game-over-title {
+    text-align: center;
+    font-size: 150px;
+    text-transform: uppercase;
+    letter-spacing: -3px;
+    @include gradientText($text-bg-orange-twotone-2);
+    font-family: 'ARCADE';
+    animation: game-over-text-expand 0.2s linear;
+    animation-delay: 1.2s;
+    animation-fill-mode: both;
+    margin-top: 100px;
+  }
+
+  .score-container {
+    width: 600px;
+    margin: 0 auto;
+    text-align: left;
+
+    .score-row {
+      color: #fff;
+      text-shadow: 2px 2px 0px #000;
+      font-size: 24px;
+      margin-bottom: 20px;
+      animation: score-slide-in 0.3s linear;
+      animation-fill-mode: forwards;
+      transform: translateY(200vh);
+
+      &:nth-child(1) { animation-delay: 1.4s; }
+      &:nth-child(2) { animation-delay: 1.8s; }
+      &:nth-child(3) { animation-delay: 2.2s; }
+      &:nth-child(4) { animation-delay: 2.6s; }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import FollowCameraRenderer from './FollowCameraRenderer';
 import getVehicleHealth from '../selectors/getVehicleHealth';
 import isVehicleTakingDamage from '../selectors/isVehicleTakingDamage';
 import getVehiclesLeft from '../selectors/getVehiclesLeft';
+import GameOverScreen from './GameOverScreen';
 import classnames from 'classnames';
 
 //TODO move this to a different file
@@ -35,16 +36,19 @@ class PlayerVehicleDisplay extends React.Component {
       vehicleIndex,
       health,
       vehiclesLeft,
-      takingDamage
+      takingDamage,
     } = this.props;
 
     const damageIndicatorStyles = {
       filter: this.getDamageIndicatorFilter()
     }
 
+    const playerIsFinished = health === 0 || vehiclesLeft === 1
+
     return (
-      <div className="player-vehicle-display">
-        <FollowCameraRenderer scene={scene} vehicleIndex={vehicleIndex} />
+      <div className={classnames("player-vehicle-display", { finished: playerIsFinished })}>
+        <FollowCameraRenderer scene={scene} vehicleIndex={vehicleIndex} vehicleFinished={playerIsFinished} />
+        
         <div className='hud'>
           <div className='cars-left'>
             <div className='description'>cars left</div>
@@ -55,15 +59,19 @@ class PlayerVehicleDisplay extends React.Component {
               style={ damageIndicatorStyles }
               src='/assets/images/damage_indicator_engine.png'
               className='engine'
+              alt=''
             />
             <img
               style={damageIndicatorStyles}
               src='/assets/images/damage_indicator_car.png'
               className='car'
+              alt=''
             />
           </div>
-
         </div>
+        {playerIsFinished && (
+          <GameOverScreen vehicleIndex={vehicleIndex} />
+        )}
       </div>
     );
   }
@@ -73,7 +81,7 @@ const mapStateToProps = ( state, ownProps ) => {
   return {
     health: getVehicleHealth( ownProps.vehicleIndex )( state ),
     takingDamage: isVehicleTakingDamage( ownProps.vehicleIndex )( state ),
-    vehiclesLeft: getVehiclesLeft( state )
+    vehiclesLeft: getVehiclesLeft( state ),
   }
 }
 

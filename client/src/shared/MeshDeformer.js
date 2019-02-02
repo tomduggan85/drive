@@ -3,8 +3,8 @@
 const UPWARD_DEFORM_BIAS = 16 //bias deformation direction slightly upwards
 const MAX_AFFECTED_DISTANCE_FROM_CONTACT_POINT = 7 * 7 //Vertices greater than this distance from a contact point are unaffected.  Stored squared as an optimization
 const MAX_DEFORMATION = 2.3 //Max distance a vertex moves in one deform call
-const DEFORMATION_STRENGTH = 0.04 //Scalar strength applied to deformVector
-const NOISE = 0.1 //Each vertex calculation is scaled by a random amount, +- noise value
+const DEFORMATION_STRENGTH = 0.037 //Scalar strength applied to deformVector
+const NOISE = 0 //Each vertex calculation is scaled by a random amount, +- noise value.  Produces realistic-looking damage sometimes, but creates open seams between faces
 
 
 const applyNoise = vector => {

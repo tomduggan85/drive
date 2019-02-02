@@ -69,6 +69,7 @@ export class Vehicle {
       chassisMaterial,
       vehicleDef.chassisMass
     );
+    this.$chassis.vehicleIndex = this.vehicleIndex
     this.$chassis.position.set( offset.x, offset.y, offset.z )
     $scene.add(this.$chassis);
   }
@@ -92,6 +93,7 @@ export class Vehicle {
       bodyMaterial,
       vehicleDef.bodyMass
     );
+    this.$body.vehicleIndex = this.vehicleIndex
     this.$body.position.set( offset.x, offset.y, offset.z )
 
     for ( let i = 1; i < vehicleDef.bodyShapes.length; i++ ) {
@@ -103,6 +105,7 @@ export class Vehicle {
         bodyMaterial,
         someSmallMass
       );
+      $shape.vehicleIndex = this.vehicleIndex
       $shape.position.set( offset.x, offset.y, offset.z )
       this.$body.add($shape);
     }
@@ -207,6 +210,7 @@ export class Vehicle {
     this.createWheelMaterialAndGeometry();
 
     const $wheel = new Physijs.CylinderMesh( this.wheelGeometry, this.wheelMaterial, this.vehicleDef.wheelMass );
+    $wheel.vehicleIndex = this.vehicleIndex
     
     $wheel.rotation.x = Math.PI / 2;
 
@@ -287,19 +291,19 @@ export class Vehicle {
   }
 
   onBodyCollision = ( otherObject, relVel, relAngularVel, normal, contactPoints, impulse ) => {
-    const IMPULSE_TO_DAMAGE = 1 / 20000
+    const IMPULSE_TO_DAMAGE = 1 / 5000 //1 / 20000
     const DAMAGE_THRESHOLD = 5
     const SPEED_DAMAGE_REDUCER = 100
     const MAX_DAMAGE_REDUCTION = 2
 
-    //As speed increases from 0 to 100, reduce damage by a factor of 1 to 1.5
+    //As speed increases from 0 to 100, reduce damage by a factor of 1 to 2
     const speed = this.$chassis.getLinearVelocity().length()
     const damageReductionForSpeed = 1 + (Math.min(speed, SPEED_DAMAGE_REDUCER) / SPEED_DAMAGE_REDUCER * (MAX_DAMAGE_REDUCTION-1))
     const damage = Math.floor(impulse * IMPULSE_TO_DAMAGE / damageReductionForSpeed)
     
     if ( damage > DAMAGE_THRESHOLD ) {
       deform( this.$body, contactPoints, relVel)
-      store.dispatch(applyDamage(this.vehicleIndex, damage))
+      store.dispatch(applyDamage( this.vehicleIndex, damage, otherObject.vehicleIndex ))
     }
   }
 
