@@ -291,7 +291,7 @@ export class Vehicle {
   }
 
   onBodyCollision = ( otherObject, relVel, relAngularVel, normal, contactPoints, impulse ) => {
-    const IMPULSE_TO_DAMAGE = 1 / 5000 //1 / 20000
+    const IMPULSE_TO_DAMAGE = 1 / 20000
     const DAMAGE_THRESHOLD = 5
     const SPEED_DAMAGE_REDUCER = 100
     const MAX_DAMAGE_REDUCTION = 2
