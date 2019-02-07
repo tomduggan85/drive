@@ -24,18 +24,18 @@ $text-bg-blue-to-purple-2: -webkit-linear-gradient(top, #345cc9 17%,#ffffff 39%,
 
 @keyframes blink {
   0% {
-    visibility: hidden;
+    opacity: 0;
   }
 
   49% {
-    visibility: hidden;
+    opacity: 0;
   }
 
   50% {
-    visibility: visible;
+    opacity: 1;
   }
 
   100% {
-    visibility: visible;
+    opacity: 1;
   }
 }

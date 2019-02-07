@@ -1,4 +1,4 @@
-/* global THREE Physijs */
+/* global THREE */
 
 import { VEHICLE_DEFS } from '../shared/Vehicles';
 

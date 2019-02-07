@@ -116,7 +116,6 @@ class Arena {
   }
 
   createWall() {
-    const wallTextureMap = new THREE.TextureLoader().load('/assets/images/concrete4.jpg');
     const collisionHeight = 30
 
     const material = Physijs.createMaterial(

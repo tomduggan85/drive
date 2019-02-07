@@ -12,7 +12,7 @@ import without from 'lodash/without'
 const VEHICLE_COUNT = 8
 
 const GRAVITY = -100;
-const ADD_DUMMY_VEHICLES = false;
+const ADD_DUMMY_VEHICLES = true;
 
 
 class DriveScene {
@@ -29,7 +29,7 @@ class DriveScene {
     this.$scene = new Physijs.Scene();
     this.$scene.setGravity(new THREE.Vector3( 0, GRAVITY, 0 ));
     
-    const arena = new Arena({ $scene: this.$scene });
+    this.arena = new Arena({ $scene: this.$scene });
     this.createLights();
     this.createVehicles( props.playerVehicles );
 

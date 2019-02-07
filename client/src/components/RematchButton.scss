@@ -1,0 +1,26 @@
+@import 'src/shared-styles.scss';
+
+.rematch-button {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Nineteen Ninety Seven', monospace;
+  font-size: 40px;
+  animation: blink 1.5s infinite;
+  color: #fff;
+  //text-shadow: 4px 4px 0px #000;
+  animation-delay: 3.5s;
+  opacity: 0;
+  width: 100%;
+  z-index: 1;
+  text-decoration: none;
+  padding: 50px;
+  box-sizing: border-box;
+  animation-timing-function: step-start;
+  text-transform: uppercase;
+  @include gradientText($text-bg-orange-to-blue-2);
+  font-weight: bold;
+  letter-spacing: 2px;
+}

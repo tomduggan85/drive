@@ -138,7 +138,7 @@ class FollowCameraRenderer extends CameraRenderer {
   toggleFirstPersonMode() {
     if ( this.state.cameraMode === CAMERA_MODES.FIRST_PERSON ) {
       this.$scene.add( this.$camera );
-      this.setState({ cameraMode: CAMERA_MODES.FIRST_PERSON });
+      this.setState({ cameraMode: CAMERA_MODES.FOLLOW });
     } else if ( this.state.cameraMode === CAMERA_MODES.FOLLOW ){
       this.$camera.position.set( this.vehicle.firstPersonPosition[0], this.vehicle.firstPersonPosition[1], this.vehicle.firstPersonPosition[2] );
       this.$camera.rotation.set( 0, -Math.PI / 2, 0 );

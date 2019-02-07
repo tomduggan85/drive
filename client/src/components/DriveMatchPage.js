@@ -2,9 +2,10 @@ import React from 'react';
 import './DriveMatchPage.css';
 import DriveScene from '../3d/DriveScene';
 import PlayerVehicleDisplay from './PlayerVehicleDisplay';
-import CameraRenderer from './CameraRenderer';
 import { getSocket } from '../shared/DriveMatchSocket';
-import { VEHICLE_TYPES } from '../shared/Vehicles';
+import getAllPlayersFinished from '../selectors/getAllPlayersFinished';
+import RematchButton from './RematchButton';
+import { connect } from 'react-redux';
 
 class DriveMatchPage extends React.Component {
 
@@ -29,14 +30,23 @@ class DriveMatchPage extends React.Component {
   }
 
   render() {
+    const { allPlayersFinished } = this.props
+
     return (
       <div className="drive-match-page">
         <PlayerVehicleDisplay scene={this.driveScene} vehicleIndex={0} />
         <PlayerVehicleDisplay scene={this.driveScene} vehicleIndex={1} />
-        {/*<CameraRenderer scene={this.driveScene} />*/}
+        {allPlayersFinished && <RematchButton />}
       </div>
     );
   }
 }
 
-export default DriveMatchPage;
+const mapStateToProps = ( state ) => ({
+  allPlayersFinished: getAllPlayersFinished( state ),
+})
+
+export default connect(
+  mapStateToProps,
+  null
+)( DriveMatchPage );
