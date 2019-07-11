@@ -19,5 +19,5 @@ export const getSocket = ( matchId ) => {
     return new WebSocket(`ws://drivegame-socket.ngrok.io/match/${ matchId }`);
   }
   
-  return new WebSocket(`ws://${ window.location.hostname }:${ PORT }/match/${ matchId }`);
+  return new WebSocket(`wss://${ window.location.hostname }:${ PORT }/match/${ matchId }`);
 }
